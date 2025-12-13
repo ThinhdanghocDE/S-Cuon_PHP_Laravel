@@ -29,22 +29,22 @@
                         <br>
                         @endif
 
-                    <form class="forms-sample" action="{{  asset('/charge-edit-process/'.$charg->id) }}" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="{{  asset('/charge-edit-process/'.$charg->id) }}" method="post" enctype="multipart/form-data" id="chargeForm">
 
                        @csrf
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Name</label>
-                        <input type="text" name="name"   value="{{ $charg->name }}" class="form-control" id="exampleInputName1">
+                        <label for="chargeName">Tên phí <span class="text-danger">*</span></label>
+                        <input type="text" name="name"   value="{{ $charg->name }}" class="form-control" id="chargeName" placeholder="Nhập tên phí">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Price</label>
-                        <input type="text" name="price"  value="{{ $charg->price }}" class="form-control" id="exampleInputName1">
+                        <label for="chargePrice">Giá <span class="text-danger">*</span></label>
+                        <input type="number" name="price"  value="{{ $charg->price }}" class="form-control" id="chargePrice" placeholder="Nhập giá" min="0" step="0.01">
                       </div>
                     
                     
                       <button type="submit" class="btn btn-primary me-2">Update</button>
-                      <button class="btn btn-dark">Cancel</button>
+                      <a href="/admin/charge" class="btn btn-dark">Cancel</a>
                     </form>
                   </div>
                 </div>
@@ -87,3 +87,7 @@
   color: black;
 }
 </style>
+
+@push('scripts')
+<script src="{{asset('admin/assets/js/charge-form-validation.js')}}"></script>
+@endpush

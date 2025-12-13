@@ -26,41 +26,42 @@
                         <br>
                         @endif
 
-                    <form class="forms-sample" action="/chef/add/process" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="/chef/add/process" method="post" enctype="multipart/form-data" id="chefForm">
 
                        @csrf
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Name</label>
-                        <input type="text" name="name" class="form-control" id="exampleInputName1">
+                        <label for="chefName">Tên đầu bếp <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" id="chefName" placeholder="Nhập tên đầu bếp">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Job Title</label>
-                        <input type="text" name="job" class="form-control" id="exampleInputName1">
+                        <label for="chefJobTitle">Chức danh <span class="text-danger">*</span></label>
+                        <input type="text" name="job" class="form-control" id="chefJobTitle" placeholder="Nhập chức danh">
                       </div>
                      
                     
                       <div class="form-group">
-                        <label for="exampleInputPassword4">Facebook Link</label>
-                        <input type="text" name="fb" class="form-control" id="exampleInputPassword4">
+                        <label for="chefFacebook">Facebook Link</label>
+                        <input type="text" name="fb" class="form-control" id="chefFacebook" placeholder="https://facebook.com/...">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Twitter Link</label>
-                        <input type="text" name="twitter" class="form-control" id="exampleInputName1">
+                        <label for="chefTwitter">Twitter Link</label>
+                        <input type="text" name="twitter" class="form-control" id="chefTwitter" placeholder="https://twitter.com/...">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Instagram Link</label>
-                        <input type="text" name="instagram" class="form-control" id="exampleInputName1">
+                        <label for="chefInstagram">Instagram Link</label>
+                        <input type="text" name="instagram" class="form-control" id="chefInstagram" placeholder="https://instagram.com/...">
                       </div>
                     
                       <div class="form-group">
-                        <label for="exampleFormControlFile1">Image</label>
-                        <input type="file" name="image" class="form-control-file" id="exampleFormControlFile1">
+                        <label for="chefImage">Ảnh đầu bếp <span class="text-danger">*</span></label>
+                        <input type="file" name="image" class="form-control-file" id="chefImage" accept="image/jpeg,image/jpg,image/png">
+                        <small class="form-text text-muted">Chỉ chấp nhận file JPG, JPEG, PNG. Kích thước tối đa: 5MB</small>
                     </div>
                   
                     
                       <button type="submit" class="btn btn-primary me-2">Submit</button>
-                      <button class="btn btn-dark">Cancel</button>
+                      <a href="/admin/chefs" class="btn btn-dark">Cancel</a>
                     </form>
                   </div>
                 </div>
@@ -102,3 +103,7 @@
   color: black;
 }
 </style>
+
+@push('scripts')
+<script src="{{asset('admin/assets/js/chef-form-validation.js')}}"></script>
+@endpush

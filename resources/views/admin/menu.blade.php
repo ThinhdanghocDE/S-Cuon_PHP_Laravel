@@ -112,7 +112,7 @@ $per_rate=number_format($per_rate, 1);
     </div>
     <div class="card-footer">
       <small class="text-muted"><a href="{{ asset('/menu/edit/'.$product->id) }}" class="btn btn-primary">Edit</a>
-      <a href="{{ asset('/menu/delete/'.$product->id) }}" class="btn btn-danger" style="margin-left:10px;">Delete</a>
+      <a href="javascript:void(0)" onclick="confirmDeleteMenu({{ $product->id }}, '{{ addslashes($product->name) }}')" class="btn btn-danger" style="margin-left:10px;">Delete</a>
 
 
 
@@ -206,3 +206,23 @@ $per_rate=number_format($per_rate, 1);
   color: black;
 }
 </style>
+
+<!-- Delete Confirmation Modal for Menu -->
+<div id="deleteMenuModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-modal-header">
+            <div class="delete-modal-icon">
+                ⚠
+            </div>
+            <h3 class="delete-modal-title">Xác nhận xóa Món ăn</h3>
+        </div>
+        <div class="delete-modal-body">
+            <p>Bạn có chắc chắn muốn xóa món ăn <strong id="menuName"></strong>?</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Món ăn sẽ bị xóa vĩnh viễn khỏi hệ thống.</p>
+        </div>
+        <div class="delete-modal-footer">
+            <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteMenuModal()">Hủy</button>
+            <button id="confirmDeleteMenuBtn" class="delete-modal-btn delete-modal-btn-confirm">Xóa</button>
+        </div>
+    </div>
+</div>

@@ -64,7 +64,7 @@
     </div>
     <div class="card-footer">
       <small class="text-muted"><a href="{{ asset('/chef/edit/'.$chef->id) }}" class="btn btn-primary">Edit</a>
-      <a href="{{ asset('/chef/delete/'.$chef->id) }}" class="btn btn-danger" style="margin-left:10px;">Delete</a>
+      <a href="javascript:void(0)" onclick="confirmDeleteChef({{ $chef->id }}, '{{ addslashes($chef->name) }}')" class="btn btn-danger" style="margin-left:10px;">Delete</a>
 
 
 
@@ -159,3 +159,23 @@
   color: black;
 }
 </style>
+
+<!-- Delete Confirmation Modal for Chef -->
+<div id="deleteChefModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-modal-header">
+            <div class="delete-modal-icon">
+                ⚠
+            </div>
+            <h3 class="delete-modal-title">Xác nhận xóa Đầu bếp</h3>
+        </div>
+        <div class="delete-modal-body">
+            <p>Bạn có chắc chắn muốn xóa đầu bếp <strong id="chefName"></strong>?</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Thông tin đầu bếp sẽ bị xóa vĩnh viễn khỏi hệ thống.</p>
+        </div>
+        <div class="delete-modal-footer">
+            <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteChefModal()">Hủy</button>
+            <button id="confirmDeleteChefBtn" class="delete-modal-btn delete-modal-btn-confirm">Xóa</button>
+        </div>
+    </div>
+</div>

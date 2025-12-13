@@ -28,29 +28,29 @@
                         <br>
                         @endif
 
-                    <form class="forms-sample" action="{{  asset('/coupon-edit-process/'.$coup->id) }}" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="{{  asset('/coupon-edit-process/'.$coup->id) }}" method="post" enctype="multipart/form-data" id="couponForm">
 
                        @csrf
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Name</label>
-                        <input type="text" name="name" value="{{ $coup->name }}" class="form-control" id="exampleInputName1">
+                        <label for="couponName">Tên coupon <span class="text-danger">*</span></label>
+                        <input type="text" name="name" value="{{ $coup->name }}" class="form-control" id="couponName" placeholder="Nhập tên coupon">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Details</label>
-                        <input type="text" name="details" value="{{ $coup->details }}" class="form-control" id="exampleInputName1">
+                        <label for="couponDetails">Chi tiết <span class="text-danger">*</span></label>
+                        <input type="text" name="details" value="{{ $coup->details }}" class="form-control" id="couponDetails" placeholder="Nhập chi tiết coupon">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Code</label>
-                        <input type="text" name="code" value="{{ $coup->code }}"  class="form-control" id="exampleInputName1">
+                        <label for="couponCode">Mã coupon <span class="text-danger">*</span></label>
+                        <input type="text" name="code" value="{{ $coup->code }}"  class="form-control" id="couponCode" placeholder="Nhập mã coupon (VD: SALE2024)" style="text-transform: uppercase;">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Discount(Percentage)</label>
-                        <input type="text" name="discount_percentage" value="{{ $coup->percentage }}" class="form-control" id="exampleInputName1">
+                        <label for="couponDiscount">Phần trăm giảm giá <span class="text-danger">*</span></label>
+                        <input type="number" name="discount_percentage" value="{{ $coup->percentage }}" class="form-control" id="couponDiscount" placeholder="Nhập phần trăm (0-100)" min="0" max="100" step="0.01">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Validation Date</label>
-                        <input type="date" name="vaildation_date" value="{{ $coup->validate }}" class="form-control" id="exampleInputName1">
+                        <label for="couponDate">Ngày hết hạn <span class="text-danger">*</span></label>
+                        <input type="date" name="vaildation_date" value="{{ $coup->validate }}" class="form-control" id="couponDate">
                       </div>
 
                 
@@ -61,7 +61,7 @@
                   
                     
                       <button type="submit" class="btn btn-primary me-2">Update</button>
-                      <button class="btn btn-dark">Cancel</button>
+                      <a href="/admin/coupon" class="btn btn-dark">Cancel</a>
                     </form>
                   </div>
                 </div>
@@ -104,3 +104,7 @@
   color: black;
 }
 </style>
+
+@push('scripts')
+<script src="{{asset('admin/assets/js/coupon-form-validation.js')}}"></script>
+@endpush

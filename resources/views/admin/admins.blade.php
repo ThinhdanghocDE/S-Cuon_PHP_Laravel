@@ -105,7 +105,7 @@
                             <td>
 
                             <a href="{{ asset('/admin/edit/'.$admin->id) }}" class="badge badge-outline-primary">Edit</a>
-                              <a href="{{ asset('/admin/delete/'.$admin->id) }}" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
+                              <a href="javascript:void(0)" onclick="confirmDeleteAdmin({{ $admin->id }}, '{{ $admin->name }}')" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
                             </td>
                           </tr>
 
@@ -154,3 +154,23 @@
   color: black;
 }
 </style>
+
+<!-- Delete Confirmation Modal for Admin -->
+<div id="deleteAdminModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-modal-header">
+            <div class="delete-modal-icon">
+                ⚠
+            </div>
+            <h3 class="delete-modal-title">Xác nhận xóa Admin</h3>
+        </div>
+        <div class="delete-modal-body">
+            <p>Bạn có chắc chắn muốn xóa admin <strong id="adminName"></strong>?</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Tài khoản admin sẽ bị xóa vĩnh viễn.</p>
+        </div>
+        <div class="delete-modal-footer">
+            <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteAdminModal()">Hủy</button>
+            <button id="confirmDeleteAdminBtn" class="delete-modal-btn delete-modal-btn-confirm">Xóa</button>
+        </div>
+    </div>
+</div>

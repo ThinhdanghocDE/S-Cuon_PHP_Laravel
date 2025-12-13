@@ -77,7 +77,7 @@
                             <td>
 
                             <a href="{{ asset('/admin/coupon/edit/'.$coupon->id) }}" class="badge badge-outline-primary">Edit</a>
-                              <a href="{{ asset('/admin/coupon/delete/'.$coupon->id) }}" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
+                              <a href="javascript:void(0)" onclick="confirmDeleteCoupon({{ $coupon->id }}, '{{ addslashes($coupon->name) }}', '{{ addslashes($coupon->code) }}')" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
                             </td>
                           </tr>
 
@@ -126,3 +126,23 @@
   color: black;
 }
 </style>
+
+<!-- Delete Confirmation Modal for Coupon -->
+<div id="deleteCouponModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-modal-header">
+            <div class="delete-modal-icon">
+                ⚠
+            </div>
+            <h3 class="delete-modal-title">Xác nhận xóa Coupon</h3>
+        </div>
+        <div class="delete-modal-body">
+            <p>Bạn có chắc chắn muốn xóa coupon <strong id="couponName"></strong> (Mã: <strong id="couponCode"></strong>)?</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Coupon sẽ bị xóa vĩnh viễn khỏi hệ thống.</p>
+        </div>
+        <div class="delete-modal-footer">
+            <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteCouponModal()">Hủy</button>
+            <button id="confirmDeleteCouponBtn" class="delete-modal-btn delete-modal-btn-confirm">Xóa</button>
+        </div>
+    </div>
+</div>

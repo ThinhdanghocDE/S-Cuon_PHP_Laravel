@@ -28,28 +28,28 @@
                         <br>
                         @endif
 
-                    <form class="forms-sample" action="{{ asset('/admin-edit-process/'.$user->id) }}" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="{{ asset('/admin-edit-process/'.$user->id) }}" method="post" enctype="multipart/form-data" id="adminForm">
 
                        @csrf
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Name</label>
-                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" id="exampleInputName1">
+                        <label for="adminName">Tên <span class="text-danger">*</span></label>
+                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" id="adminName" placeholder="Nhập tên">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Email</label>
-                        <input type="text" name="email" value="{{ $user->email }}" class="form-control" id="exampleInputName1">
+                        <label for="adminEmail">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" value="{{ $user->email }}" class="form-control" id="adminEmail" placeholder="example@email.com">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Phone</label>
-                        <input type="number" name="phone" value="{{ $user->phone }}" class="form-control" id="exampleInputName1">
+                        <label for="adminPhone">Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="number" name="phone" value="{{ $user->phone }}" class="form-control" id="adminPhone" placeholder="Nhập số điện thoại">
                       </div>
 
                 
 
                       <div class="form-group">
-                        <label for="exampleSelectGender">Type</label>
-                        <select class="form-control" name="type" id="exampleSelectGender">
+                        <label for="adminType">Loại <span class="text-danger">*</span></label>
+                        <select class="form-control" name="type" id="adminType">
                           <option value="1" @php if($user->usertype=="1"){ echo"selected"; } @endphp>Super Admin</option>
                           <option value="3"  @php if($user->usertype=="3"){ echo"selected"; } @endphp>Sub Admin</option>
                         </select>
@@ -57,20 +57,25 @@
 
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Salary</label>
-                        <input type="number" value="{{ $user->salary }}" name="salary" class="form-control" id="exampleInputName1">
+                        <label for="adminSalary">Lương <span class="text-danger">*</span></label>
+                        <input type="number" value="{{ $user->salary }}" name="salary" class="form-control" id="adminSalary" placeholder="Nhập lương" min="0">
                       </div>
-
 
                   
                       <div class="form-group">
-                        <label for="exampleFormControlFile1">Image</label>
-                        <input type="file" name="image" class="form-control-file" id="exampleFormControlFile1">
+                        <label for="adminImage">Ảnh</label>
+                        <input type="file" name="image" class="form-control-file" id="adminImage" accept="image/jpeg,image/jpg,image/png">
+                        <small class="form-text text-muted">Để trống nếu không muốn thay đổi ảnh. Chỉ chấp nhận file JPG, JPEG, PNG. Kích thước tối đa: 5MB</small>
+                        @if($user->profile_photo_path)
+                        <div class="mt-2">
+                            <img src="{{ asset('assets/images/admin/'.$user->profile_photo_path) }}" alt="Current image" style="max-width: 200px; max-height: 200px; border-radius: 5px;">
+                        </div>
+                        @endif
                       </div>
                   
                     
                       <button type="submit" class="btn btn-primary me-2">Update</button>
-                      <button class="btn btn-dark">Cancel</button>
+                      <a href="/admin/show" class="btn btn-dark">Cancel</a>
                     </form>
                   </div>
                 </div>
@@ -113,3 +118,7 @@
   color: black;
 }
 </style>
+
+@push('scripts')
+<script src="{{asset('admin/assets/js/admin-form-validation.js')}}"></script>
+@endpush

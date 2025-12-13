@@ -26,19 +26,21 @@
                     @endif
                     <br>
 
-                    <form class="forms-sample" runat="server" action="/banner/add/process" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" runat="server" action="/banner/add/process" method="post" enctype="multipart/form-data" id="bannerForm">
 
                        @csrf
 
     
 
                       <div class="form-group">
-                        <label for="exampleFormControlFile1">Image</label>
-                        <input type="file" name="image" class="form-control-file" id="exampleFormControlFile1">
+                        <label for="bannerImage">Ảnh <span class="text-danger">*</span></label>
+                        <input type="file" name="image" class="form-control-file" id="bannerImage" accept="image/jpeg,image/jpg,image/png">
+                        <small class="form-text text-muted">Chỉ chấp nhận file JPG, JPEG, PNG. Kích thước tối đa: 5MB</small>
                     </div>
                   
                     
                       <button type="submit" class="btn btn-primary me-2">Submit</button>
+                      <a href="/admin/banner/all" class="btn btn-dark">Cancel</a>
 
                     </form>
                   </div>
@@ -94,3 +96,7 @@
   color: black;
 }
 </style>
+
+@push('scripts')
+<script src="{{asset('admin/assets/js/banner-form-validation.js')}}"></script>
+@endpush

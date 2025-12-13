@@ -24,6 +24,12 @@
     <!-- endinject -->
     <!-- Layout styles -->
     <link rel="stylesheet" href="{{asset('admin/assets//css/style.css')}}">
+    <!-- Delete Modal CSS -->
+    <link rel="stylesheet" href="{{asset('admin/assets/css/delete-modal.css')}}">
+    <!-- Form Validation CSS -->
+    <link rel="stylesheet" href="{{asset('admin/assets/css/form-validation.css')}}">
+    <!-- Cancel Confirmation Modal CSS -->
+    <link rel="stylesheet" href="{{asset('admin/assets/css/cancel-confirmation-modal.css')}}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{asset('admin/assets//images/favicon.png')}}" />
     <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
@@ -435,6 +441,11 @@
 
 
     <!-- End custom js for this page -->
+    <!-- Delete Confirmation JS -->
+    <script src="{{asset('admin/assets/js/delete-confirmation.js')}}"></script>
+    @stack('scripts')
+    <!-- Cancel Button Handler -->
+    <script src="{{asset('admin/assets/js/cancel-button-handler.js')}}"></script>
   </body>
 </html>
 

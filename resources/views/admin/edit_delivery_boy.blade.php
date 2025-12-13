@@ -28,40 +28,46 @@
                         <br>
                         @endif
 
-                    <form class="forms-sample" action="{{ asset('/edit_delivery_boy_process/'.$user->id) }}" method="post" enctype="multipart/form-data">
+                    <form class="forms-sample" action="{{ asset('/edit_delivery_boy_process/'.$user->id) }}" method="post" enctype="multipart/form-data" id="deliveryBoyForm">
 
                        @csrf
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Name</label>
-                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" id="exampleInputName1">
+                        <label for="deliveryBoyName">Tên <span class="text-danger">*</span></label>
+                        <input type="text" name="name" value="{{ $user->name }}" class="form-control" id="deliveryBoyName" placeholder="Nhập tên">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Email</label>
-                        <input type="text" name="email" value="{{ $user->email }}" class="form-control" id="exampleInputName1">
+                        <label for="deliveryBoyEmail">Email <span class="text-danger">*</span></label>
+                        <input type="email" name="email" value="{{ $user->email }}" class="form-control" id="deliveryBoyEmail" placeholder="example@email.com">
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputName1">Phone</label>
-                        <input type="number" name="phone" value="{{ $user->phone }}" class="form-control" id="exampleInputName1">
+                        <label for="deliveryBoyPhone">Số điện thoại <span class="text-danger">*</span></label>
+                        <input type="number" name="phone" value="{{ $user->phone }}" class="form-control" id="deliveryBoyPhone" placeholder="Nhập số điện thoại">
                       </div>
 
             
 
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Salary</label>
-                        <input type="number" name="salary" value="{{ $user->salary }}" class="form-control" id="exampleInputName1">
+                        <label for="deliveryBoySalary">Lương <span class="text-danger">*</span></label>
+                        <input type="number" name="salary" value="{{ $user->salary }}" class="form-control" id="deliveryBoySalary" placeholder="Nhập lương" min="0">
                       </div>
 
                   
                       <div class="form-group">
-                        <label for="exampleFormControlFile1">Image</label>
-                        <input type="file" name="image" class="form-control-file" id="exampleFormControlFile1">
+                        <label for="deliveryBoyImage">Ảnh</label>
+                        <input type="file" name="image" class="form-control-file" id="deliveryBoyImage" accept="image/jpeg,image/jpg,image/png">
+                        <small class="form-text text-muted">Để trống nếu không muốn thay đổi ảnh. Chỉ chấp nhận file JPG, JPEG, PNG. Kích thước tối đa: 5MB</small>
+                        @if($user->profile_photo_path)
+                        <div class="mt-2">
+                            <img src="{{ asset('assets/images/admin/'.$user->profile_photo_path) }}" alt="Current image" style="max-width: 200px; max-height: 200px; border-radius: 5px;">
+                        </div>
+                        @endif
                       </div>
                   
                     
                       <button type="submit" class="btn btn-primary me-2">Update</button>
-                      <button class="btn btn-dark">Cancel</button>
+                      <a href="/delivery-boy" class="btn btn-dark">Cancel</a>
                     </form>
                   </div>
                 </div>
@@ -105,3 +111,7 @@
   color: black;
 }
 </style>
+
+@push('scripts')
+<script src="{{asset('admin/assets/js/delivery-boy-form-validation.js')}}"></script>
+@endpush

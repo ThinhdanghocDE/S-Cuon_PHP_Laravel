@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
 
-use DB;
-use Auth;
-use Hash;
 
 class AdminController extends Controller
 {
@@ -229,21 +230,34 @@ class AdminController extends Controller
 
     public function menu_add_process(Request $req)
     {
-
-
-        if($req->price < 0)
-        {
-
-            session()->flash('wrong','Negative Price value do not accept !');
-            return back();
-
-
-        }
-
-
-        $this->validate(request(),[
-
-            'image'=>'mimes:jpeg,jpg,png',
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:200',
+            'description' => 'required|string|min:10|max:1000',
+            'price' => 'required|numeric|min:0',
+            'catagory' => 'required|in:regular,special',
+            'session' => 'required|in:0,1,2',
+            'available' => 'required|in:Stock,Out of Stock',
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'name.required' => 'Vui lòng nhập tên món.',
+            'name.min' => 'Tên món phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên món không được vượt quá 200 ký tự.',
+            'description.required' => 'Vui lòng nhập mô tả.',
+            'description.min' => 'Mô tả phải có ít nhất 10 ký tự.',
+            'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
+            'price.required' => 'Vui lòng nhập giá.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá không được âm.',
+            'catagory.required' => 'Vui lòng chọn danh mục.',
+            'catagory.in' => 'Danh mục không hợp lệ.',
+            'session.required' => 'Vui lòng chọn combo.',
+            'session.in' => 'Combo không hợp lệ.',
+            'available.required' => 'Vui lòng chọn tình trạng.',
+            'available.in' => 'Tình trạng không hợp lệ.',
+            'image.required' => 'Vui lòng chọn ảnh.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
         ]);
      
      
@@ -256,7 +270,7 @@ class AdminController extends Controller
         $data['description']=$req->description;
         $data['price']=$req->price;
         $data['catagory']=$req->catagory;
-        $data['session']=$req->session;
+        $data['session'] = $req->input('session');
         $data['available']=$req->available;
         $data['image']=$new_image;
 
@@ -272,14 +286,29 @@ class AdminController extends Controller
     }
     public function chef_add_process(Request $req)
     {
-
-
-     
-        $this->validate(request(),[
-
-            'image'=>'mimes:jpeg,jpg,png',
+        // Server-side validation
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'job' => 'required|string|min:2|max:100',
+            'fb' => 'nullable|url|max:255',
+            'twitter' => 'nullable|url|max:255',
+            'instagram' => 'nullable|url|max:255',
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120', // 5MB max
+        ], [
+            'name.required' => 'Vui lòng nhập tên đầu bếp.',
+            'name.min' => 'Tên đầu bếp phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên đầu bếp không được vượt quá 100 ký tự.',
+            'job.required' => 'Vui lòng nhập chức danh.',
+            'job.min' => 'Chức danh phải có ít nhất 2 ký tự.',
+            'job.max' => 'Chức danh không được vượt quá 100 ký tự.',
+            'fb.url' => 'Facebook link phải là URL hợp lệ.',
+            'twitter.url' => 'Twitter link phải là URL hợp lệ.',
+            'instagram.url' => 'Instagram link phải là URL hợp lệ.',
+            'image.required' => 'Vui lòng chọn ảnh đầu bếp.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
         ]);
-     
      
         $uploadedfile=$req->file('image');
         $new_image=rand().'.'.$uploadedfile->getClientOriginalExtension();
@@ -301,7 +330,7 @@ class AdminController extends Controller
         return back();
 
 
-        
+
     }
     public function menu_delete_process($id)
     {
@@ -358,35 +387,45 @@ class AdminController extends Controller
     }
     public function menu_edit_process(Request $req,$id)
     {
-
-
-        if($req->price < 0)
-        {
-
-            session()->flash('wrong','Negative Price value do not accept !');
-            return back();
-
-
-        }
-
-   
-       
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:200',
+            'description' => 'required|string|min:10|max:1000',
+            'price' => 'required|numeric|min:0',
+            'catagory' => 'required|in:regular,special',
+            'session' => 'required|in:0,1,2',
+            'available' => 'required|in:Stock,Out of Stock',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'name.required' => 'Vui lòng nhập tên món.',
+            'name.min' => 'Tên món phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên món không được vượt quá 200 ký tự.',
+            'description.required' => 'Vui lòng nhập mô tả.',
+            'description.min' => 'Mô tả phải có ít nhất 10 ký tự.',
+            'description.max' => 'Mô tả không được vượt quá 1000 ký tự.',
+            'price.required' => 'Vui lòng nhập giá.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá không được âm.',
+            'catagory.required' => 'Vui lòng chọn danh mục.',
+            'catagory.in' => 'Danh mục không hợp lệ.',
+            'session.required' => 'Vui lòng chọn combo.',
+            'session.in' => 'Combo không hợp lệ.',
+            'available.required' => 'Vui lòng chọn tình trạng.',
+            'available.in' => 'Tình trạng không hợp lệ.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
+        ]);
 
         $data=array();
         $data['name']=$req->name;
         $data['description']=$req->description;
         $data['price']=$req->price;
         $data['catagory']=$req->catagory;
-        $data['session']=$req->session;
+        $data['session'] = $req->input('session');
         $data['available']=$req->available;
 
         if($req->image!=NULL)
         {
-
-            $this->validate(request(),[
-
-                'image'=>'mimes:jpeg,jpg,png',
-            ]);
          
          
             $uploadedfile=$req->file('image');
@@ -413,10 +452,28 @@ class AdminController extends Controller
 
     public function chef_edit_process(Request $req,$id)
     {
-
-
-     
-    
+        // Server-side validation
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'job' => 'required|string|min:2|max:100',
+            'fb' => 'nullable|url|max:255',
+            'twitter' => 'nullable|url|max:255',
+            'instagram' => 'nullable|url|max:255',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120', // 5MB max, optional for edit
+        ], [
+            'name.required' => 'Vui lòng nhập tên đầu bếp.',
+            'name.min' => 'Tên đầu bếp phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên đầu bếp không được vượt quá 100 ký tự.',
+            'job.required' => 'Vui lòng nhập chức danh.',
+            'job.min' => 'Chức danh phải có ít nhất 2 ký tự.',
+            'job.max' => 'Chức danh không được vượt quá 100 ký tự.',
+            'fb.url' => 'Facebook link phải là URL hợp lệ.',
+            'twitter.url' => 'Twitter link phải là URL hợp lệ.',
+            'instagram.url' => 'Instagram link phải là URL hợp lệ.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
+        ]);
 
         $data=array();
         $data['name']=$req->name;
@@ -465,9 +522,7 @@ class AdminController extends Controller
         $time_set_up=strtotime($req->time);
         $time_set_up=date("F j, Y, G:i:sa", $time_set_up);
 
-        $req->time=$time_set_up;
-       // return $req->time;
-        $data['delivery_time']=$req->time;
+        $data['delivery_time'] = $time_set_up;
 
 
         $details = [
@@ -497,7 +552,7 @@ class AdminController extends Controller
             
             $user=DB::table('users')->where('id',$user_id)->first();
         
-            \Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
+            Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
 
 
             $update=DB::table('carts')->where('invoice_no',$id)->Update($data);
@@ -519,7 +574,7 @@ class AdminController extends Controller
             
             $user=DB::table('users')->where('id',$user_id)->first();
         
-            \Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
+            Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
 
 
             $update=DB::table('carts')->where('invoice_no',$id)->Update($data);
@@ -616,7 +671,7 @@ class AdminController extends Controller
         }
         $user=DB::table('users')->where('id',$user_id)->first();
        
-        \Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
+        Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
 
 
         $update=DB::table('carts')->where('invoice_no',$id)->Update($data);
@@ -792,7 +847,7 @@ class AdminController extends Controller
             
             $user=DB::table('users')->where('id',$user_id)->first();
         
-            \Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
+            Mail::to($user->email)->send(new \App\Mail\ApproveMail($details));
 
 
             $update=DB::table('carts')->where('invoice_no',$id)->Update($data);
@@ -828,67 +883,37 @@ class AdminController extends Controller
     }
     public function add_admin_process(Request $req)
     {
-
-
-        $salary=$req->salary;
-
-        if($salary < 0)
-        {
-
-            session()->flash('wrong','Negative Salary do no accepted !');
-            return back();
-
-
-        }
-
-
-
-        $email=DB::table('users')->where('email',$req->email)->count();
-
-
-        if($email > 0)
-        {
-
-            session()->flash('wrong','Email already registered !');
-            return back();
-
-
-        }
-
-        $phone=DB::table('users')->where('phone',$req->phone)->count();
-
-
-        if($phone > 0)
-        {
-
-            session()->flash('wrong','Phone already registered !');
-            return back();
-
-
-        }
-        if(strlen($req->password)<8)
-        {
-
-            session()->flash('wrong','Password lenght at least 8 words!');
-            return back();
-
-
-
-        }
-
-        if($req->password!=$req->confirm_password)
-        {
-
-            
-            session()->flash('wrong','Password do not match !');
-            return back();
-
-
-        }
-
-        $this->validate(request(),[
-
-            'image'=>'mimes:jpeg,jpg,png',
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'email' => 'required|email|unique:users,email|max:255',
+            'phone' => 'required|numeric|digits_between:10,11|unique:users,phone',
+            'type' => 'required|in:1,3',
+            'salary' => 'required|numeric|min:0',
+            'password' => 'required|string|min:8|confirmed',
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'name.min' => 'Tên phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên không được vượt quá 100 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã được sử dụng.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.numeric' => 'Số điện thoại phải là số.',
+            'phone.digits_between' => 'Số điện thoại phải có 10-11 chữ số.',
+            'phone.unique' => 'Số điện thoại đã được sử dụng.',
+            'type.required' => 'Vui lòng chọn loại.',
+            'type.in' => 'Loại không hợp lệ.',
+            'salary.required' => 'Vui lòng nhập lương.',
+            'salary.numeric' => 'Lương phải là số.',
+            'salary.min' => 'Lương không được âm.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+            'image.required' => 'Vui lòng chọn ảnh.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
         ]);
      
      
@@ -935,7 +960,7 @@ class AdminController extends Controller
 
 
     
-        \Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
+        Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
 
 
         session()->flash('success','Admin added successfully !');
@@ -964,7 +989,7 @@ class AdminController extends Controller
 
 
     
-        \Mail::to(Auth::user()->email)->send(new \App\Mail\UserAddedMail($details));
+        Mail::to(Auth::user()->email)->send(new \App\Mail\UserAddedMail($details));
 
         $delete=DB::table('users')->where('id',$id)->delete();
 
@@ -1000,45 +1025,33 @@ class AdminController extends Controller
     }
     public function edit_admin_process(Request $req,$id)
     {
-
-        $previous_salary=DB::table('users')->where('id',$id)->value('salary');
-        $previous_position=DB::table('users')->where('id',$id)->value('usertype');
-
-        if($req->salary < 0)
-        {
-
-            session()->flash('wrong','Negative Salary do no accepted !');
-            return back();
-
-
-        }
-
-
-
-        $email=DB::table('users')->where('email',$req->email)->where('id','!=',$id)->count();
-
-
-        if($email > 0)
-        {
-
-            session()->flash('wrong','Email already registered !');
-            return back();
-
-
-        }
-
-        $phone=DB::table('users')->where('phone',$req->phone)->where('id','!=',$id)->count();
-
-
-        if($phone > 0)
-        {
-
-            session()->flash('wrong','Phone already registered !');
-            return back();
-
-
-        }
-
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'email' => 'required|email|unique:users,email,'.$id.'|max:255',
+            'phone' => 'required|numeric|digits_between:10,11|unique:users,phone,'.$id,
+            'type' => 'required|in:1,3',
+            'salary' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'name.min' => 'Tên phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên không được vượt quá 100 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã được sử dụng.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.numeric' => 'Số điện thoại phải là số.',
+            'phone.digits_between' => 'Số điện thoại phải có 10-11 chữ số.',
+            'phone.unique' => 'Số điện thoại đã được sử dụng.',
+            'type.required' => 'Vui lòng chọn loại.',
+            'type.in' => 'Loại không hợp lệ.',
+            'salary.required' => 'Vui lòng nhập lương.',
+            'salary.numeric' => 'Lương phải là số.',
+            'salary.min' => 'Lương không được âm.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
+        ]);
 
         $data=array();
         $data['name']=$req->name;
@@ -1050,11 +1063,6 @@ class AdminController extends Controller
 
         if($req->image != NULL)
         {
-
-            $this->validate(request(),[
-
-                'image'=>'mimes:jpeg,jpg,png',
-            ]);
          
          
             $uploadedfile=$req->file('image');
@@ -1117,7 +1125,7 @@ class AdminController extends Controller
             }
           
        
-            \Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
+            Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
     
     
             session()->flash('success','Admin updated successfully !');
@@ -1148,67 +1156,34 @@ class AdminController extends Controller
     }
     public function add_delivery_boy_process(Request $req)
     {
-
-
-        $salary=$req->salary;
-
-        if($salary < 0)
-        {
-
-            session()->flash('wrong','Negative Salary do no accepted !');
-            return back();
-
-
-        }
-
-
-
-        $email=DB::table('users')->where('email',$req->email)->count();
-
-
-        if($email > 0)
-        {
-
-            session()->flash('wrong','Email already registered !');
-            return back();
-
-
-        }
-
-        $phone=DB::table('users')->where('phone',$req->phone)->count();
-
-
-        if($phone > 0)
-        {
-
-            session()->flash('wrong','Phone already registered !');
-            return back();
-
-
-        }
-        if(strlen($req->password)<8)
-        {
-
-            session()->flash('wrong','Password lenght at least 8 words!');
-            return back();
-
-
-
-        }
-
-        if($req->password!=$req->confirm_password)
-        {
-
-            
-            session()->flash('wrong','Password do not match !');
-            return back();
-
-
-        }
-
-        $this->validate(request(),[
-
-            'image'=>'mimes:jpeg,jpg,png',
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'email' => 'required|email|unique:users,email|max:255',
+            'phone' => 'required|numeric|digits_between:10,11|unique:users,phone',
+            'salary' => 'required|numeric|min:0',
+            'password' => 'required|string|min:8|confirmed',
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'name.min' => 'Tên phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên không được vượt quá 100 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã được sử dụng.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.numeric' => 'Số điện thoại phải là số.',
+            'phone.digits_between' => 'Số điện thoại phải có 10-11 chữ số.',
+            'phone.unique' => 'Số điện thoại đã được sử dụng.',
+            'salary.required' => 'Vui lòng nhập lương.',
+            'salary.numeric' => 'Lương phải là số.',
+            'salary.min' => 'Lương không được âm.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+            'image.required' => 'Vui lòng chọn ảnh.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
         ]);
      
      
@@ -1239,7 +1214,7 @@ class AdminController extends Controller
 
 
     
-        \Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
+        Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
 
 
         session()->flash('success','Delivery Boy added successfully !');
@@ -1260,7 +1235,7 @@ class AdminController extends Controller
 
 
     
-        \Mail::to(Auth::user()->email)->send(new \App\Mail\UserAddedMail($details));
+        Mail::to(Auth::user()->email)->send(new \App\Mail\UserAddedMail($details));
 
         $delete=DB::table('users')->where('id',$id)->delete();
 
@@ -1284,44 +1259,30 @@ class AdminController extends Controller
 
     public function edit_delivery_boy_process(Request $req,$id)
     {
-
-        $previous_salary=DB::table('users')->where('id',$id)->value('salary');
-
-        if($req->salary < 0)
-        {
-
-            session()->flash('wrong','Negative Salary do no accepted !');
-            return back();
-
-
-        }
-
-
-
-        $email=DB::table('users')->where('email',$req->email)->where('id','!=',$id)->count();
-
-
-        if($email > 0)
-        {
-
-            session()->flash('wrong','Email already registered !');
-            return back();
-
-
-        }
-
-        $phone=DB::table('users')->where('phone',$req->phone)->where('id','!=',$id)->count();
-
-
-        if($phone > 0)
-        {
-
-            session()->flash('wrong','Phone already registered !');
-            return back();
-
-
-        }
-
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'email' => 'required|email|unique:users,email,'.$id.'|max:255',
+            'phone' => 'required|numeric|digits_between:10,11|unique:users,phone,'.$id,
+            'salary' => 'required|numeric|min:0',
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'name.required' => 'Vui lòng nhập tên.',
+            'name.min' => 'Tên phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên không được vượt quá 100 ký tự.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã được sử dụng.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.numeric' => 'Số điện thoại phải là số.',
+            'phone.digits_between' => 'Số điện thoại phải có 10-11 chữ số.',
+            'phone.unique' => 'Số điện thoại đã được sử dụng.',
+            'salary.required' => 'Vui lòng nhập lương.',
+            'salary.numeric' => 'Lương phải là số.',
+            'salary.min' => 'Lương không được âm.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
+        ]);
 
         $data=array();
         $data['name']=$req->name;
@@ -1332,11 +1293,6 @@ class AdminController extends Controller
 
         if($req->image != NULL)
         {
-
-            $this->validate(request(),[
-
-                'image'=>'mimes:jpeg,jpg,png',
-            ]);
          
          
             $uploadedfile=$req->file('image');
@@ -1384,7 +1340,7 @@ class AdminController extends Controller
             }
           
        
-            \Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
+            Mail::to($req->email)->send(new \App\Mail\UserAddedMail($details));
     
     
             session()->flash('success','Delivery Boy updated successfully !');
@@ -1407,14 +1363,16 @@ class AdminController extends Controller
     }
     public function banner_add_process(Request $req)
     {
-
+        $validated = $req->validate([
+            'image' => 'required|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'image.required' => 'Vui lòng chọn ảnh.',
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
+        ]);
 
         $data=array();
-
-        $this->validate(request(),[
-
-            'image'=>'mimes:jpeg,jpg,png',
-        ]);
      
      
         $uploadedfile=$req->file('image');
@@ -1451,14 +1409,15 @@ class AdminController extends Controller
 
     public function banner_edit_process($id,Request $req)
     {
-
+        $validated = $req->validate([
+            'image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+        ], [
+            'image.image' => 'File phải là ảnh.',
+            'image.mimes' => 'Chỉ chấp nhận file ảnh định dạng JPG, JPEG hoặc PNG.',
+            'image.max' => 'Kích thước file không được vượt quá 5MB.',
+        ]);
 
         $data=array();
-
-        $this->validate(request(),[
-
-            'image'=>'mimes:jpeg,jpg,png',
-        ]);
      
      
         $uploadedfile=$req->file('image');
@@ -1505,42 +1464,39 @@ class AdminController extends Controller
     }
     public function add_coupon_process(Request $req)
     {
-
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'details' => 'required|string|min:5|max:500',
+            'code' => 'required|string|min:3|max:20|regex:/^[A-Z0-9]+$/|unique:coupons,code',
+            'discount_percentage' => 'required|numeric|min:0|max:100',
+            'vaildation_date' => 'required|date|after:today',
+        ], [
+            'name.required' => 'Vui lòng nhập tên coupon.',
+            'name.min' => 'Tên coupon phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên coupon không được vượt quá 100 ký tự.',
+            'details.required' => 'Vui lòng nhập chi tiết.',
+            'details.min' => 'Chi tiết phải có ít nhất 5 ký tự.',
+            'details.max' => 'Chi tiết không được vượt quá 500 ký tự.',
+            'code.required' => 'Vui lòng nhập mã coupon.',
+            'code.min' => 'Mã coupon phải có ít nhất 3 ký tự.',
+            'code.max' => 'Mã coupon không được vượt quá 20 ký tự.',
+            'code.regex' => 'Mã coupon chỉ được chứa chữ cái và số.',
+            'code.unique' => 'Mã coupon đã tồn tại.',
+            'discount_percentage.required' => 'Vui lòng nhập phần trăm giảm giá.',
+            'discount_percentage.numeric' => 'Phần trăm giảm giá phải là số.',
+            'discount_percentage.min' => 'Phần trăm giảm giá không được âm.',
+            'discount_percentage.max' => 'Phần trăm giảm giá không được vượt quá 100%.',
+            'vaildation_date.required' => 'Vui lòng chọn ngày hết hạn.',
+            'vaildation_date.date' => 'Ngày hết hạn không hợp lệ.',
+            'vaildation_date.after' => 'Ngày hết hạn phải sau ngày hiện tại.',
+        ]);
 
         $data=array();
-
         $data['name']=$req->name;
         $data['details']=$req->details;
         $data['percentage']=$req->discount_percentage;
-        $data['code']=$req->code;
+        $data['code']=strtoupper($req->code);
         $data['validate']=$req->vaildation_date;
-
-
-
-        $percentage=$req->discount_percentage;
-
-        if($percentage < 0)
-        {
-
-            session()->flash('wrong','Negative percentage do not accepted !');
-            back();
-
-
-
-        }
-
-
-        $code=DB::table('coupons')->where('code',$req->code)->count();
-
-
-        if($code > 0)
-        {
-
-            session()->flash('wrong','Code already exits !');
-            return back();
-
-
-        }
 
 
         $load=DB::table('coupons')->Insert($data);
@@ -1587,42 +1543,39 @@ class AdminController extends Controller
 
     public function edit_coupon_process($id,Request $req)
     {
-
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'details' => 'required|string|min:5|max:500',
+            'code' => 'required|string|min:3|max:20|regex:/^[A-Z0-9]+$/|unique:coupons,code,'.$id,
+            'discount_percentage' => 'required|numeric|min:0|max:100',
+            'vaildation_date' => 'required|date|after:today',
+        ], [
+            'name.required' => 'Vui lòng nhập tên coupon.',
+            'name.min' => 'Tên coupon phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên coupon không được vượt quá 100 ký tự.',
+            'details.required' => 'Vui lòng nhập chi tiết.',
+            'details.min' => 'Chi tiết phải có ít nhất 5 ký tự.',
+            'details.max' => 'Chi tiết không được vượt quá 500 ký tự.',
+            'code.required' => 'Vui lòng nhập mã coupon.',
+            'code.min' => 'Mã coupon phải có ít nhất 3 ký tự.',
+            'code.max' => 'Mã coupon không được vượt quá 20 ký tự.',
+            'code.regex' => 'Mã coupon chỉ được chứa chữ cái và số.',
+            'code.unique' => 'Mã coupon đã tồn tại.',
+            'discount_percentage.required' => 'Vui lòng nhập phần trăm giảm giá.',
+            'discount_percentage.numeric' => 'Phần trăm giảm giá phải là số.',
+            'discount_percentage.min' => 'Phần trăm giảm giá không được âm.',
+            'discount_percentage.max' => 'Phần trăm giảm giá không được vượt quá 100%.',
+            'vaildation_date.required' => 'Vui lòng chọn ngày hết hạn.',
+            'vaildation_date.date' => 'Ngày hết hạn không hợp lệ.',
+            'vaildation_date.after' => 'Ngày hết hạn phải sau ngày hiện tại.',
+        ]);
 
         $data=array();
-
         $data['name']=$req->name;
         $data['details']=$req->details;
         $data['percentage']=$req->discount_percentage;
-        $data['code']=$req->code;
+        $data['code']=strtoupper($req->code);
         $data['validate']=$req->vaildation_date;
-
-
-
-        $percentage=$req->discount_percentage;
-
-        if($percentage < 0)
-        {
-
-            session()->flash('wrong','Negative percentage do not accepted !');
-            return back();
-
-
-
-        }
-
-
-        $code=DB::table('coupons')->where('code',$req->code)->where('id','!=',$id)->count();
-
-
-        if($code > 0)
-        {
-
-            session()->flash('wrong','Code already exits !');
-            return back();
-
-
-        }
 
 
 
@@ -1653,26 +1606,21 @@ class AdminController extends Controller
     }
     public function add_charge_process(Request $req)
     {
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'price' => 'required|numeric|min:0',
+        ], [
+            'name.required' => 'Vui lòng nhập tên phí.',
+            'name.min' => 'Tên phí phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên phí không được vượt quá 100 ký tự.',
+            'price.required' => 'Vui lòng nhập giá.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá không được âm.',
+        ]);
 
         $data=array();
-
         $data['name']=$req->name;
         $data['price']=$req->price;
-     
-
-
-
-        $price=$req->price;
-
-        if($price < 0)
-        {
-
-            session()->flash('wrong','Negative price do not accepted !');
-            return back();
-
-
-
-        }
 
 
         $load=DB::table('charges')->Insert($data);
@@ -1721,26 +1669,21 @@ class AdminController extends Controller
 
     public function edit_charge_process($id,Request $req)
     {
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:100',
+            'price' => 'required|numeric|min:0',
+        ], [
+            'name.required' => 'Vui lòng nhập tên phí.',
+            'name.min' => 'Tên phí phải có ít nhất 2 ký tự.',
+            'name.max' => 'Tên phí không được vượt quá 100 ký tự.',
+            'price.required' => 'Vui lòng nhập giá.',
+            'price.numeric' => 'Giá phải là số.',
+            'price.min' => 'Giá không được âm.',
+        ]);
 
         $data=array();
-
         $data['name']=$req->name;
         $data['price']=$req->price;
-     
-
-
-
-        $price=$req->price;
-
-        if($price < 0)
-        {
-
-            session()->flash('wrong','Negative price do not accepted !');
-            return back();
-
-
-
-        }
 
 
         $load=DB::table('charges')->where('id',$id)->Update($data);

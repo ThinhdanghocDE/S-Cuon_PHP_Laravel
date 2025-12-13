@@ -44,7 +44,7 @@
     <h5 class="card-title">Banner {{ $i }}</h5>
 
     <a href="{{  asset('admin/banner/edit/'.$banner->id) }}" type="button" class="btn btn-primary">Edit</a>
-    <a href="{{  asset('admin/banner/delete/'.$banner->id) }}" type="button" class="btn btn-danger">Delete</a>
+    <a href="javascript:void(0)" onclick="confirmDeleteBanner({{ $banner->id }}, {{ $i }})" class="btn btn-danger">Delete</a>
   </div>
 </div>
 @php 
@@ -112,3 +112,23 @@
   color: black;
 }
 </style>
+
+<!-- Delete Confirmation Modal for Banner -->
+<div id="deleteBannerModal" class="delete-modal">
+    <div class="delete-modal-content">
+        <div class="delete-modal-header">
+            <div class="delete-modal-icon">
+                ⚠
+            </div>
+            <h3 class="delete-modal-title">Xác nhận xóa Banner</h3>
+        </div>
+        <div class="delete-modal-body">
+            <p>Bạn có chắc chắn muốn xóa <strong id="bannerNumber"></strong>?</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Banner sẽ bị xóa vĩnh viễn khỏi hệ thống.</p>
+        </div>
+        <div class="delete-modal-footer">
+            <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteBannerModal()">Hủy</button>
+            <button id="confirmDeleteBannerBtn" class="delete-modal-btn delete-modal-btn-confirm">Xóa</button>
+        </div>
+    </div>
+</div>
