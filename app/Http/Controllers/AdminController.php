@@ -1025,6 +1025,9 @@ class AdminController extends Controller
     }
     public function edit_admin_process(Request $req,$id)
     {
+        $previous_salary=DB::table('users')->where('id',$id)->value('salary');
+        $previous_position=DB::table('users')->where('id',$id)->value('usertype');
+        
         $validated = $req->validate([
             'name' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:users,email,'.$id.'|max:255',
@@ -1259,6 +1262,8 @@ class AdminController extends Controller
 
     public function edit_delivery_boy_process(Request $req,$id)
     {
+        $previous_salary=DB::table('users')->where('id',$id)->value('salary');
+        
         $validated = $req->validate([
             'name' => 'required|string|min:2|max:100',
             'email' => 'required|email|unique:users,email,'.$id.'|max:255',
@@ -1543,12 +1548,33 @@ class AdminController extends Controller
 
     public function edit_coupon_process($id,Request $req)
     {
+        // Lấy ngày hết hạn hiện tại
+        $currentValidateDate = DB::table('coupons')->where('id',$id)->value('validate');
+        
         $validated = $req->validate([
             'name' => 'required|string|min:2|max:100',
             'details' => 'required|string|min:5|max:500',
             'code' => 'required|string|min:3|max:20|regex:/^[A-Z0-9]+$/|unique:coupons,code,'.$id,
             'discount_percentage' => 'required|numeric|min:0|max:100',
-            'vaildation_date' => 'required|date|after:today',
+            'vaildation_date' => ['required', 'date', function ($attribute, $value, $fail) use ($currentValidateDate) {
+                // Cho phép giữ nguyên ngày cũ hoặc chọn ngày mới sau hôm nay
+                $selectedDate = new \DateTime($value);
+                $today = new \DateTime();
+                $today->setTime(0, 0, 0);
+                $selectedDate->setTime(0, 0, 0);
+                
+                // Nếu ngày được chọn khác ngày hiện tại trong DB
+                if ($currentValidateDate && $value !== $currentValidateDate) {
+                    // Nếu chọn ngày mới, phải sau hôm nay
+                    if ($selectedDate <= $today) {
+                        $fail('Ngày hết hạn phải sau ngày hiện tại.');
+                    }
+                }
+                // Nếu không có ngày hiện tại (trường hợp đặc biệt) và ngày chọn <= hôm nay
+                elseif (!$currentValidateDate && $selectedDate <= $today) {
+                    $fail('Ngày hết hạn phải sau ngày hiện tại.');
+                }
+            }],
         ], [
             'name.required' => 'Vui lòng nhập tên coupon.',
             'name.min' => 'Tên coupon phải có ít nhất 2 ký tự.',
@@ -1567,7 +1593,6 @@ class AdminController extends Controller
             'discount_percentage.max' => 'Phần trăm giảm giá không được vượt quá 100%.',
             'vaildation_date.required' => 'Vui lòng chọn ngày hết hạn.',
             'vaildation_date.date' => 'Ngày hết hạn không hợp lệ.',
-            'vaildation_date.after' => 'Ngày hết hạn phải sau ngày hiện tại.',
         ]);
 
         $data=array();
