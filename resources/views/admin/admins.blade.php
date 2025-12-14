@@ -99,7 +99,7 @@
 
 
                             
-                     <td>{{ $admin->salary }} Tk</td>
+                     <td>{{number_format($admin->salary * 1000, 0, ',', '.')}} VNĐ</td>
 
 
                             <td>

@@ -60,7 +60,7 @@
                          
 
 
-                            <td>  {{  $charge->price }} Tk</td>
+                            <td>  {{number_format($charge->price * 1000, 0, ',', '.')}} VNĐ</td>
 
 
                 

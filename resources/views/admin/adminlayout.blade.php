@@ -32,8 +32,16 @@
     <link rel="stylesheet" href="{{asset('admin/assets/css/cancel-confirmation-modal.css')}}">
     <!-- End layout styles -->
     <link rel="shortcut icon" href="{{asset('admin/assets//images/favicon.png')}}" />
-    <link href="https://fonts.googleapis.com/css?family=Poppins:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      * {
+        font-family: 'Inter', sans-serif !important;
+      }
+      body {
+        font-family: 'Inter', sans-serif !important;
+      }
+    </style>
   </head>
   <body>
     <div class="container-scroller">

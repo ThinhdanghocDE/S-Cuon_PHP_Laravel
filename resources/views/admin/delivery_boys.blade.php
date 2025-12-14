@@ -14,13 +14,13 @@
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Delivery boy Details</h4>
+                    <h4 class="card-title">Chi Tiết Nhân Viên Giao Hàng</h4>
                     
                     @if(Session::has('wrong'))
               
                     <div class="alert">
                   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-                  <strong>Opps !</strong> {{Session::get('wrong')}}
+                    <strong>Lỗi!</strong> {{Session::get('wrong')}}
                 </div>
                 <br>
                     @endif
@@ -28,7 +28,7 @@
               
                     <div class="success">
                   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-                  <strong>Congrats !</strong> {{Session::get('success')}}
+                    <strong>Thành công!</strong> {{Session::get('success')}}
                 </div>
                     <br>
                     @endif
@@ -71,7 +71,7 @@
 
                             <td> {{ $delivery_boy->phone }} </td>
 
-                            <td>{{ $delivery_boy->salary }} Tk</td>
+                            <td>{{number_format($delivery_boy->salary * 1000, 0, ',', '.')}} VNĐ</td>
                      
 
 
@@ -135,11 +135,11 @@
             <div class="delete-modal-icon">
                 ⚠
             </div>
-            <h3 class="delete-modal-title">Xác nhận xóa Delivery Boy</h3>
+            <h3 class="delete-modal-title">Xác nhận xóa Nhân Viên Giao Hàng</h3>
         </div>
         <div class="delete-modal-body">
-            <p>Bạn có chắc chắn muốn xóa delivery boy <strong id="deliveryBoyName"></strong>?</p>
-            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Tài khoản delivery boy sẽ bị xóa vĩnh viễn.</p>
+            <p>Bạn có chắc chắn muốn xóa nhân viên giao hàng <strong id="deliveryBoyName"></strong>?</p>
+            <p style="margin-top: 10px; font-size: 13px; color: #999;">Hành động này không thể hoàn tác. Tài khoản nhân viên giao hàng sẽ bị xóa vĩnh viễn.</p>
         </div>
         <div class="delete-modal-footer">
             <button class="delete-modal-btn delete-modal-btn-cancel" onclick="closeDeleteDeliveryBoyModal()">Hủy</button>

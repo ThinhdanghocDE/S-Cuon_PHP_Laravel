@@ -8,7 +8,7 @@
 
     <div class="alert">
   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-  <strong>Opps !</strong> {{Session::get('wrong')}}
+  <strong>Lỗi!</strong> {{Session::get('wrong')}}
 </div>
 <br>
     @endif
@@ -16,7 +16,7 @@
 
     <div class="success">
   <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-  <strong>Congrats !</strong> {{Session::get('success')}}
+  <strong>Thành công!</strong> {{Session::get('success')}}
 </div>
     <br>
     @endif
@@ -24,9 +24,9 @@
 
 @foreach($products as $product)
 <div class="card">
-  <h5 class="card-header">Customer Details</h5>
+  <h5 class="card-header">Thông Tin Khách Hàng</h5>
   <div class="card-body">
-    <h5 class="card-text">Invoice No : {{  $product->invoice_no }}</h5>
+    <h5 class="card-text">Mã Hóa Đơn : {{  $product->invoice_no }}</h5>
     <br>
     <?php
 
@@ -34,11 +34,11 @@
         $user=DB::table('users')->where('id',$product->user_id)->first();
 
     ?>
-    <p class="card-text">Customer Name : {{ $user->name }}</p>
-    <p class="card-text">Customer Phone : {{ $user->phone }}</p>
-    <p class="card-text">Customer Email : {{ $user->email }}</p>
-    <p class="card-text">Shipping Address : {{ $product->shipping_address }}</p>
-    <a href="/customer" class="btn btn-primary"><b>Details</a>
+    <p class="card-text">Tên Khách Hàng : {{ $user->name }}</p>
+    <p class="card-text">Số Điện Thoại : {{ $user->phone }}</p>
+    <p class="card-text">Email : {{ $user->email }}</p>
+    <p class="card-text">Địa Chỉ Giao Hàng : {{ $product->shipping_address }}</p>
+    <a href="/customer" class="btn btn-primary"><b>Chi Tiết</a>
   </div>
 </div>
 
@@ -59,17 +59,17 @@
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Product Details</h4>
+                    <h4 class="card-title">Chi Tiết Sản Phẩm</h4>
                     <div class="table-responsive">
                       <table class="table">
                         <thead>
                           <tr>
                           
            
-                            <th> Product Name </th>
-                            <th> Price </th>
-                            <th> Quantity </th>
-                            <th> Subtotal </th>
+                            <th> Tên Sản Phẩm </th>
+                            <th> Giá </th>
+                            <th> Số Lượng </th>
+                            <th> Thành Tiền </th>
                           
                           </tr>
                         </thead>
@@ -80,7 +80,7 @@
                            
                       
                             <td> {{ $product->name }} </td>
-                            <td> {{ $product->price }} </td>
+                            <td> {{number_format($product->price * 1000, 0, ',', '.')}} VNĐ</td>
                             <td>
 
 
@@ -90,7 +90,7 @@
                             </td>
 
 
-                            <td>  {{  $product->subtotal }}</td>
+                            <td>  {{number_format($product->subtotal * 1000, 0, ',', '.')}} VNĐ</td>
                       
                           </tr>
 
@@ -108,7 +108,7 @@
                            <td></td>
 
 
-                            <td>  {{  $charge->price }}</td>
+                            <td>  {{number_format($charge->price * 1000, 0, ',', '.')}} VNĐ</td>
                       
                           </tr>
 
@@ -117,8 +117,8 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td>Total </td>
-                            <td class="">  {{  $wihout_discount_price }} VNĐ</td>                   
+                            <td>Tổng Tiền </td>
+                            <td class="">  {{number_format($wihout_discount_price * 1000, 0, ',', '.')}} VNĐ</td>                   
                     
                     
                         </tr>
@@ -126,8 +126,8 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td>Discount </td>
-                            <td class="">  {{  $discount_price }} VNĐ</td>                   
+                            <td>Giảm Giá </td>
+                            <td class="">  {{number_format($discount_price * 1000, 0, ',', '.')}} VNĐ</td>                   
                     
                     
                         </tr>
@@ -135,8 +135,8 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td><h3>Total (With Discount)</h3> </td>
-                            <td class=""><h3>  {{  $total_price }} VNĐ </h3></td>                   
+                            <td><h3>Tổng Cộng (Sau Giảm Giá)</h3> </td>
+                            <td class=""><h3>  {{number_format($total_price * 1000, 0, ',', '.')}} VNĐ </h3></td>                   
                     
                     
                         </tr>
@@ -153,7 +153,7 @@
 <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Update Order Location</h4>
+                    <h4 class="card-title">Cập Nhật Thời Gian Giao Hàng</h4>
                   
                     
           
@@ -163,13 +163,13 @@
                        @csrf
 
                        <div class="form-group">
-                        <label for="exampleInputName1">Previous Delivery Time</label>
+                        <label for="exampleInputName1">Thời Gian Giao Hàng Trước Đó</label>
                         <input type="text" style="background-color:black !important;" name="" value="{{ $product->delivery_time }}" class="form-control" id="exampleInputName1" readonly>
 
                       </div>
 
                       <div class="form-group">
-                        <label for="exampleInputName1">Delivery Time (Now)</label>
+                        <label for="exampleInputName1">Thời Gian Giao Hàng (Hiện Tại)</label>
                         <input type="datetime-local" name="time" value="{{ $product->delivery_time }}" class="form-control" id="exampleInputName1">
 
                       </div>

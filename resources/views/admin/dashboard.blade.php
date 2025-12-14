@@ -357,7 +357,7 @@
                              
                               <td style="text-align:center;"> {{    $product_get->id      }} </td>
                               <td style="text-align:center;"> {{   $product_get->name  }} </td>
-                              <td  style="text-align:center;"> {{    $product_get->price          }} </td>
+                              <td  style="text-align:center;"> {{number_format($product_get->price * 1000, 0, ',', '.')}} VNĐ</td>
                               <td    style="text-align:center;"> {{              $prod      }} </td>
                            
                             </tr>

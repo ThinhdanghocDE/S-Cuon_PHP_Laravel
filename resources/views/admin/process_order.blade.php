@@ -10,7 +10,7 @@
               <div class="col-12 grid-margin">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Processing Order Details</h4>
+                    <h4 class="card-title">Chi Tiết Đơn Hàng Đang Xử Lý</h4>
 
                     @if(Session::has('wrong'))
 
@@ -18,7 +18,7 @@
 
                             <div class="alert">
                           <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-                          <strong>Opps !</strong> {{Session::get('wrong')}}
+                          <strong>Lỗi!</strong> {{Session::get('wrong')}}
                           </div>
                           <br>
                             @endif
@@ -29,7 +29,7 @@
 
                             <div class="success">
                           <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
-                          <strong>Congrats !</strong> {{Session::get('success')}}
+                          <strong>Thành công!</strong> {{Session::get('success')}}
                           </div>
                             <br>
                             @endif
@@ -40,16 +40,16 @@
                           <tr>
                           
            
-                            <th> Date </th>
-                            <th> Invoice No </th>
-                            <th> Customer Name </th>
-                            <th> Customer Phone</th>
+                            <th> Ngày </th>
+                            <th> Mã Hóa Đơn </th>
+                            <th> Tên Khách Hàng </th>
+                            <th> Số Điện Thoại</th>
                         
-                            <th> Shippping Address </th>
+                            <th> Địa Chỉ Giao Hàng </th>
               
                   
                            
-                            <th> Action </th>
+                            <th> Thao Tác </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -85,8 +85,8 @@
 
                             <td>
 
-                            <a href="{{ asset('/invoice/details/'.$order->invoice_no) }}" class="badge badge-outline-primary">Details</a>
-                            <a href="{{ asset('/invoice/complete/'.$order->invoice_no) }}" class="badge badge-outline-success" style="margin-left:10px;">Complete Delivery</a>
+                            <a href="{{ asset('/invoice/details/'.$order->invoice_no) }}" class="badge badge-outline-primary">Chi Tiết</a>
+                            <a href="{{ asset('/invoice/complete/'.$order->invoice_no) }}" class="badge badge-outline-success" style="margin-left:10px;">Hoàn Thành Giao Hàng</a>
                           </td>
                           </tr>
 
