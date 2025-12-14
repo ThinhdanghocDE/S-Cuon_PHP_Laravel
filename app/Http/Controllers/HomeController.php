@@ -19,7 +19,7 @@ use Session;
 class HomeController extends Controller
 {
     /**
-     * Tính rating cho một product
+     * Tính rating cho một product (optimized - không dùng nữa, dùng addRatingToProductsOptimized)
      */
     private function calculateRating($productId)
     {
@@ -46,19 +46,55 @@ class HomeController extends Controller
     }
 
     /**
-     * Thêm rating data vào collection products
+     * Thêm rating data vào collection products (optimized - tránh N+1 query)
+     */
+    private function addRatingToProductsOptimized($products)
+    {
+        if ($products->isEmpty()) {
+            return $products;
+        }
+
+        // Lấy tất cả product IDs
+        $productIds = $products->pluck('id')->toArray();
+
+        // Query một lần để lấy tất cả ratings (tránh N+1)
+        $ratings = DB::table('rates')
+            ->whereIn('product_id', $productIds)
+            ->select('product_id', DB::raw('SUM(star_value) as total_rate'), DB::raw('COUNT(*) as total_voter'))
+            ->groupBy('product_id')
+            ->get()
+            ->keyBy('product_id');
+
+        // Map ratings vào products
+        return $products->map(function($product) use ($ratings) {
+            $rating = $ratings->get($product->id);
+            
+            if ($rating && $rating->total_voter > 0) {
+                $per_rate = $rating->total_rate / $rating->total_voter;
+            } else {
+                $per_rate = 0;
+            }
+            
+            $per_rate = number_format($per_rate, 1);
+            $whole = floor($per_rate);
+            $fraction = $per_rate - $whole;
+            
+            $product->rating_per_rate = $per_rate;
+            $product->rating_whole = $whole;
+            $product->rating_fraction = $fraction;
+            $product->rating_total_rate = $rating->total_rate ?? 0;
+            $product->rating_total_voter = $rating->total_voter ?? 0;
+            
+            return $product;
+        });
+    }
+
+    /**
+     * Thêm rating data vào collection products (deprecated - dùng addRatingToProductsOptimized)
      */
     private function addRatingToProducts($products)
     {
-        return $products->map(function($product) {
-            $rating = $this->calculateRating($product->id);
-            $product->rating_per_rate = $rating['per_rate'];
-            $product->rating_whole = $rating['whole'];
-            $product->rating_fraction = $rating['fraction'];
-            $product->rating_total_rate = $rating['total_rate'];
-            $product->rating_total_voter = $rating['total_voter'];
-            return $product;
-        });
+        return $this->addRatingToProductsOptimized($products);
     }
 
     public function index(){
@@ -323,42 +359,52 @@ class HomeController extends Controller
 
     public function reservation_confirm(Request $req)
     {
+        // Validation - không cần đăng nhập
+        $validated = $req->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'no_guest' => 'required|string|max:10',
+            'date' => 'required|string|max:50',
+            'time' => 'required|string|max:50',
+            'message' => 'nullable|string|max:1000',
+        ], [
+            'name.required' => 'Vui lòng nhập họ và tên',
+            'email.required' => 'Vui lòng nhập email',
+            'email.email' => 'Email không hợp lệ',
+            'phone.required' => 'Vui lòng nhập số điện thoại',
+            'no_guest.required' => 'Vui lòng chọn số người',
+            'date.required' => 'Vui lòng chọn ngày',
+            'time.required' => 'Vui lòng chọn giờ',
+        ]);
 
+        $name = $validated['name'];
+        $email = $validated['email'];
+        $phone = $validated['phone'];
+        $no_guest = $validated['no_guest'];
+        $date = $validated['date'];
+        $time = $validated['time'];
+        $message = $validated['message'] ?? '';
 
-        $name=$req->name;
-        $email=$req->email;
-        $phone=$req->phone;
-
-        $no_guest=$req->no_guest;
-        $date=$req->date;
-        $time=$req->time;
-
-        $message=$req->message;
-
-
-        $data=array();
-
-        $data['name']=$name;
-        $data['email']=$email;
-        $data['no_guest']=$no_guest;
-        $data['phone']=$phone;
-        $data['date']=$date;
-        $data['time']=$time;
-        $data['message']=$message;
+        $data = array();
+        $data['name'] = $name;
+        $data['email'] = $email;
+        $data['no_guest'] = $no_guest;
+        $data['phone'] = $phone;
+        $data['date'] = $date;
+        $data['time'] = $time;
+        $data['message'] = $message; // Giữ nguyên tên cho database
+        
+        // Tạo array riêng cho email template để tránh conflict với $message trong Mail closure
+        $emailData = $data;
+        $emailData['reservation_message'] = $message; // Thêm key mới cho template
 
 
         $confirm_reservation=DB::table('reservations')->Insert($data);
 
-        
-        $details = [
-            'title' => 'Thông Báo Từ S-Cuốn',
-            'body' => 'Đặt bàn của bạn đã được đặt thành công'
-        ];
-       
-       // \Mail::to(Auth::user()->email)->send(new \App\Mail\ReserveMail($details));
-     
-       $data["title"] = "Thông Báo Từ S-Cuốn";
-       $data["body"] = "Đặt bàn của bạn đã được đặt thành công";
+        // Thêm title và body vào emailData
+        $emailData["title"] = "Thông Báo Từ S-Cuốn";
+        $emailData["body"] = "Đặt bàn của bạn đã được đặt thành công";
 
 
         /*
@@ -367,8 +413,8 @@ class HomeController extends Controller
         ];
   
         
-        \Mail::send('mails.ReserveMail', $data, function($message)use($data, $files) {
-            $message->to(Auth::user()->email)
+        \Mail::send('mails.ReserveMail', $data, function($message)use($data, $files, $email) {
+            $message->to($email)
                     ->subject('Thông Báo Từ S-Cuốn');
  
             foreach ($files as $file){
@@ -379,17 +425,50 @@ class HomeController extends Controller
 
         */
 
-        $pdf = PDF::loadView('mails.Reserve', $data);
-  
-        \Mail::send('mails.Reserve', $data, function($message)use($data, $pdf) {
-            $message->to(Auth::user()->email,Auth::user()->email)
-                    ->subject($data["title"])
-                    ->attachData($pdf->output(), "Reservation Copy.pdf");
-        });
-       
+        // Gửi email xác nhận đặt bàn (không cần đăng nhập)
+        $emailSent = false;
+        $emailError = null;
+        
+        if (!empty($email)) {
+            try {
+                // Log thông tin trước khi gửi
+                \Log::info('Bắt đầu gửi email đặt bàn', [
+                    'email' => $email,
+                    'name' => $name,
+                    'mailer' => config('mail.default')
+                ]);
+                
+                $pdf = PDF::loadView('mails.Reserve', $emailData);
+        
+                \Mail::send('mails.Reserve', $emailData, function($mailMessage)use($emailData, $pdf, $email, $name) {
+                    $mailMessage->to($email, $name ?? 'Khách hàng')
+                            ->subject($emailData["title"])
+                            ->attachData($pdf->output(), "Reservation Copy.pdf");
+                });
+                
+                $emailSent = true;
+                \Log::info('Email đặt bàn đã được gửi thành công', ['email' => $email]);
+                
+            } catch (\Exception $e) {
+                // Log lỗi gửi email nhưng vẫn cho phép đặt bàn thành công
+                $emailError = $e->getMessage();
+                \Log::error('Lỗi gửi email đặt bàn', [
+                    'email' => $email,
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+            }
+        } else {
+            \Log::warning('Không thể gửi email đặt bàn: Email trống');
+        }
 
-
-        return view('Reserve_order');
+        // Truyền thông tin để hiển thị trong view
+        return view('Reserve_order', [
+            'reservation' => $data,
+            'emailSent' => $emailSent,
+            'emailError' => $emailError,
+            'mailer' => config('mail.default')
+        ]);
 
 
 
