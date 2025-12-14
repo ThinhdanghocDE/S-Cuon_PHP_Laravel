@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <title>Midway Dine - Your Favourite Foods</title>
+    <title>S-Cuốn - Món Cuốn Yêu Thích Của Bạn</title>
 
     <!-- Additional CSS Files -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css')}}">
@@ -47,16 +47,19 @@
     
     
     <!-- ***** Header Area Start ***** -->
-    <header class="header-area" style="z-index:1000">
+    <header class="header-area" style="z-index:1000;height: 90px;">
         <div class="container">
                     <nav class="main-nav">
-                        <!-- ***** Logo Start ***** -->
-                        <a href="/" class="logo">
-                            <img width="200px" height="100px" src="{{ asset('assets/images/logo.png')}}" style="object-fit: contain;">
-                        </a>
-                        <!-- ***** Logo End ***** -->
                         <!-- ***** Menu Start ***** -->
                         <ul class="nav">
+
+                            <!-- ***** Logo Start ***** -->
+                            <li class="logo-item">
+                                <a href="/" class="logo">
+                                    <img width="100px" height="100px" src="{{ asset('assets/images/logo.png')}}" style="object-fit: contain;">
+                                </a>
+                            </li>
+                            <!-- ***** Logo End ***** -->
                             <li class="scroll-to-section"><a href="/">TRANG CHỦ</a></li>
                             <li class="scroll-to-section"><a href="/#about">VỀ CHÚNG TÔI</a></li>
                            	
@@ -66,7 +69,7 @@
 
                             <li class="scroll-to-section"><a href="/my-order">ĐƠN HÀNG</a></li>
                           
-                            <li class="scroll-to-section"><a href="/#chefs">ĐẦU BẾP</a></li> 
+                            <li class="scroll-to-section"><a href="{{ route('posts.index') }}">BÀI VIẾT</a></li> 
                             <li class="scroll-to-section"><a href="/#reservation">LIÊN HỆ</a></li>
                             <li><a href="/cart"><i class="fa fa-shopping-cart"></i></a></li>
 
@@ -161,16 +164,28 @@
                                     letter-spacing: 0.5px !important;
                                 }
                                 
-                                /* Logo alignment */
+                                /* Logo alignment - ở giữa menu */
+                                .header-area .main-nav .nav li.logo-item {
+                                    padding: 0 30px !important;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    margin-top: -10px !important;
+                                }
+                                
                                 .header-area .main-nav .logo {
                                     line-height: 100px !important;
                                     display: inline-block;
                                     vertical-align: middle;
+                                    margin: 0;
+                                    margin-top: -15px !important;
                                 }
                                 
                                 .header-area .main-nav .logo img {
-                                    vertical-align: middle;
                                     margin-top: 0px;
+                                    max-width: 180px;
+                                    height: auto;
+                                    display: block;
                                 }
                                 
                                 /* Nav vertical position */
@@ -187,7 +202,13 @@
                                 .header-area .main-nav {
                                     display: flex;
                                     align-items: center;
-                                    justify-content: space-between;
+                                    justify-content: center;
+                                }
+                                
+                                /* Menu container - căn giữa */
+                                .header-area .main-nav .nav {
+                                    justify-content: center;
+                                    align-items: center;
                                 }
                                 
                                 /* ========== RESPONSIVE ========== */
@@ -824,10 +845,10 @@
                                         </li>
                                     @else
                                       <li>
-                                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
+                                        <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Đăng nhập</a>
                                       </li>
                                         @if (Route::has('register'))
-                                            <li><a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a> </li>
+                                            <li><a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Đăng ký</a> </li>
                                         @endif
                                     @endauth
                                 </div>
