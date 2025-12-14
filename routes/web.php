@@ -132,6 +132,14 @@ Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
 Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
 //SSLCOMMERZ END
 
+// VNPAY Start
+use App\Http\Controllers\VnpayController;
+
+Route::post('/vnpay/create', [VnpayController::class, 'createPayment'])->name('vnpay.create');
+Route::get('/vnpay/return', [VnpayController::class, 'return'])->name('vnpay.return');
+Route::post('/vnpay/ipn', [VnpayController::class, 'ipn'])->name('vnpay.ipn');
+//VNPAY END
+
 
 // Admin start Route
 
