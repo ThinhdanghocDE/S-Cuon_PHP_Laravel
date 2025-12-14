@@ -28,7 +28,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
 # -------------------------------
 # 3️⃣ Install Composer
 # -------------------------------
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN composer install --no-dev --optimize-autoloader
 
 # -------------------------------
 # 4️⃣ Copy Laravel application
