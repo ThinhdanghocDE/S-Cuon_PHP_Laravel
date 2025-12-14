@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Force HTTPS khi detect từ proxy (Ngrok)
+        if (request()->isSecure() || request()->header('X-Forwarded-Proto') == 'https') {
+            \URL::forceScheme('https');
+        }
     }
 }
