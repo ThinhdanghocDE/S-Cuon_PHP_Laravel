@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/add/charge" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Phí Bổ Sung</a>
+<a href="/add/charge" type="button" class="btn btn-success" style="white-space: nowrap; min-width: auto; width: auto; height:35px; padding: 9px 20px;">+ Thêm Phí Bổ Sung</a>
 
 
 <br>
