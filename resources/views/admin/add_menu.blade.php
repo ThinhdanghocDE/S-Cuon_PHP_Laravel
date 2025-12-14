@@ -68,7 +68,7 @@
                       <div class="form-group">
                         <label for="menuImage">Ảnh <span class="text-danger">*</span></label>
                         <div class="custom-file-input-wrapper">
-                          <input type="file" name="image" class="form-control-file custom-file-input" id="menuImage" accept="image/jpeg,image/jpg,image/png" onchange="updateFileName(this, 'menuImageLabel')">
+                          <input type="file" name="image" class="custom-file-input" id="menuImage" accept="image/jpeg,image/jpg,image/png" onchange="updateFileName(this, 'menuImageLabel')">
                           <label for="menuImage" class="custom-file-label" id="menuImageLabel">
                             <i class="mdi mdi-file-image"></i> Chọn file
                           </label>
@@ -123,4 +123,69 @@
 
 @push('scripts')
 <script src="{{asset('admin/assets/js/menu-form-validation.js')}}"></script>
+<script>
+function updateFileName(input, labelId) {
+    const fileName = input.files[0] ? input.files[0].name : '';
+    const fileNameDisplay = document.getElementById(input.id + 'FileName');
+    if (fileNameDisplay) {
+        fileNameDisplay.textContent = fileName ? 'Đã chọn: ' + fileName : '';
+    }
+}
+</script>
+<style>
+.custom-file-input-wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin-bottom: 0;
+}
+.custom-file-input-wrapper input[type="file"] {
+    position: absolute !important;
+    left: -9999px !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+.custom-file-input-wrapper .custom-file-input {
+    position: absolute !important;
+    left: -9999px !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+    visibility: hidden !important;
+}
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 500;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    border: none;
+}
+.custom-file-label:hover {
+    background: #0056b3;
+}
+.custom-file-label i {
+    margin-right: 5px;
+}
+.file-name-display {
+    display: block;
+    margin-top: 10px;
+    color: #28a745;
+    font-weight: 500;
+}
+</style>
 @endpush
