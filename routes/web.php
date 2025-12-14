@@ -90,6 +90,32 @@ Route::post('/confirm_place_order/{total}', [ShipmentController::class, 'send'])
 Route::post('/checkout/{total}', [CartController::class, 'checkout'])->name('cart.checkout');
 Route::post('/reserve/confirm', [HomeController::class, 'reservation_confirm'])->name('reserve.confirm');
 
+// Test email route (chỉ dùng cho development)
+Route::get('/test-email', function() {
+    try {
+        $testEmail = request('email', 'test@example.com');
+        $mailer = config('mail.default');
+        
+        \Mail::raw('Đây là email test từ S-Cuốn. Nếu bạn nhận được email này, cấu hình mail đã hoạt động!', function($message) use ($testEmail) {
+            $message->to($testEmail)
+                    ->subject('Test Email - S-Cuốn');
+        });
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Email đã được gửi!',
+            'mailer' => $mailer,
+            'note' => $mailer === 'log' ? 'Email đã được ghi vào log file (storage/logs/laravel.log), không gửi thật.' : 'Email đã được gửi thật.'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => config('app.debug') ? $e->getTraceAsString() : null
+        ], 500);
+    }
+})->name('test.email');
+
 Route::post('/trace/confirm', [ShipmentController::class, 'trace_confirm'])->name('trace.confirm');
 
 
