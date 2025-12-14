@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/add/menu" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Add Menu</a>
+<a href="/add/menu" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Món</a>
 
 
 <br>
@@ -85,13 +85,13 @@ $per_rate=number_format($per_rate, 1);
   
       <p style = "text-transform:capitalize;">Catagory : {{ $product->catagory }}</p>
       @if($product->session==0)
-      <p style = "text-transform:capitalize;">Season : Breakfast</p>
+      <p style = "text-transform:capitalize;">Loại : Món cuốn chính</p>
       @endif
       @if($product->session==1)
-      <p style = "text-transform:capitalize;">Season : Lunch</p>
+      <p style = "text-transform:capitalize;">Loại : Món cuốn phụ</p>
       @endif
       @if($product->session==2)
-      <p style = "text-transform:capitalize;">Season : Day</p>
+      <p style = "text-transform:capitalize;">Loại : Đồ uống</p>
       @endif
       <p style = "text-transform:capitalize;">Price : {{ $product->price }} Tk</p>
       @if($product->available =="Stock")
@@ -111,8 +111,8 @@ $per_rate=number_format($per_rate, 1);
 
     </div>
     <div class="card-footer">
-      <small class="text-muted"><a href="{{ asset('/menu/edit/'.$product->id) }}" class="btn btn-primary">Edit</a>
-      <a href="javascript:void(0)" onclick="confirmDeleteMenu({{ $product->id }}, '{{ addslashes($product->name) }}')" class="btn btn-danger" style="margin-left:10px;">Delete</a>
+      <small class="text-muted"><a href="{{ asset('/menu/edit/'.$product->id) }}" class="btn btn-primary">Sửa</a>
+      <a href="javascript:void(0)" onclick="confirmDeleteMenu({{ $product->id }}, '{{ addslashes($product->name) }}')" class="btn btn-danger" style="margin-left:10px;">Xóa</a>
 
 
 

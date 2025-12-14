@@ -9,7 +9,7 @@
 <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Edit Charge</h4>
+                    <h4 class="card-title">Sửa Phí Bổ Sung</h4>
                     <br>
 
                     @if(Session::has('wrong'))
@@ -43,8 +43,8 @@
                       </div>
                     
                     
-                      <button type="submit" class="btn btn-primary me-2">Update</button>
-                      <a href="/admin/charge" class="btn btn-dark">Cancel</a>
+                      <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
+                      <a href="/admin/charge" class="btn btn-dark">Hủy</a>
                     </form>
                   </div>
                 </div>

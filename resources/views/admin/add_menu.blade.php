@@ -6,7 +6,7 @@
 <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Add Menu</h4>
+                    <h4 class="card-title">Thêm Món</h4>
                     <br>
                     @if(Session::has('wrong'))
               
@@ -50,11 +50,11 @@
                         </select>
                       </div>
                       <div class="form-group">
-                        <label for="menuSession">Combo <span class="text-danger">*</span></label>
+                        <label for="menuSession">Loại <span class="text-danger">*</span></label>
                         <select class="form-control" name="session" id="menuSession">
-                          <option value="0">Combo 1-2 người</option>
-                          <option value="1">Combo 3-4 người</option>
-                          <option value="2">Combo 5-6 người</option>
+                          <option value="0">Món cuốn chính</option>
+                          <option value="1">Món cuốn phụ</option>
+                          <option value="2">Đồ uống</option>
                         </select>
                       </div>
 
@@ -67,13 +67,19 @@
                       </div>
                       <div class="form-group">
                         <label for="menuImage">Ảnh <span class="text-danger">*</span></label>
-                        <input type="file" name="image" class="form-control-file" id="menuImage" accept="image/jpeg,image/jpg,image/png">
+                        <div class="custom-file-input-wrapper">
+                          <input type="file" name="image" class="form-control-file custom-file-input" id="menuImage" accept="image/jpeg,image/jpg,image/png" onchange="updateFileName(this, 'menuImageLabel')">
+                          <label for="menuImage" class="custom-file-label" id="menuImageLabel">
+                            <i class="mdi mdi-file-image"></i> Chọn file
+                          </label>
+                          <span class="file-name-display" id="menuImageFileName"></span>
+                        </div>
                         <small class="form-text text-muted">Chỉ chấp nhận file JPG, JPEG, PNG. Kích thước tối đa: 5MB</small>
                     </div>
                   
                     
-                      <button type="submit" class="btn btn-primary me-2">Submit</button>
-                      <a href="/admin/food-menu" class="btn btn-dark">Cancel</a>
+                      <button type="submit" class="btn btn-primary me-2">Xác nhận</button>
+                      <a href="/admin/food-menu" class="btn btn-dark">Hủy</a>
                     </form>
                   </div>
                 </div>

@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/add/charge" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Add Charge</a>
+<a href="/add/charge" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Phí Bổ Sung</a>
 
 
 <br>
@@ -69,8 +69,8 @@
 
                             <td>
 
-                            <a href="{{ asset('/admin/charge/edit/'.$charge->id) }}" class="badge badge-outline-primary">Edit</a>
-                              <a href="{{ asset('/admin/charge/delete/'.$charge->id) }}" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
+                            <a href="{{ asset('/admin/charge/edit/'.$charge->id) }}" class="badge badge-outline-primary">Sửa</a>
+                              <a href="{{ asset('/admin/charge/delete/'.$charge->id) }}" class="badge badge-outline-danger" style="margin-left:10px;">Xóa</a>
                             </td>
                           </tr>
 

@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/admin-add" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Add Admin</a>
+<a href="/admin-add" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Admin</a>
 
 
 <br>
@@ -104,8 +104,8 @@
 
                             <td>
 
-                            <a href="{{ asset('/admin/edit/'.$admin->id) }}" class="badge badge-outline-primary">Edit</a>
-                              <a href="javascript:void(0)" onclick="confirmDeleteAdmin({{ $admin->id }}, '{{ $admin->name }}')" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
+                            <a href="{{ asset('/admin/edit/'.$admin->id) }}" class="badge badge-outline-primary">Sửa</a>
+                              <a href="javascript:void(0)" onclick="confirmDeleteAdmin({{ $admin->id }}, '{{ $admin->name }}')" class="badge badge-outline-danger" style="margin-left:10px;">Xóa</a>
                             </td>
                           </tr>
 

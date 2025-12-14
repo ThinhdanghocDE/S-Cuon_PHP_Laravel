@@ -107,7 +107,7 @@
                     <div class="section-heading">
                         <h1>KHÔNG THỂ BỎ LỠ</h1>
                     
-                        <h3>Cuốn là mê</h3>
+                        <h3 class="cuon-title">Cuốn ơi là cuốn!</h3>
                     </div>
                 </div>
             </div>
@@ -328,10 +328,10 @@
 <section class="section"  id="menu">
         <div class="container">
             <div class="row">
-                <div class="col-lg-4">
-                    <div class="section-heading" >
-                        <h6>THỰC ĐƠN</h6>
-                        <h2>Special - Sạch - Sành.</h2>
+                <div class="col-lg-12">
+                    <div class="section-heading text-center" >
+                        <h6 class="menu-section-title">ĐẶC SẢN 3 MIỀN TỔ QUỐC</h6>
+                        <h2 class="menu-section-subtitle">Special - Sạch - Sành.</h2>
                     </div>
                 </div>
             </div>
@@ -346,14 +346,13 @@
 
                     <?php
                         $img=$product->image;
+                        $imgUrl = asset('assets/images/'.$img);
                     ?>
-                        <div class="card" style="background-image: url('{{ asset('assets/images/'.$img) }}')">
+                        <div class="card" data-bg-image="{{ $imgUrl }}">
                             <div class="price"><h6>{{ number_format((float)$product->price * 1000, 0, ',', '.') }} VNĐ</h6>
                             @if($product->available!="Stock")
-                            <h4 style="">Out Of Stock</h4> 
-
+                            <h4>Out Of Stock</h4> 
                             @endif
-                        
                         </div>
                         <?php
 
@@ -392,41 +391,21 @@
                               <div class="main-text-button">
                                   <div class="scroll-to-section" >
                                   <!-- Tên món hiển thị khi không hover -->
-                                  <h3 class="product-name-compact" style="color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 10px; padding: 0 30px;">{{ $product->name }}</h3>
-                                  <span class="product_rating">
-                                  @for($i=1;$i<=$whole;$i++)
-
-                                    <i class="fa fa-star "></i>
-
-                                    @endfor
-
-                                    @if($fraction!=0)
-
-                                    <i class="fa fa-star-half"></i>
-
-                                    @endif
-                                        
-                                        
-                                    <span class="rating_avg">({{  $per_rate}})</span>
-            </span>
-      <br>
-                                   <a href="/rate/{{ $product->id }}" style="color:blue;">Đánh giá</a>
-                                  <p>Số lượng: </p>
-                                @if($product->available=="Stock")
-                                  <form method="post" action="{{route('cart.store',$product->id)}}">
-                                     @csrf
-                                  <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
-                                    <input type="submit" class="btn btn-success" value="Thêm vảo giỏ hàng">
-                                  </form>
-                                @endif
-
-                                @if($product->available!="Stock")
-                                  <form method="post" action="{{route('cart.store',$product->id)}}">
-                                     @csrf
-                                  <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
-                                    <input type="submit" class="btn btn-success" disabled value="Add Chart">
-                                  </form>
-                                @endif
+                                  <h3 class="product-name-compact" style="color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 15px; padding: 0 30px;">{{ $product->name }}</h3>
+                                  <!-- Số sao đánh giá nổi bật -->
+                                  <div class="product-rating-section" style="padding: 0 30px; display: flex; justify-content: center; align-items: center;">
+                                      <span class="product_rating" style="font-size: 1.5rem; display: flex; gap: 5px; align-items: center;">
+                                          @for($i=1;$i<=$whole;$i++)
+                                              <i class="fa fa-star" style="color: #ffc107;"></i>
+                                          @endfor
+                                          @if($fraction!=0)
+                                              <i class="fa fa-star-half" style="color: #ffc107;"></i>
+                                          @endif
+                                          @if($total_voter == 0)
+                                              <span style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-left: 8px;">Chưa có đánh giá</span>
+                                          @endif
+                                      </span>
+                                  </div>
                                 </div>
                               </div>
                               
@@ -448,8 +427,8 @@
             <div class="row">
                 <div class="col-lg-4 offset-lg-4 text-center">
                     <div class="section-heading">
-                        <h6>ĐẦU BẾP</h6>
-                        <h4>"MÓN ĂN ĐƯỢC CHẾ BIẾN BẰNG CẢ TRÁI TIM CỦA CHÚNG TÔI"</h4>
+                        <h6 class="chefs-section-title">ĐẦU BẾP</h6>
+                        <h4 class="chefs-section-subtitle">MASTERCHEF</h4>
                     </div>
                 </div>
             </div>
@@ -487,8 +466,8 @@
                 <div class="col-lg-6 align-self-center">
                     <div class="left-text-content">
                         <div class="section-heading">
-                            <h6>LIÊN HỆ CHO CHÚNG TÔI</h6>
-                            <h2>ĐẶT BÀN TRƯỚC TẠI NHÀ HÀNG CỦA CHÚNG TÔI</h2>
+                            <h6>LIÊN HỆ ĐẶT BÀN</h6>
+                            <h2>NHỚ ĐẶT BÀN TRƯỚC 60P BẠN NHÉ!</h2>
                         </div>
                         <p>Chúng tôi luôn luôn sẵn sàng phục vụ bạn.</p>
                         <div class="row">
@@ -567,12 +546,7 @@
                             </div>
                             <div class="col-md-6 col-sm-12">
                               <fieldset>
-                                <select value="time" name="time" id="time">
-                                    <option value="time">Thời gian</option>
-                                    <option name="Breakfast" id="Breakfast">Sáng</option>
-                                    <option name="Lunch" id="Lunch">Trưa</option>
-                                    <option name="Dinner" id="Dinner">Tối</option>
-                                </select>
+                                <input name="time" type="time" id="time" class="form-control" placeholder="Chọn thời gian" required="">
                               </fieldset>
                             </div>
                             <div class="col-lg-12">
@@ -597,3 +571,18 @@
    
     
    @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Set background image từ data attribute
+        document.querySelectorAll('#menu .card[data-bg-image]').forEach(function(card) {
+            const bgImage = card.getAttribute('data-bg-image');
+            card.style.setProperty('--bg-image', 'url(' + bgImage + ')');
+            card.style.backgroundImage = 'url(' + bgImage + ')';
+            card.style.backgroundSize = 'cover';
+            card.style.backgroundPosition = 'center';
+        });
+    });
+</script>
+@endpush

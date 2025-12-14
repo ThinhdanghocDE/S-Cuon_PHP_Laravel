@@ -8,7 +8,7 @@
 <div class="col-12 grid-margin stretch-card">
                 <div class="card">
                   <div class="card-body">
-                    <h4 class="card-title">Edit Admin</h4>
+                    <h4 class="card-title">Sửa Admin</h4>
                     <br>
 
                     @if(Session::has('wrong'))
@@ -64,7 +64,13 @@
                   
                       <div class="form-group">
                         <label for="adminImage">Ảnh</label>
-                        <input type="file" name="image" class="form-control-file" id="adminImage" accept="image/jpeg,image/jpg,image/png">
+                        <div class="custom-file-input-wrapper">
+                          <input type="file" name="image" class="form-control-file custom-file-input" id="adminImage" accept="image/jpeg,image/jpg,image/png" onchange="updateFileName(this)">
+                          <label for="adminImage" class="custom-file-label">
+                            <i class="mdi mdi-file-image"></i> Chọn file
+                          </label>
+                          <span class="file-name-display" id="adminImageFileName"></span>
+                        </div>
                         <small class="form-text text-muted">Để trống nếu không muốn thay đổi ảnh. Chỉ chấp nhận file JPG, JPEG, PNG. Kích thước tối đa: 5MB</small>
                         @if($user->profile_photo_path)
                         <div class="mt-2">
@@ -74,8 +80,8 @@
                       </div>
                   
                     
-                      <button type="submit" class="btn btn-primary me-2">Update</button>
-                      <a href="/admin/show" class="btn btn-dark">Cancel</a>
+                      <button type="submit" class="btn btn-primary me-2">Cập nhật</button>
+                      <a href="/admin/show" class="btn btn-dark">Hủy</a>
                     </form>
                   </div>
                 </div>
@@ -121,4 +127,47 @@
 
 @push('scripts')
 <script src="{{asset('admin/assets/js/admin-form-validation.js')}}"></script>
+<script>
+function updateFileName(input, labelId) {
+    const fileName = input.files[0] ? input.files[0].name : '';
+    const fileNameDisplay = document.getElementById(input.id + 'FileName');
+    if (fileNameDisplay) {
+        fileNameDisplay.textContent = fileName ? 'Đã chọn: ' + fileName : '';
+    }
+}
+</script>
+<style>
+.custom-file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+.custom-file-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+.custom-file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    font-weight: 500;
+}
+.custom-file-label:hover {
+    background: #0056b3;
+}
+.custom-file-label i {
+    margin-right: 5px;
+}
+.file-name-display {
+    margin-left: 10px;
+    color: #28a745;
+    font-weight: 500;
+}
+</style>
 @endpush

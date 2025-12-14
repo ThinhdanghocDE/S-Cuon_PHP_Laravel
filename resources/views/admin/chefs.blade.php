@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/add/chef" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Add Chef</a>
+<a href="/add/chef" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Đầu Bếp</a>
 
 
 <br>
@@ -63,8 +63,8 @@
                             </p>
     </div>
     <div class="card-footer">
-      <small class="text-muted"><a href="{{ asset('/chef/edit/'.$chef->id) }}" class="btn btn-primary">Edit</a>
-      <a href="javascript:void(0)" onclick="confirmDeleteChef({{ $chef->id }}, '{{ addslashes($chef->name) }}')" class="btn btn-danger" style="margin-left:10px;">Delete</a>
+      <small class="text-muted"><a href="{{ asset('/chef/edit/'.$chef->id) }}" class="btn btn-primary">Sửa</a>
+      <a href="javascript:void(0)" onclick="confirmDeleteChef({{ $chef->id }}, '{{ addslashes($chef->name) }}')" class="btn btn-danger" style="margin-left:10px;">Xóa</a>
 
 
 

@@ -1,93 +1,78 @@
-@extends('layout', ['title'=> 'Home'])
+@extends('layout', ['title'=> 'Menu'])
 
 @section('page-content')
 
-<br><br><br><br>
-<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
-        crossorigin="anonymous">
-    <script src="script.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
-<table class="table table-striped table-bordered" style="margin:10%; max-width:80%;">
-        @foreach($products as $product)
-            <tr>
-                <td>
-                    <img src="{{asset('assets/images/'.$product->image)}}" height=150px width=180px></td>
-                    <td><h2>{{$product->name}}</h2>
-                    <h4>{{$product->price}} VNĐ</h4>
-                    <p>{{$product->description}}</p>
-                    <form method="post" action="{{route('cart.store', $product)}}">
-                        @csrf
+<div class="menu-page-container">
+    <div class="container">
+        <div class="menu-header">
+            <h1 class="menu-title">Thực Đơn</h1>
+            <p class="menu-subtitle">Bản đồ món cuốn Việt thu nhỏ trên bàn tiệc.</p>
+        </div>
 
+        <div class="menu-filters">
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label for="searchInput">Tìm kiếm:</label>
+                    <input type="text" id="searchInput" class="form-control" placeholder="Nhập tên món...">
+                </div>
+                
+                <div class="filter-group">
+                    <label for="categoryFilter">Phân loại:</label>
+                    <select id="categoryFilter" class="form-control">
+                        <option value="">Tất cả</option>
+                        <option value="0">Món cuốn chính</option>
+                        <option value="1">Món cuốn phụ</option>
+                        <option value="2">Đồ uống</option>
+                    </select>
+                </div>
 
-                        <?php
+                <div class="filter-group">
+                    <label for="priceMin">Giá từ:</label>
+                    <input type="number" id="priceMin" class="form-control" placeholder="Min" min="0" step="1">
+                </div>
 
-                            
-                                $total_rate=DB::table('rates')->where('product_id',$product->id)
-                                ->sum('star_value');
+                <div class="filter-group">
+                    <label for="priceMax">Đến:</label>
+                    <input type="number" id="priceMax" class="form-control" placeholder="Max" min="0" step="1">
+                </div>
 
+                <div class="filter-group">
+                    <label for="perPage">Hiển thị:</label>
+                    <select id="perPage" class="form-control">
+                        <option value="6">6 sản phẩm</option>
+                        <option value="12" selected>12 sản phẩm</option>
+                        <option value="24">24 sản phẩm</option>
+                        <option value="48">48 sản phẩm</option>
+                    </select>
+                </div>
 
-                                $total_voter=DB::table('rates')->where('product_id',$product->id)
-                                ->count();
+                <div class="filter-group">
+                    <button type="button" id="resetFilters" class="btn-reset">Đặt lại</button>
+                </div>
+            </div>
+        </div>
 
-                                if($total_voter>0)
-                                {
+        <div id="menuCardsContainer" class="menu-cards-grid">
+            <!-- Cards will be loaded here via AJAX -->
+        </div>
 
-                                    $per_rate=$total_rate/$total_voter;
+        <div id="paginationContainer" class="pagination-wrapper">
+            <!-- Pagination will be loaded here via AJAX -->
+        </div>
 
-                                }
-                                else
-                                {
+        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <div class="spinner"></div>
+            <p>Đang tải...</p>
+        </div>
+    </div>
+</div>
 
-                                    $per_rate=0;
-
-
-                                }
-
-                                $per_rate=number_format($per_rate, 1);
-
-
-                                $whole = floor($per_rate);      // 1
-                                $fraction = $per_rate - $whole
-
-                                ?>
-                     
-              
-                        
-                        <span class="product_rating">
-                        @for($i=1;$i<=$whole;$i++)
-
-                        <i class="fa fa-star "></i>
-
-                        @endfor
-
-                        @if($fraction!=0)
-
-                        <i class="fa fa-star-half"></i>
-
-                        @endif
-                            
-                            
-                        <span class="rating_avg">({{  $per_rate}})</span>
-            </span>
-            
-            <br>
-            <br>
-                       
-                        @if($product->available=="Stock")
-                        <input type="number" name="number" style="width:50px;" id="myNumber" value="1">
-                        <button class="btn btn-success">Add to Cart</button>
-                        @endif
-                        @if($product->available!="Stock") <p class="btn btn-danger">Out of Stock</p>
-                        @endif
-                    </form>
-                </td>
-            </tr>
-        @endforeach
-</table>
 @endsection
+
+@push('styles')
+<link rel="stylesheet" href="{{asset('css/menu.css')}}">
+@endpush
+
+@push('scripts')
+<script src="{{asset('js/menu-pagination.js')}}"></script>
+@endpush

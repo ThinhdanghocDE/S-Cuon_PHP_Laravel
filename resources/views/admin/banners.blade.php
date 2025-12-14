@@ -43,8 +43,8 @@
   <div class="card-body">
     <h5 class="card-title">Banner {{ $i }}</h5>
 
-    <a href="{{  asset('admin/banner/edit/'.$banner->id) }}" type="button" class="btn btn-primary">Edit</a>
-    <a href="javascript:void(0)" onclick="confirmDeleteBanner({{ $banner->id }}, {{ $i }})" class="btn btn-danger">Delete</a>
+    <a href="{{  asset('admin/banner/edit/'.$banner->id) }}" type="button" class="btn btn-primary">Sửa</a>
+    <a href="javascript:void(0)" onclick="confirmDeleteBanner({{ $banner->id }}, {{ $i }})" class="btn btn-danger">Xóa</a>
   </div>
 </div>
 @php 

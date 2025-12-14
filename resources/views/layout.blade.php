@@ -25,6 +25,8 @@
 
     <link rel="stylesheet" href="{{ asset('assets/css/lightbox.css')}}">
 
+    @stack('styles')
+
     <script src="{{ asset('assets/js/angular.min.js')}}"></script>
     <script src="{{ asset('assets/js/bKash-checkout.js')}}"></script>
     <script src="{{ asset('assets/js/bKash-checkout-sandbox.js')}}"></script>
@@ -49,7 +51,7 @@
         <div class="container">
                     <nav class="main-nav">
                         <!-- ***** Logo Start ***** -->
-                        <a href="{{url('home')}}" class="logo">
+                        <a href="/" class="logo">
                             <img width="200px" height="100px" src="{{ asset('assets/images/logo.png')}}" style="object-fit: contain;">
                         </a>
                         <!-- ***** Logo End ***** -->
@@ -58,7 +60,7 @@
                             <li class="scroll-to-section"><a href="/">TRANG CHỦ</a></li>
                             <li class="scroll-to-section"><a href="/#about">VỀ CHÚNG TÔI</a></li>
                            	
-                            <li class="scroll-to-section"><a href="/#menu">MENU</a></li>
+                            <li class="scroll-to-section"><a href="/menu">MENU</a></li>
                         
                             <li class="scroll-to-section"><a href="/trace-my-order">TRA CỨU ĐƠN</a></li>
 
@@ -231,179 +233,263 @@
                                     overflow: visible !important;
                                 }
                                 
+                                /* ========== MENU SECTION HEADING ========== */
+                                    #menu .section-heading {
+                                        text-align: center !important;
+                                        margin-bottom: 60px !important;
+                                    }
+                                    
+                                    #menu .menu-section-title {
+                                        font-family: 'Dancing Script', cursive !important;
+                                        font-size: 4.5rem !important;
+                                        font-weight: 700 !important;
+                                        background: linear-gradient(135deg, #fb5849 0%, #d15400 30%, #ff6b5a 60%, #fb5849 100%) !important;
+                                        -webkit-background-clip: text !important;
+                                        -webkit-text-fill-color: transparent !important;
+                                        background-clip: text !important;
+                                        letter-spacing: 3px !important;
+                                        text-shadow: 0 4px 20px rgba(251, 88, 73, 0.3) !important;
+                                        position: relative !important;
+                                        display: inline-block !important;
+                                        margin-bottom: 20px !important;
+                                        padding: 0 !important;
+                                        padding-left: 0 !important;
+                                        animation: titleGlow 3s ease-in-out infinite !important;
+                                    }
+                                    
+                                    #menu .menu-section-title:before {
+                                        display: none !important;
+                                    }
+                                    
+                                    @keyframes titleGlow {
+                                        0%, 100% {
+                                            filter: drop-shadow(0 0 10px rgba(251, 88, 73, 0.3));
+                                        }
+                                        50% {
+                                            filter: drop-shadow(0 0 20px rgba(251, 88, 73, 0.6));
+                                        }
+                                    }
+                                    
+                                    #menu .menu-section-subtitle {
+                                        font-family: 'Inter', sans-serif !important;
+                                        font-size: 1.5rem !important;
+                                        font-weight: 400 !important;
+                                        font-style: italic !important;
+                                        color: #666 !important;
+                                        letter-spacing: 2px !important;
+                                        margin-top: 10px !important;
+                                        margin-bottom: 0 !important;
+                                        position: relative !important;
+                                        padding: 0 20px !important;
+                                    }
+                                    
+                                    #menu .menu-section-subtitle::before,
+                                    #menu .menu-section-subtitle::after {
+                                        content: '✦' !important;
+                                        color: #fb5849 !important;
+                                        font-size: 1.2rem !important;
+                                        margin: 0 15px !important;
+                                        opacity: 0.7 !important;
+                                    }
+                                    
+                                    @media (max-width: 768px) {
+                                        #menu .menu-section-title {
+                                            font-size: 3rem !important;
+                                        }
+                                        #menu .menu-section-subtitle {
+                                            font-size: 1.2rem !important;
+                                        }
+                                    }
+                                
                                 /* ========== PRODUCT CARDS - HOVER & INFO OVERLAY ========== */
+                                    #menu .card {
+                                        height: 520px !important;
+                                        position: relative !important;
+                                        overflow: hidden !important;
+                                        border-radius: 15px !important;
+                                        transition: transform 0.4s ease-out, box-shadow 0.4s ease-out, border-radius 0.4s ease-out !important;
+                                        transform-origin: center center !important;
+                                    }
+
+                                    #menu .card:hover {
+                                        transform: scale(1.05) !important;
+                                        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
+                                        border-radius: 30px !important;
+                                        z-index: 100 !important;
+                                    }
+
+                                    #menu .card[data-bg-image] {
+                                        background-image: var(--bg-image);
+                                        background-size: cover;
+                                        background-position: center;
+                                    }
+
+                                    /* --- PRICE TAG --- */
+                                    #menu .card .price {
+                                        position: absolute !important;
+                                        top: 0 !important;
+                                        right: 0 !important;
+                                        z-index: 10 !important;
+                                    }
+
+                                    #menu .price h6 {
+                                        width: 150px !important;
+                                        min-width: 150px !important;
+                                        height: 70px !important;
+                                        background-color: #fb5849 !important;
+                                        font-size: 18px !important;
+                                        font-weight: 700 !important;
+                                        color: #fff !important;
+                                        border-radius: 3px !important;
+                                        text-align: center !important;
+                                        line-height: 70px !important;
+                                        padding: 0 10px !important;
+                                        white-space: nowrap !important;
+                                        overflow: hidden !important;
+                                        text-overflow: ellipsis !important;
+                                        display: flex !important;
+                                        align-items: center !important;
+                                        justify-content: center !important;
+                                        margin: 0 !important;
+                                    }
+
+                                    /* --- INFO OVERLAY (PHẦN NỀN ĐỎ DƯỚI) --- */
+                                    #menu .card .info {
+                                        position: absolute !important;
+                                        bottom: 0 !important;
+                                        left: 0 !important;
+                                        right: 0 !important;
+                                        background: rgba(251, 88, 73, 0.95);
+                                        padding: 20px;
+                                        height: 150px !important; /* Chiều cao mặc định */
+                                        min-height: 150px !important;
+                                        max-height: 150px !important;
+                                        overflow: hidden !important;
+                                        transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+                                        transform: translateY(0) !important;
+                                        display: flex;
+                                        flex-direction: column;
+                                        justify-content: center;
+                                        align-items: center;
+                                    }
+
+                                    /* Hiệu ứng khi Hover vào Card -> Info trượt lên */
+                                    #menu .card:hover .info {
+                                        height: auto !important;
+                                        min-height: 400px !important;
+                                        max-height: 400px !important;
+                                        transform: translateY(-10px) !important;
+                                        justify-content: flex-start !important;
+                                        padding-top: 20px !important;
+                                        padding-bottom: 20px !important;
+                                        overflow-y: auto !important;
+                                    }
+
+                                    /* Scrollbar cho Info */
+                                    #menu .card .info::-webkit-scrollbar {
+                                        width: 5px;
+                                    }
+                                    #menu .card .info::-webkit-scrollbar-thumb {
+                                        background: rgba(255, 255, 255, 0.3);
+                                        border-radius: 10px;
+                                    }
+
+                                    /* --- CÁC THÀNH PHẦN BÊN TRONG INFO --- */
+
+                                    /* 1. Container chứa text */
+                                    #menu .card .info .main-text-button {
+                                        display: flex !important;
+                                        flex-direction: column !important;
+                                        align-items: center !important;
+                                        justify-content: center !important;
+                                        width: 100% !important;
+                                        flex-shrink: 0 !important;
+                                        margin: 0 !important; /* Đã gộp: Xóa margin-left/right 30px cũ */
+                                        padding: 0 !important;
+                                    }
+
+                                    /* 2. Tên món ăn (Compact - Hiện khi chưa hover) */
+                                    #menu .card .info .product-name-compact {
+                                        display: block !important;
+                                        color: #fff !important;
+                                        font-size: 20px !important; /* Lấy giá trị lớn hơn từ code cũ */
+                                        font-weight: 700 !important;
+                                        text-align: center !important;
+                                        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                                        margin: 0 0 15px 0 !important; /* Đã gộp margin */
+                                        padding: 0 !important; /* Đã gộp: Lấy giá trị padding 0 từ đoạn code cuối cùng */
+                                        line-height: 1.3 !important;
+                                        max-height: 50px !important;
+                                        overflow: hidden !important;
+                                        display: -webkit-box !important;
+                                        -webkit-line-clamp: 2 !important;
+                                        line-clamp: 2 !important;
+                                        -webkit-box-orient: vertical !important;
+                                        flex-shrink: 0 !important;
+                                    }
+
+                                    /* Ẩn tên compact khi hover */
+                                    #menu .card:hover .info .product-name-compact {
+                                        display: none !important;
+                                    }
+
+                                    /* 3. Title (Tên món full - Chỉ hiện khi hover) */
+                                    #menu .card .info .title {
+                                        display: none !important;
+                                    }
+
+                                    #menu .card:hover .info .title {
+                                        display: block !important;
+                                    }
+
+                                    /* 4. Rating Stars */
+                                    #menu .card .info .product-rating-section {
+                                        display: flex !important;
+                                        align-items: center !important;
+                                        justify-content: center !important;
+                                        margin: 0 !important;
+                                        padding: 0 30px !important;
+                                        flex-shrink: 0 !important;
+                                        width: 100% !important;
+                                    }
+
+                                    #menu .card .info .product_rating {
+                                        display: flex;
+                                        gap: 5px;
+                                        align-items: center;
+                                        font-size: 1.8rem !important;
+                                        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+                                    }
+
+                                    #menu .card .info .product_rating .fa-star,
+                                    #menu .card .info .product_rating .fa-star-half {
+                                        color: #ffc107 !important;
+                                        animation: starGlow 2s ease-in-out infinite;
+                                    }
+
+                                    /* 5. Description (Mô tả - Chỉ hiện khi hover) */
+                                    #menu .card .info .description {
+                                        display: none !important;
+                                    }
+
+                                    #menu .card:hover .info .description {
+                                        display: block !important;
+                                        text-align: center !important;
+                                        line-height: 1.6 !important;
+                                        margin-top: 15px !important;
+                                        padding: 0 30px !important;
+                                        max-height: 200px !important;
+                                        overflow-y: auto !important;
+                                        flex-shrink: 0 !important;
+                                        width: 100% !important;
+                                    }
+
+                                    /* Animation cho sao */
+                                    @keyframes starGlow {
+                                        0%, 100% { filter: drop-shadow(0 0 5px rgba(255, 193, 7, 0.5)); }
+                                        50% { filter: drop-shadow(0 0 10px rgba(255, 193, 7, 0.8)); }
+                                    }
                                 
-                                /* Card cao cố định */
-                                #menu .card {
-                                    height: 520px !important;
-                                    position: relative !important;
-                                    overflow: hidden !important;
-                                    border-radius: 15px !important;
-                                    transition: transform 0.4s ease-out, 
-                                                box-shadow 0.4s ease-out,
-                                                border-radius 0.4s ease-out !important;
-                                    transform-origin: center center !important;
-                                }
-                                
-                                /* Price tag rộng hơn cho card món ăn */
-                                #menu .price h6 {
-                                    width: 150px !important; /* Tăng từ 70px lên 150px */
-                                    min-width: 150px !important;
-                                    height: 70px !important;
-                                    background-color: #fb5849 !important;
-                                    font-size: 18px !important;
-                                    font-weight: 700 !important;
-                                    color: #fff !important;
-                                    border-radius: 3px !important;
-                                    text-align: center !important;
-                                    line-height: 70px !important;
-                                    padding: 0 10px !important; /* Thêm padding để text không sát viền */
-                                    white-space: nowrap !important;
-                                    overflow: hidden !important;
-                                    text-overflow: ellipsis !important;
-                                    display: flex !important;
-                                    align-items: center !important;
-                                    justify-content: center !important;
-                                }
-                                
-                                /* Khi hover: card phóng to ra và bo tròn hơn */
-                                #menu .card:hover {
-                                    transform: scale(1.05) !important;
-                                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
-                                    border-radius: 30px !important;
-                                    z-index: 100 !important;
-                                }
-                                
-                                /* Tên món hiển thị khi không hover */
-                                #menu .card .info .product-name-compact {
-                                    display: block !important;
-                                    color: #fff !important;
-                                    font-size: 18px !important;
-                                    font-weight: 700 !important;
-                                    margin: 0 0 10px 0 !important;
-                                    padding: 0 !important;
-                                    line-height: 1.3 !important;
-                                    text-align: left !important;
-                                }
-                                
-                                #menu .card .info .main-text-button {
-                                    margin-left: 30px !important;
-                                    margin-right: 30px !important;
-                                    padding-left: 0 !important;
-                                    padding-right: 0 !important;
-                                }
-                                
-                                /* Ẩn tên món trong .title khi không hover */
-                                #menu .card .info .title {
-                                    display: none !important;
-                                }
-                                
-                                /* Hiển thị lại tên món trong .title khi hover */
-                                #menu .card:hover .info .title {
-                                    display: block !important;
-                                }
-                                
-                                /* Ẩn tên món compact khi hover */
-                                #menu .card:hover .info .product-name-compact {
-                                    display: none !important;
-                                }
-                                
-                                /* Overlay info cố định phía dưới */
-                                #menu .card .info {
-                                    position: absolute !important;
-                                    bottom: 0 !important;
-                                    left: 0 !important;
-                                    right: 0 !important;
-                                    background: rgba(251, 88, 73, 0.95);
-                                    padding: 20px;
-                                    max-height: 270px !important; /* Tăng lên để đủ chỗ cho tên 2 dòng */
-                                    height: 270px !important;
-                                    min-height: 270px !important;
-                                    overflow: hidden !important;
-                                    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                                                height 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                                    transform: translateY(0) !important;
-                                    display: flex;
-                                    flex-direction: column;
-                                }
-                                
-                                #menu .card .info,
-                                #menu .card .info:before {
-                                    transform: translateY(0) !important;
-                                }
-                                
-                                #menu .card .info > * {
-                                    flex-shrink: 0 !important;
-                                }
-                                
-                                /* Giới hạn chiều cao tên món để không chiếm quá nhiều chỗ */
-                                #menu .card .info .product-name-compact {
-                                    max-height: 50px !important; /* Giới hạn tối đa 2 dòng */
-                                    overflow: hidden !important;
-                                    line-height: 1.3 !important;
-                                    display: -webkit-box !important;
-                                    -webkit-line-clamp: 2 !important; /* Tối đa 2 dòng */
-                                    -webkit-box-orient: vertical !important;
-                                }
-                                
-                                #menu .card .info .main-text-button {
-                                    margin-top: auto !important; /* Đẩy xuống cuối */
-                                    flex-shrink: 0 !important; /* Không bị co lại */
-                                    min-height: 80px !important; /* Đảm bảo có đủ chỗ cho button */
-                                }
-                                
-                                /* Ẩn mô tả khi không hover */
-                                #menu .card .info .description {
-                                    max-height: 0px !important;
-                                    overflow: hidden !important;
-                                    margin: 0 !important;
-                                    padding: 0 !important;
-                                    opacity: 0 !important;
-                                    transition: max-height 0.3s ease, opacity 0.3s ease !important;
-                                }
-                                
-                                /* Hiển thị mô tả khi hover */
-                                #menu .card:hover .info .description {
-                                    max-height: 200px !important;
-                                    opacity: 1 !important;
-                                    margin-bottom: 15px !important;
-                                    padding: 0px 30px !important;
-                                }
-                                
-                                /* Khi hover: mở rộng overlay lên 80% */
-                                #menu .card:hover .info {
-                                    max-height: 416px !important;
-                                    height: 416px !important;
-                                    overflow-y: auto !important;
-                                    transform: translateY(0) !important;
-                                    transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1),
-                                                height 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                                }
-                                
-                                #menu .card:hover .info:before {
-                                    transform: none !important;
-                                }
-                                
-                                /* Nút Add to Cart luôn nằm cuối overlay */
-                                #menu .card .info .main-text-button {
-                                    margin-top: auto;
-                                    padding-top: 10px;
-                                    padding-bottom: 10px;
-                                    flex-shrink: 0;
-                                    background: rgba(251, 88, 73, 0.95);
-                                    position: sticky;
-                                    bottom: 0;
-                                    z-index: 10;
-                                }
-                                
-                                /* Scrollbar nhỏ gọn */
-                                #menu .card .info::-webkit-scrollbar {
-                                    width: 5px;
-                                }
-                                #menu .card .info::-webkit-scrollbar-thumb {
-                                    background: rgba(255, 255, 255, 0.3);
-                                    border-radius: 10px;
-                                }
                                 
                                 /* ========== SẮP XẾP TAB ITEMS - MÓN CUỐN CHÍNH, PHỤ, ĐỒ UỐNG ========== */
                                 
@@ -597,6 +683,43 @@
                                     margin-top: 10px !important;
                                 }
                                 
+                                /* Style nghệ thuật cho "Cuốn ơi là cuốn!" */
+                                #offers .section-heading .cuon-title {
+                                    font-family: 'Dancing Script', cursive !important;
+                                    font-size: 3.5rem !important;
+                                    font-weight: 700 !important;
+                                    background: linear-gradient(135deg, #fb5849 0%, #d15400 30%, #ff6b5a 60%, #fb5849 100%) !important;
+                                    -webkit-background-clip: text !important;
+                                    -webkit-text-fill-color: transparent !important;
+                                    background-clip: text !important;
+                                    letter-spacing: 2px !important;
+                                    text-shadow: 0 4px 20px rgba(251, 88, 73, 0.3) !important;
+                                    position: relative !important;
+                                    display: inline-block !important;
+                                    margin-top: 15px !important;
+                                    margin-bottom: 0 !important;
+                                    animation: cuonGlow 3s ease-in-out infinite !important;
+                                    transform: perspective(1000px) rotateX(5deg) !important;
+                                    text-transform: none !important;
+                                }
+                                
+                                @keyframes cuonGlow {
+                                    0%, 100% {
+                                        filter: drop-shadow(0 0 10px rgba(251, 88, 73, 0.3));
+                                        transform: perspective(1000px) rotateX(5deg) scale(1);
+                                    }
+                                    50% {
+                                        filter: drop-shadow(0 0 20px rgba(251, 88, 73, 0.6));
+                                        transform: perspective(1000px) rotateX(5deg) scale(1.05);
+                                    }
+                                }
+                                
+                                @media (max-width: 768px) {
+                                    #offers .section-heading .cuon-title {
+                                        font-size: 2.5rem !important;
+                                    }
+                                }
+                                
                                 /* Responsive cho tiêu đề */
                                 @media (max-width: 768px) {
                                     #offers .section-heading h1 {
@@ -604,6 +727,91 @@
                                     }
                                     #offers .section-heading h3 {
                                         font-size: 16px !important;
+                                    }
+                                }
+                                
+                                /* ========== CHEFS SECTION HEADING ========== */
+                                #chefs .section-heading {
+                                    display: flex;
+                                    flex-direction: column;
+                                    align-items: center;
+                                    justify-content: center;
+                                    text-align: center;
+                                    width: 100%;
+                                    margin-bottom: 60px;
+                                }
+
+                                /* ===== Title ===== */
+                                #chefs .chefs-section-title {
+                                    font-family: 'Dancing Script', cursive;
+                                    font-size: 4.5rem;
+                                    font-weight: 700;
+                                    letter-spacing: 3px;
+                                    margin-bottom: 20px;
+                                    display: inline-block;
+
+                                    background: linear-gradient(
+                                        135deg,
+                                        #fb5849 0%,
+                                        #d15400 30%,
+                                        #ff6b5a 60%,
+                                        #fb5849 100%
+                                    );
+                                    -webkit-background-clip: text;
+                                    background-clip: text;
+                                    -webkit-text-fill-color: transparent;
+
+                                    text-shadow: 0 4px 20px rgba(251, 88, 73, 0.3);
+                                    animation: chefsTitleGlow 3s ease-in-out infinite;
+                                }
+
+                                /* Remove theme underline if any */
+                                #chefs .chefs-section-title::before {
+                                    display: none;
+                                }
+
+                                /* Glow animation */
+                                @keyframes chefsTitleGlow {
+                                    0%, 100% {
+                                        filter: drop-shadow(0 0 10px rgba(251, 88, 73, 0.3));
+                                    }
+                                    50% {
+                                        filter: drop-shadow(0 0 20px rgba(251, 88, 73, 0.6));
+                                    }
+                                }
+
+                                /* ===== Subtitle ===== */
+                                #chefs .chefs-section-subtitle {
+                                    font-family: 'Inter', sans-serif;
+                                    font-size: 1.5rem;
+                                    font-style: italic;
+                                    font-weight: 400;
+                                    color: #666;
+                                    letter-spacing: 2px;
+                                    margin-top: 10px;
+                                    text-align: center;
+                                }
+
+                                /* Decorative icons */
+                                #chefs .chefs-section-subtitle::before,
+                                #chefs .chefs-section-subtitle::after {
+                                    content: '✦';
+                                    font-size: 1.2rem;
+                                    color: #fb5849;
+                                    margin: 0 12px;
+                                    opacity: 0.7;
+                                    vertical-align: middle;
+                                }
+
+                                /* ===== Responsive ===== */
+                                @media (max-width: 768px) {
+                                    #chefs .chefs-section-title {
+                                        font-size: 3rem;
+                                    }
+
+                                    #chefs .chefs-section-subtitle {
+                                        font-size: 1.2rem;
+                                        letter-spacing: 1px;
                                     }
                                 }
                             </style>
@@ -633,6 +841,19 @@
     </header>
     <!-- ***** Header Area End ***** -->
 
+    <!-- Cart Success Popup -->
+    <div id="cartSuccessPopup" class="cart-popup">
+        <div class="cart-popup-content">
+            <div class="cart-popup-icon">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <div class="cart-popup-message" id="cartPopupMessage">Đã thêm vào giỏ hàng thành công!</div>
+            <button class="cart-popup-close" onclick="closeCartPopup()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    </div>
+
     <div style="min-height:750px">
         @yield('page-content')
     </div>
@@ -644,7 +865,7 @@
                 <!-- Cột 1: Logo và Thông Tin -->
                 <div class="col-lg-3 col-md-6 col-sm-12" style="margin-bottom: 30px;">
                     <div class="logo" style="margin-bottom: 20px;">
-                        <a href="{{url('home')}}"><img src="{{ asset('assets/images/logo.png')}}" alt="S-Cuốn" style="width: 180px; height: auto; filter: brightness(0) invert(1);"></a>
+                        <a href="/"><img src="{{ asset('assets/images/logo.png')}}" alt="S-Cuốn" style="width: 180px; height: auto; filter: brightness(0) invert(1);"></a>
                     </div>
                     <p style="color: #ccc; line-height: 1.8; margin-bottom: 20px;">
                         Nhà hàng buffet Việt Nam hàng đầu, mang đến trải nghiệm ẩm thực đặc biệt cho thực khách.
@@ -752,6 +973,127 @@
         /* Tăng độ mờ hơn nếu cần - có thể điều chỉnh opacity */
         /* background: rgba(0, 0, 0, 0.6) !important; cho mờ hơn */
         /* background: rgba(0, 0, 0, 0.4) !important; cho mờ ít hơn */
+
+        /* ========== CART SUCCESS POPUP ========== */
+        .cart-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .cart-popup.show {
+            display: flex;
+        }
+
+        .cart-popup-content {
+            background: #fff;
+            border-radius: 15px;
+            padding: 30px 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+            min-width: 350px;
+            max-width: 500px;
+            text-align: center;
+            animation: slideUp 0.4s ease;
+        }
+
+        .cart-popup-icon {
+            font-size: 60px;
+            color: #4CAF50;
+            margin-bottom: 15px;
+            animation: scaleIn 0.5s ease;
+        }
+
+        .cart-popup-icon i {
+            animation: bounce 0.6s ease;
+        }
+
+        .cart-popup-message {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2a2a2a;
+            margin-bottom: 10px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .cart-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            font-size: 24px;
+            color: #999;
+            cursor: pointer;
+            padding: 5px 10px;
+            transition: color 0.3s ease;
+        }
+
+        .cart-popup-close:hover {
+            color: #fb5849;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .cart-popup-content {
+                min-width: 300px;
+                padding: 25px 30px;
+                margin: 20px;
+            }
+
+            .cart-popup-icon {
+                font-size: 50px;
+            }
+
+            .cart-popup-message {
+                font-size: 16px;
+            }
+        }
     </style>
 
     <!-- jQuery -->
@@ -791,6 +1133,49 @@
             });
         });
 
+    </script>
+
+    @stack('scripts')
+
+    <!-- Cart Success Popup Script -->
+    <script>
+        function showCartPopup(message) {
+            const popup = document.getElementById('cartSuccessPopup');
+            const messageEl = document.getElementById('cartPopupMessage');
+            
+            if (message) {
+                messageEl.textContent = message;
+            }
+            
+            popup.classList.add('show');
+            
+            // Tự động đóng sau 3 giây
+            setTimeout(function() {
+                closeCartPopup();
+            }, 3000);
+        }
+
+        function closeCartPopup() {
+            const popup = document.getElementById('cartSuccessPopup');
+            popup.classList.remove('show');
+        }
+
+        // Hiển thị popup nếu có session message
+        @if(session('cart_success'))
+            document.addEventListener('DOMContentLoaded', function() {
+                showCartPopup('{{ session('cart_success') }}');
+            });
+        @endif
+
+        // Đóng popup khi click vào overlay
+        document.addEventListener('DOMContentLoaded', function() {
+            const popup = document.getElementById('cartSuccessPopup');
+            popup.addEventListener('click', function(e) {
+                if (e.target === popup) {
+                    closeCartPopup();
+                }
+            });
+        });
     </script>
   </body>
 </html>

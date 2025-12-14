@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/add/coupon" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Add Coupon</a>
+<a href="/add/coupon" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Mã Giảm Giá</a>
 
 
 <br>
@@ -76,8 +76,8 @@
 
                             <td>
 
-                            <a href="{{ asset('/admin/coupon/edit/'.$coupon->id) }}" class="badge badge-outline-primary">Edit</a>
-                              <a href="javascript:void(0)" onclick="confirmDeleteCoupon({{ $coupon->id }}, '{{ addslashes($coupon->name) }}', '{{ addslashes($coupon->code) }}')" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
+                            <a href="{{ asset('/admin/coupon/edit/'.$coupon->id) }}" class="badge badge-outline-primary">Sửa</a>
+                              <a href="javascript:void(0)" onclick="confirmDeleteCoupon({{ $coupon->id }}, '{{ addslashes($coupon->name) }}', '{{ addslashes($coupon->code) }}')" class="badge badge-outline-danger" style="margin-left:10px;">Xóa</a>
                             </td>
                           </tr>
 

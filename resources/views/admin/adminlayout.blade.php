@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     @if(Auth::user()->usertype != 2)
-    <title>Admin Panel</title>
+    <title>Bảng Điều Khiển</title>
     @endif
     @if(Auth::user()->usertype == 2)
-    <title>User Panel</title>
+    <title>Bảng Điều Khiển Người Dùng</title>
     @endif
     <!-- plugins:css -->
     <link rel="stylesheet" href="{{asset('admin/assets//vendors/mdi/css/materialdesignicons.min.css')}}">
@@ -42,10 +42,10 @@
       <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">
         @if(Auth::user()->usertype != 2)
-          <a class="sidebar-brand brand-logo" href="/redirects" style="color:white;text-decoration:none;">Admin Panel</a>
+          <a class="sidebar-brand brand-logo" href="/redirects" style="color:white;text-decoration:none;">Bảng Điều Khiển</a>
         @endif
         @if(Auth::user()->usertype == 2)
-          <a class="sidebar-brand brand-logo" href="/redirects" style="color:white;text-decoration:none;">User Panel</a>
+          <a class="sidebar-brand brand-logo" href="/redirects" style="color:white;text-decoration:none;">Bảng Điều Khiển Người Dùng</a>
         @endif
           <a class="sidebar-brand brand-logo-mini" href="index.html"><img src="{{asset('admin/assets//images/logo-mini.svg')}}" alt="logo" /></a>
         </div>
@@ -60,13 +60,13 @@
                 <div class="profile-name">
                   <h5 class="mb-0 font-weight-normal">{{ Auth::user()->name }}</h5>
                   @if(Auth::user()->usertype == 1)
-                  <span> Super Admin</span>
+                  <span> Quản Trị Viên Cấp Cao</span>
                   @endif
                   @if(Auth::user()->usertype == 3)
-                  <span>Sub Admin</span>
+                  <span>Quản Trị Viên Phụ</span>
                   @endif
                   @if(Auth::user()->usertype == 2)
-                  <span>Delivery Boy</span>
+                  <span>Nhân Viên Giao Hàng</span>
                   @endif
                 </div>
               </div>
@@ -78,7 +78,7 @@
                     </div>
                   </div>
                   <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">Account settings</p>
+                    <p class="preview-subject ellipsis mb-1 text-small">Cài đặt tài khoản</p>
                   </div>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -89,7 +89,7 @@
                     </div>
                   </div>
                   <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">Change Password</p>
+                    <p class="preview-subject ellipsis mb-1 text-small">Đổi mật khẩu</p>
                   </div>
                 </a>
                 <div class="dropdown-divider"></div>
@@ -100,14 +100,14 @@
                     </div>
                   </div>
                   <div class="preview-item-content">
-                    <p class="preview-subject ellipsis mb-1 text-small">To-do list</p>
+                    <p class="preview-subject ellipsis mb-1 text-small">Danh sách việc cần làm</p>
                   </div>
                 </a>
               </div>
             </div>
           </li>
           <li class="nav-item nav-category">
-            <span class="nav-link">Navigation</span>
+            <span class="nav-link">Điều Hướng</span>
           </li>
           <li class="nav-item menu-items">
             <a class="nav-link" href="/redirects">
@@ -123,7 +123,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-food"></i>
               </span>
-              <span class="menu-title">Food Menu</span>
+              <span class="menu-title">Thực Đơn</span>
             </a>
           </li>
           
@@ -133,7 +133,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-food"></i>
               </span>
-              <span class="menu-title">Chefs</span>
+              <span class="menu-title">Đầu Bếp</span>
             </a>
           </li>
           @endif
@@ -143,16 +143,16 @@
               <span class="menu-icon">
                 <i class="mdi mdi-file-document-box"></i>
               </span>
-              <span class="menu-title">Orders</span>
+              <span class="menu-title">Đơn Hàng</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-basic">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin/orders-incomplete">Pending Orders</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/orders/process">Processing Order</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/orders-complete">Complete Orders</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/orders/cancel">Cancelled Order</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/order/location">Update Location</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/orders-incomplete">Đơn Hàng Chờ Xử Lý</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/orders/process">Đơn Hàng Đang Xử Lý</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/orders-complete">Đơn Hàng Hoàn Thành</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/orders/cancel">Đơn Hàng Đã Hủy</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/order/location">Cập Nhật Vị Trí</a></li>
 
               </ul>
             </div>
@@ -181,7 +181,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-chart-bar"></i>
               </span>
-              <span class="menu-title">Reservation</span>
+              <span class="menu-title">Đặt Bàn</span>
             </a>
           </li>
           @if(Auth::user()->usertype == 1)
@@ -190,7 +190,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-settings"></i>
               </span>
-              <span class="menu-title">Customize Template</span>
+              <span class="menu-title">Tùy Chỉnh Giao Diện</span>
             </a>
           </li>
           <li class="nav-item menu-items">
@@ -198,13 +198,13 @@
               <span class="menu-icon">
                 <i class="mdi mdi-file-document-box"></i>
               </span>
-              <span class="menu-title">Banners</span>
+              <span class="menu-title">Banner</span>
               <i class="menu-arrow"></i>
             </a>
             <div class="collapse" id="ui-basic2">
               <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="/admin/add/banner">Add Banners</a></li>
-                <li class="nav-item"> <a class="nav-link" href="/admin/banner/all">All Banners</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/add/banner">Thêm Banner</a></li>
+                <li class="nav-item"> <a class="nav-link" href="/admin/banner/all">Tất Cả Banner</a></li>
               </ul>
             </div>
           </li>
@@ -214,7 +214,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-account-multiple-plus"></i>
               </span>
-              <span class="menu-title">Admin</span>
+              <span class="menu-title">Quản Trị Viên</span>
             </a>
           </li>
           @endif
@@ -225,7 +225,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-account-plus"></i>
               </span>
-              <span class="menu-title">Customer</span>
+              <span class="menu-title">Khách Hàng</span>
             </a>
           </li>
 
@@ -237,7 +237,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-account-plus"></i>
               </span>
-              <span class="menu-title">Delivery Boy</span>
+              <span class="menu-title">Nhân Viên Giao Hàng</span>
             </a>
           </li>
 
@@ -251,7 +251,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-account-card-details"></i>
               </span>
-              <span class="menu-title">Coupon</span>
+              <span class="menu-title">Mã Giảm Giá</span>
             </a>
           </li>
 
@@ -260,7 +260,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-bank"></i>
               </span>
-              <span class="menu-title">Charge</span>
+              <span class="menu-title">Phí Bổ Sung</span>
             </a>
           </li>
 
@@ -284,7 +284,7 @@
             <ul class="navbar-nav w-100">
               <li class="nav-item w-100">
                 <form class="nav-link mt-2 mt-md-0 d-none d-lg-flex search">
-                  <input type="text" class="form-control" placeholder="Search products">
+                  <input type="text" class="form-control" placeholder="Tìm kiếm sản phẩm">
                 </form>
               </li>
             </ul>
@@ -349,7 +349,7 @@
                   </div>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list" aria-labelledby="profileDropdown">
-                  <h6 class="p-3 mb-0">Profile</h6>
+                  <h6 class="p-3 mb-0">Hồ Sơ</h6>
                   <div class="dropdown-divider"></div>
                   <a class="dropdown-item preview-item" href="user/profile">
                     <div class="preview-thumbnail">
@@ -358,7 +358,7 @@
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Settings</p>
+                      <p class="preview-subject mb-1">Cài Đặt</p>
                     </div>
                   </a>
                   <div class="dropdown-divider"></div>
@@ -371,7 +371,7 @@
                       </div>
                     </div>
                     <div class="preview-item-content">
-                      <p class="preview-subject mb-1">Log out</p>
+                      <p class="preview-subject mb-1">Đăng Xuất</p>
                     </div>
                   </button>
                   </form>
@@ -399,9 +399,9 @@
           <!-- partial:partials/_footer.html -->
           <footer class="footer">
             <div class="d-sm-flex justify-content-center justify-content-sm-between">
-              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright © RMS  2022</span>
+              <span class="text-muted d-block text-center text-sm-left d-sm-inline-block">Bản quyền © RMS  2022</span>
          
-              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> <a href="/" target="_blank">Go to Client Section</a></span>
+              <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center"> <a href="/" target="_blank">Đi Đến Trang Khách Hàng</a></span>
             </div>
           </footer>
           <!-- partial -->

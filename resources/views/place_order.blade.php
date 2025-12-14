@@ -3,11 +3,14 @@
 @section('page-content')
 
     <style>
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    
     .checkout-page {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         min-height: calc(100vh - 200px);
         padding: 60px 0;
         margin-top: 80px;
+        font-family: 'Inter', sans-serif;
     }
 
     .checkout-container {
@@ -18,7 +21,7 @@
     .checkout-header {
         text-align: center;
         margin-bottom: 40px;
-        color: white;
+        color: #2a2a2a;
     }
 
     .checkout-header img {
@@ -28,15 +31,23 @@
     }
 
     .checkout-header h1 {
-        font-size: 2.5rem;
+        font-family: 'Dancing Script', cursive;
+        font-size: 4rem;
         font-weight: 700;
-        margin-bottom: 10px;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, #fb5849 0%, #d15400 30%, #ff6b5a 60%, #fb5849 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: 2px;
+        text-shadow: 0 4px 20px rgba(251, 88, 73, 0.3);
     }
 
     .checkout-header p {
-        font-size: 1.1rem;
-        opacity: 0.9;
+        font-size: 1.2rem;
+        color: #666;
+        font-style: italic;
+        font-weight: 400;
     }
 
     .checkout-card {
@@ -54,12 +65,13 @@
     }
 
     .order-summary-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #fb5849 0%, #d15400 100%);
         color: white;
         border-radius: 20px;
         padding: 30px;
         position: sticky;
         top: 100px;
+        box-shadow: 0 10px 30px rgba(251, 88, 73, 0.3);
     }
 
     .order-summary-card h4 {
@@ -104,11 +116,11 @@
         align-items: center;
         gap: 10px;
         padding-bottom: 15px;
-        border-bottom: 3px solid #667eea;
+        border-bottom: 3px solid #fb5849;
     }
 
     .form-section-title i {
-        color: #667eea;
+        color: #fb5849;
         font-size: 1.3rem;
     }
 
@@ -122,7 +134,7 @@
     }
 
     .form-group label i {
-        color: #667eea;
+        color: #fb5849;
         font-size: 0.9rem;
     }
 
@@ -135,8 +147,8 @@
     }
 
     .form-control:focus, .custom-select:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: #fb5849;
+        box-shadow: 0 0 0 0.2rem rgba(251, 88, 73, 0.25);
         outline: none;
     }
 
@@ -145,7 +157,7 @@
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #fb5849 0%, #d15400 100%);
         border: none;
         border-radius: 12px;
         padding: 15px 40px;
@@ -154,15 +166,16 @@
         text-transform: uppercase;
         letter-spacing: 1px;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 15px rgba(251, 88, 73, 0.4);
         width: 100%;
         margin-top: 20px;
+        font-family: 'Inter', sans-serif;
     }
 
     .btn-primary:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        box-shadow: 0 6px 20px rgba(251, 88, 73, 0.5);
+        background: linear-gradient(135deg, #d15400 0%, #fb5849 100%);
     }
 
     .step-indicator {
@@ -176,24 +189,27 @@
         display: flex;
         align-items: center;
         gap: 10px;
-        color: white;
+        color: #666;
         font-weight: 600;
+        font-family: 'Inter', sans-serif;
     }
 
     .step-number {
         width: 40px;
         height: 40px;
         border-radius: 50%;
-        background: rgba(255,255,255,0.3);
+        background: #e0e0e0;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 700;
+        color: #666;
+        transition: all 0.3s ease;
     }
 
     .step.active .step-number {
         background: white;
-        color: #667eea;
+        color: #fb5849;
     }
 
     .divider {
@@ -202,16 +218,20 @@
         margin: 30px 0;
     }
 
+    .divider.dark {
+        background: linear-gradient(90deg, transparent, rgba(0,0,0,0.1), transparent);
+    }
+
     .info-box {
         background: #f8f9fa;
-        border-left: 4px solid #667eea;
+        border-left: 4px solid #fb5849;
         border-radius: 8px;
         padding: 15px;
         margin-bottom: 20px;
     }
 
     .info-box i {
-        color: #667eea;
+        color: #fb5849;
         margin-right: 10px;
     }
 
@@ -320,7 +340,7 @@
     <div class="checkout-container">
         <div class="checkout-header">
             <h1>Đặt Hàng</h1>
-            <p>Hoàn tất thông tin để đặt hàng</p>
+            <p>Hoàn tất thông tin để đặt hàng của bạn</p>
         </div>
 
         <div class="step-indicator">
@@ -548,7 +568,7 @@
                             </div>
                         </div>
               
-                        <div class="divider" style="background: #e0e0e0; margin: 30px 0;"></div>
+                        <div class="divider dark" style="margin: 30px 0;"></div>
                      
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-check-circle mr-2"></i>

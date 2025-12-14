@@ -175,8 +175,8 @@
                       </div>
                  
                     
-                      <button type="submit" class="btn btn-primary me-2">Update Order</button>
-                      <a href="{{  asset('/invoice/cancel-order/'.$product->invoice_no) }}" class="btn btn-danger">Cancel Order</a>
+                      <button type="submit" class="btn btn-primary me-2">Cập Nhật Đơn Hàng</button>
+                      <a href="{{  asset('/invoice/cancel-order/'.$product->invoice_no) }}" class="btn btn-danger">Hủy Đơn Hàng</a>
                     </form>
 
                     @break;

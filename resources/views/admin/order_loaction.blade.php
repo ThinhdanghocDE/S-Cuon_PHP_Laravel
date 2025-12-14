@@ -35,8 +35,8 @@
                       </div>
                   
                     
-                      <button type="submit" class="btn btn-primary me-2">Submit</button>
-                      <button class="btn btn-dark">Cancel</button>
+                      <button type="submit" class="btn btn-primary me-2">Xác nhận</button>
+                      <button class="btn btn-dark">Hủy</button>
                     </form>
                   </div>
                 </div>

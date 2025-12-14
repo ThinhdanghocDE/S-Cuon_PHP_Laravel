@@ -3,7 +3,7 @@
 @section('container')
 
 
-<a href="/add/delivery_boy" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Add Delivery boy</a>
+<a href="/add/delivery_boy" type="button" class="btn btn-success" style="width:170px;height:35px;padding-top:9px;">+ Thêm Nhân Viên Giao Hàng</a>
 
 
 <br>
@@ -77,8 +77,8 @@
 
                             <td>
 
-                            <a href="{{ asset('/delivery_boy/edit/'.$delivery_boy->id) }}" class="badge badge-outline-primary">Edit</a>
-                              <a href="javascript:void(0)" onclick="confirmDeleteDeliveryBoy({{ $delivery_boy->id }}, '{{ $delivery_boy->name }}')" class="badge badge-outline-danger" style="margin-left:10px;">Delete</a>
+                            <a href="{{ asset('/delivery_boy/edit/'.$delivery_boy->id) }}" class="badge badge-outline-primary">Sửa</a>
+                              <a href="javascript:void(0)" onclick="confirmDeleteDeliveryBoy({{ $delivery_boy->id }}, '{{ $delivery_boy->name }}')" class="badge badge-outline-danger" style="margin-left:10px;">Xóa</a>
                             </td>
                           </tr>
 

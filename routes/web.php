@@ -44,6 +44,9 @@ Route::get("/redirects",'App\Http\Controllers\HomeController@redirects');
 
 #Route::get("/menu",'App\Http\Controllers\MenuController@menu');
 Route::get('/menu', [MenuController::class, 'menu'])->name('menu');
+Route::get('/menu/products', [MenuController::class, 'getProducts'])->name('menu.products');
+Route::get('/product/{id}', [MenuController::class, 'show'])->name('product.show');
+Route::post('/product/{id}/comment', [MenuController::class, 'storeComment'])->name('product.comment');
 
 Route::get('/trace-my-order', [ShipmentController::class, 'trace'])->name('trace-my-order');
 

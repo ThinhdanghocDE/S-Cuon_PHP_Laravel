@@ -140,6 +140,7 @@ class CartController extends Controller
                 'quantity' => $quantity,
                 'subtotal' => $quantity*$product->price
             ]);
+            return back()->with('cart_success', 'Đã cập nhật số lượng sản phẩm trong giỏ hàng!');
         }else{
             DB::table('carts')->insert([
                 'product_id' => $product->id, 
@@ -153,8 +154,7 @@ class CartController extends Controller
             ]);
         }
 
-
-        return back();
+        return back()->with('cart_success', 'Đã thêm sản phẩm vào giỏ hàng thành công!');
 
     }
 
