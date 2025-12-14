@@ -421,7 +421,7 @@
 
             <!-- Shipping Form or Success Message -->
             <div class="col-lg-8 order-lg-1">
-                @if(Session::has('order_success'))
+                @if(Session::has('order_success') && !Session::has('vnpay_payment_success'))
                     <!-- Chỉ hiển thị thông báo thành công -->
                     <div class="checkout-card" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white;">
                         <div style="text-align: center; padding: 20px;">

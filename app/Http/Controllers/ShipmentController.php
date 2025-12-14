@@ -63,8 +63,9 @@ class ShipmentController extends Controller
             return redirect()->route('login');
         }
 
-        // Nếu có thông báo thành công, lấy sản phẩm từ đơn hàng đã đặt
-        if(Session::has('order_success') && Session::has('invoice'))
+        // Nếu có thông báo thành công VÀ KHÔNG phải VNPay đang chờ điền địa chỉ
+        // thì lấy sản phẩm từ đơn hàng đã đặt
+        if(Session::has('order_success') && Session::has('invoice') && !Session::has('vnpay_payment_success'))
         {
             $invoice = Session::get('invoice');
             $cart_items = DB::table('carts')
@@ -95,7 +96,17 @@ class ShipmentController extends Controller
 
         $data=array();
 
-        $invoice = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 8);
+        // Nếu đã thanh toán VNPay, dùng invoice từ session
+        if(Session::has('vnpay_payment_success') && Session::has('invoice'))
+        {
+            $invoice = Session::get('invoice');
+            $data['pay_method'] = 'VNPay';
+        }
+        else
+        {
+            $invoice = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 8);
+            $data['pay_method'] = "Cash On Delivery";
+        }
         /*
         $order_list = DB::table('carts')->where('product_order','yes')->get();
 
@@ -120,7 +131,7 @@ class ShipmentController extends Controller
         $data['shipping_address']=$request->address;
         $data['product_order']="yes";
         $data['invoice_no']=$invoice;
-        $data['pay_method']="Cash On Delivery";
+        // $data['pay_method'] đã được set ở trên (VNPay hoặc COD)
         $data['delivery_time']="3 hours";
         $data['purchase_date']=date("Y-m-d");
 
@@ -179,7 +190,19 @@ class ShipmentController extends Controller
 
          }
 
-        $carts = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->update($data);
+        // Cập nhật carts với thông tin đơn hàng
+        $carts = DB::table('carts')
+            ->where('user_id', Auth::user()->id)
+            ->where('product_order', 'no')
+            ->update($data);
+        
+        // Log để debug (có thể xóa sau)
+        \Log::info('ShipmentController@send - Updated carts', [
+            'user_id' => Auth::user()->id,
+            'invoice' => $invoice,
+            'pay_method' => $data['pay_method'],
+            'updated_count' => $carts,
+        ]);
         /*
         $details = [
             'title' => 'Thông Báo Từ S-Cuốn',
@@ -260,6 +283,20 @@ class ShipmentController extends Controller
 
         }
    
+        // Cập nhật đơn hàng trong bảng orders với địa chỉ giao hàng (nếu là VNPay)
+        if(Session::has('vnpay_payment_success'))
+        {
+            DB::table('orders')
+                ->where('transaction_id', $invoice)
+                ->update([
+                    'address' => $request->address,
+                    'status' => 'processing',
+                ]);
+            
+            // Xóa session VNPay sau khi xử lý xong
+            Session::forget('vnpay_payment_success');
+        }
+        
         // Trả về trang đặt hàng với thông báo thành công
         Session::flash('order_success', true);
         Session::flash('invoice', $invoice);

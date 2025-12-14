@@ -85,14 +85,13 @@
                     </div>
 
                     @php 
-                        $total = $total_price + $total_extra_charge;
-                        Session::put('total',$total_price);
-
                         if($total_price!=0)
                         {
                             $total_price=$total_price+$total_extra_charge;
                             $without_discount_price=$without_discount_price + $total_extra_charge;
                         }
+                        $total = $total_price;
+                        Session::put('total',$total);
                     @endphp
 
                     <div class="summary-details">
@@ -186,13 +185,13 @@
                                         <a href="{{ url('/menu') }}" class="btn-continue-shopping">
                                             <i class="fa fa-angle-left"></i> Tiếp tục mua sắm
                                         </a>
-                                        <a href="/ssl/pay" class="btn-checkout-link">
-                                            <button type="button" class="btn-checkout">
-                                                <i class="fa fa-credit-card"></i> Thanh toán trực tuyến
+                                        <form method="POST" action="{{ route('vnpay.create') }}" style="display: inline-block;">
+                                            @csrf
+                                            <button type="submit" class="btn-checkout">
+                                                <i class="fa fa-credit-card"></i> Thanh toán qua VNPay
                                             </button>
-                                        </a>
+                                        </form>
                                     </div>
-                                    @include('bkash-script')
                                 </div>
                             @else
                                 <!-- Not Logged In -->
