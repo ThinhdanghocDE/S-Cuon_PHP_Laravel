@@ -207,7 +207,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-settings"></i>
               </span>
-              <span class="menu-title">Tùy Chỉnh Giao Diện</span>
+              <span class="menu-title">Thông Tin Cửa Hàng</span>
             </a>
           </li>
           <li class="nav-item menu-items">
@@ -254,7 +254,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-account-plus"></i>
               </span>
-              <span class="menu-title">Nhân Viên Giao Hàng</span>
+              <span class="menu-title">Nhân Viên</span>
             </a>
           </li>
 
