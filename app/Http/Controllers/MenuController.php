@@ -45,20 +45,31 @@ class MenuController extends Controller
 
         $products = $query->paginate($perPage, ['*'], 'page', $page);
 
-        // Tính rating cho từng sản phẩm
-        foreach ($products as $product) {
-            $total_rate = DB::table('rates')->where('product_id', $product->id)->sum('star_value');
-            $total_voter = DB::table('rates')->where('product_id', $product->id)->count();
+        // Tính rating cho tất cả sản phẩm trong một query (tránh N+1 problem)
+        if ($products->count() > 0) {
+            $productIds = $products->pluck('id')->toArray();
             
-            if($total_voter > 0) {
-                $per_rate = $total_rate / $total_voter;
-            } else {
-                $per_rate = 0;
+            $ratings = DB::table('rates')
+                ->whereIn('product_id', $productIds)
+                ->select('product_id', DB::raw('SUM(star_value) as total_rate'), DB::raw('COUNT(*) as total_voter'))
+                ->groupBy('product_id')
+                ->get()
+                ->keyBy('product_id');
+            
+            // Map ratings vào products
+            foreach ($products as $product) {
+                $rating = $ratings->get($product->id);
+                
+                if ($rating && $rating->total_voter > 0) {
+                    $per_rate = $rating->total_rate / $rating->total_voter;
+                } else {
+                    $per_rate = 0;
+                }
+                
+                $product->rating = number_format($per_rate, 1);
+                $product->whole_stars = floor($product->rating);
+                $product->has_half_star = ($product->rating - $product->whole_stars) > 0;
             }
-            
-            $product->rating = number_format($per_rate, 1);
-            $product->whole_stars = floor($product->rating);
-            $product->has_half_star = ($product->rating - $product->whole_stars) > 0;
         }
 
         if ($request->ajax()) {
