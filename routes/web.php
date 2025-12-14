@@ -137,9 +137,9 @@ Route::group(['middleware' => ['customAuth']], function () {
     Route::post('bkash/success', 'BkashController@bkashSuccess')->name('bkash-success');
 
     // Refund Routes for bKash
-    Route::get('bkash/refund', 'BkashRefundController@index')->name('bkash-refund');
+    Route::get('bkash/refund', 'BkashRefundController@index')->name('bkash-refund.index');
     
-    Route::post('bkash/refund', 'BkashRefundController@refund')->name('bkash-refund');
+    Route::post('bkash/refund', 'BkashRefundController@refund')->name('bkash-refund.process');
 
 });
 
