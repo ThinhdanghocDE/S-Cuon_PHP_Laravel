@@ -4,8 +4,6 @@
     		<div class="span4">
     			<address>
                     <?php
-
-
                             $products=Session::get('products');
                             $total=Session::get('total');
                             $without_discount_price=Session::get('without_discount_price');
@@ -14,9 +12,7 @@
                             $qrcode=Session::get('qrcode');
                             $invoice=Session::get('invoice');
                             $date=Session::get('date')
-
                     ?>
-       
 		    	</address>
     		</div>
            <center> <h1>S-Cuốn</h1> </center>
@@ -26,12 +22,12 @@
     				<tbody>
              
                     <tr style="text-align:left">
-    						<td class="pull-right"><strong>Invoice No  </strong></td>
+    						<td class="pull-right"><strong>Mã Hóa Đơn  </strong></td>
     						<td style="text-align:left">: {{ $invoice }}</td>
     					</tr>
                   
     					<tr style="text-align=left">
-    						<td class="pull-right" style="text-align:left"><strong>Customer Name  </strong></td>
+    						<td class="pull-right" style="text-align:left"><strong>Tên Khách Hàng  </strong></td>
     						<td style="text-align:left">: {{  Auth::user()->name  }}</td>
     					</tr>
                         <tr style="text-align=left">
@@ -40,18 +36,18 @@
     					</tr>
 
                         <tr style="text-align=left">
-    						<td class="pull-right" style="text-align:left"><strong>Status  </strong></td>
-    						<td style="text-align:left">: Unpaid</td>
+    						<td class="pull-right" style="text-align:left"><strong>Trạng Thái  </strong></td>
+    						<td style="text-align:left">: Chưa Thanh Toán</td>
     					</tr>
 
                         <tr style="text-align=left">
-    						<td class="pull-right" style="text-align:left"><strong>Payment Method  </strong></td>
-    						<td style="text-align:left">: Cash on Delivery</td>
+    						<td class="pull-right" style="text-align:left"><strong>Phương Thức Thanh Toán  </strong></td>
+    						<td style="text-align:left">: Thanh Toán Khi Nhận Hàng (COD)</td>
     					</tr>
     					
     					<tr style="text-align=left">
                          
-    						<td class="pull-right" style="text-align:left"><strong>Date  </strong></td>
+    						<td class="pull-right" style="text-align:left"><strong>Ngày  </strong></td>
     						<td  style="text-align:left">: {{ $date }}</td>
                            
     					</tr>
@@ -64,7 +60,7 @@
         <hr>
     	<div class="row">
     		<div class="span8">
-    			<h2 style="margin-left:20px;">Product Details</h2>
+    			<h2 style="margin-left:20px;">Chi Tiết Sản Phẩm</h2>
     		</div>
     	</div>
     	<div class="row">
@@ -72,19 +68,19 @@
 		  		<table class="table table-bordered" id="customers" style="border:2px solid;margin-left:20px;margin-right:20px !important;width:95%!important;">
 					<thead>
 						<tr  style="border:2px solid;text-align:center;">
-                          <th style="text-align:center;">Product</th>
-							<th style="margin-left:20px;text-align:center;">Price</th>
-                          <th style="margin-left:20px;text-align:center;">Quantity</th>
-							<th style="margin-left:20px;text-align:center;">Subtotal</th>
+                          <th style="text-align:center;">Sản Phẩm</th>
+							<th style="margin-left:20px;text-align:center;">Giá</th>
+                          <th style="margin-left:20px;text-align:center;">Số Lượng</th>
+							<th style="margin-left:20px;text-align:center;">Thành Tiền</th>
 						</tr>
 					</thead>
 					<tbody>
                     @foreach($products as $product)
 					<tr style="border:2px solid;">
 						<td style="margin-left:20px;">{{ $product->name }}</td>
-						<td style="margin-left:20px;">{{ $product->price }}</td>
+						<td style="margin-left:20px;">{{ number_format($product->price * 1000, 0, ',', '.') }} VNĐ</td>
 						<td style="margin-left:20px;">{{ $product->quantity }}</td>
-                      <td style="margin-left:20px;">{{ $product->subtotal }} Tk</td>
+                      <td style="margin-left:20px;">{{ number_format($product->subtotal * 1000, 0, ',', '.') }} VNĐ</td>
 						</tr>
                     @endforeach
                     @foreach($extra_charge as $charge)
@@ -92,26 +88,26 @@
 						<td style="margin-left:20px;">{{ $charge->name }}</td>
 						<td style="margin-left:20px;"></td>
 						<td style="margin-left:20px;"></td>
-                      <td style="margin-left:20px;">{{ $charge->price }} Tk</td>
+                      <td style="margin-left:20px;">{{ number_format($charge->price * 1000, 0, ',', '.') }} VNĐ</td>
 						</tr>
                     @endforeach
             <tr><td colspan="4"></td></tr>
 <tr>
 							<td colspan="2">&nbsp;</td>
-							<td><strong>Total</strong></td>
-							<td><strong>{{  $without_discount_price }} Tk</strong></td>
+							<td><strong>Tổng Tiền</strong></td>
+							<td><strong>{{ number_format($without_discount_price * 1000, 0, ',', '.') }} VNĐ</strong></td>
 						</tr>
             <tr><td colspan="4"></td></tr>
 <tr>
 							<td colspan="2">&nbsp;</td>
-							<td><strong>Discount</strong></td>
-							<td><strong>{{  $discount_price }} Tk</strong></td>
+							<td><strong>Giảm Giá</strong></td>
+							<td><strong>{{ number_format($discount_price * 1000, 0, ',', '.') }} VNĐ</strong></td>
 						</tr>
             <tr><td colspan="4"></td></tr>
 <tr>
 							<td colspan="2">&nbsp;</td>
-							<td><strong>Total</strong></td>
-							<td><strong>{{  $total }} Tk</strong></td>
+							<td><strong>Tổng Cộng</strong></td>
+							<td><strong>{{ number_format($total * 1000, 0, ',', '.') }} VNĐ</strong></td>
 						</tr>
 					</tbody>
 				</table>
@@ -125,31 +121,23 @@
 
   		<div class="row" style="margin-left:20px;">
           <div class="span3" style="font-size:16px;">
-  		        <strong>S-Cuốn Admin</strong>
+  		        <strong>S-Cuốn</strong>
   	    	</div>
             <br>
   	    	<div class="span3">
-  		        <strong>Điện thoại:</strong> (+84) 1824072334
+  		        <strong>Điện Thoại:</strong> (+84) 1900 1234
   	    	</div>
   	    	<div class="span3">
-  		        <strong>Email:</strong> <a href="mailto:cajunkinghanoi@gmail.com">cajunkinghanoi@gmail.com</a>
+  		        <strong>Email:</strong> <a href="mailto:info@scuon.vn">info@scuon.vn</a>
   	    	</div>
   	    	<div class="span3" style="margin-top: 10px;">
-  		        <strong>Địa chỉ:</strong> Số 93B, Phố New Eskaton, Quận Hoàn Kiếm, Hà Nội, Việt Nam
+  		        <strong>Địa Chỉ:</strong> Số 93B, Phố New Eskaton, Quận Hoàn Kiếm, Hà Nội, Việt Nam
   	    	</div>
   	    
   		</div>
     </div>
 
     <style>
-
-
-
-
-
-
-
-
         #customers {
   font-family: Arial, Helvetica, sans-serif;
   border-collapse: collapse;
@@ -268,6 +256,4 @@ body{
     background: lighten(green, 50%);
   }
 }
-
-
     </style>
