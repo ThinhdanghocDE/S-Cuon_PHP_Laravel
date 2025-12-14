@@ -526,8 +526,8 @@ class AdminController extends Controller
 
 
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Your order approved by RMS.Your order Invoice no - '.$id.' & Delivery Time (approximately) - '.$req->time,
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Đơn hàng của bạn đã được S-Cuốn chấp nhận. Mã hóa đơn - '.$id.' & Thời gian giao hàng (dự kiến) - '.$req->time,
         ];
 
         $products=DB::table('carts')->where('invoice_no',$id)->get();
@@ -545,8 +545,8 @@ class AdminController extends Controller
         if($status!="approve")
         {
             $details = [
-                'title' => 'Mail from RMS Admin',
-                'body' => 'Your order Invoice no - '.$id.' Delivery Time (approximately) - '.$req->time,
+                'title' => 'Thông Báo Từ S-Cuốn',
+                'body' => 'Đơn hàng của bạn đã được chấp nhận. Mã hóa đơn - '.$id.' & Thời gian giao hàng (dự kiến) - '.$req->time,
             ];
 
             
@@ -567,8 +567,8 @@ class AdminController extends Controller
         {
 
             $details = [
-                'title' => 'Mail from RMS Admin',
-                'body' => 'Your order approved by RMS.Your order Invoice no - '.$id.' & Delivery Remaining Time (approximately) - '.$req->time,
+                'title' => 'Thông Báo Từ S-Cuốn',
+                'body' => 'Đơn hàng của bạn đã được S-Cuốn cập nhật. Mã hóa đơn - '.$id.' & Thời gian giao hàng còn lại (dự kiến) - '.$req->time,
             ];
 
             
@@ -652,8 +652,8 @@ class AdminController extends Controller
         {
 
             $details = [
-                'title' => 'Mail from RMS Admin',
-                'body' => 'Sorry Sir.Your order cancelled by RMS for inevitable reason.You will get your money back within 8 working days..Your order Invoice no - '.$id,
+                'title' => 'Thông Báo Từ S-Cuốn',
+                'body' => 'Xin lỗi quý khách. Đơn hàng của bạn đã bị hủy bởi S-Cuốn vì lý do không thể tránh khỏi. Bạn sẽ nhận lại tiền trong vòng 8 ngày làm việc. Mã hóa đơn - '.$id,
             ];
 
 
@@ -663,8 +663,8 @@ class AdminController extends Controller
 
 
             $details = [
-                'title' => 'Mail from RMS Admin',
-                'body' => 'Sorry Sir.Your order cancelled by RMS for inevitable reason.Your order Invoice no - '.$id,
+                'title' => 'Thông Báo Từ S-Cuốn',
+                'body' => 'Xin lỗi quý khách. Đơn hàng của bạn đã bị hủy bởi S-Cuốn vì lý do không thể tránh khỏi. Mã hóa đơn - '.$id,
             ];
 
 
@@ -826,8 +826,8 @@ class AdminController extends Controller
 
 
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Your order delivered by RMS.Your order Invoice no - '.$id,
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Đơn hàng của bạn đã được S-Cuốn giao thành công. Mã hóa đơn - '.$id,
         ];
 
         $products=DB::table('carts')->where('invoice_no',$id)->get();
@@ -954,8 +954,8 @@ class AdminController extends Controller
 
 
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Congrats ! You are selected as a '.$usertype.' ( Salary - '.$req->salary.'Tk ) of RMS by RMS Admin Panel. Your Email ID - '.$req->email. ' & Password - '.$req->password,
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Chúc mừng ! Bạn đã được chọn làm '.$usertype.' ( Lương - '.number_format($req->salary * 1000, 0, ',', '.').' VNĐ ) của S-Cuốn bởi Bảng Điều Khiển Admin. Email của bạn - '.$req->email. ' & Mật khẩu - '.$req->password,
         ];
 
 
@@ -983,8 +983,8 @@ class AdminController extends Controller
         }
 
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Sorry ! You have been fired from your job by RMS Admin Panel.So, your account is deleted by RMS Admin Panel.',
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Xin lỗi ! Bạn đã bị sa thải khỏi công việc bởi Bảng Điều Khiển Admin S-Cuốn. Vì vậy, tài khoản của bạn đã bị xóa bởi Bảng Điều Khiển Admin S-Cuốn.',
         ];
 
 
@@ -1099,8 +1099,8 @@ class AdminController extends Controller
         if($update)
         {
             $details = [
-                'title' => 'Mail from RMS Admin',
-                'body' => 'Congrats ! Your information is updated by RMS Admin Panel.',
+                'title' => 'Thông Báo Từ S-Cuốn',
+                'body' => 'Chúc mừng ! Thông tin của bạn đã được cập nhật bởi Bảng Điều Khiển Admin S-Cuốn.',
             ];
     
     
@@ -1109,8 +1109,8 @@ class AdminController extends Controller
     
                 
                 $details = [
-                    'title' => 'Mail from RMS Admin',
-                    'body' => 'Congrats ! You are promoted for a '.$usertype.' position. ( Now, Your salary - '.$req->salary.'Tk ) of RMS by RMS Admin Panel.',
+                    'title' => 'Thông Báo Từ S-Cuốn',
+                    'body' => 'Chúc mừng ! Bạn đã được thăng chức lên vị trí '.$usertype.'. ( Hiện tại, Lương của bạn - '.number_format($req->salary * 1000, 0, ',', '.').' VNĐ ) của S-Cuốn bởi Bảng Điều Khiển Admin.',
                 ];
     
     
@@ -1120,8 +1120,8 @@ class AdminController extends Controller
     
     
                 $details = [
-                    'title' => 'Mail from RMS Admin',
-                    'body' => 'Sorry ! You are depromoted for a '.$usertype.' position. ( Now, Your salary - '.$req->salary.'Tk ) of RMS by RMS Admin Panel.',
+                    'title' => 'Thông Báo Từ S-Cuốn',
+                    'body' => 'Xin lỗi ! Bạn đã bị giáng chức xuống vị trí '.$usertype.'. ( Hiện tại, Lương của bạn - '.number_format($req->salary * 1000, 0, ',', '.').' VNĐ ) của S-Cuốn bởi Bảng Điều Khiển Admin.',
                 ];
     
     
@@ -1211,8 +1211,8 @@ class AdminController extends Controller
 
 
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Congrats ! You are selected as a Delivery Boy position ( Salary - '.$req->salary.'Tk ) of RMS by RMS Admin Panel. Your Email ID - '.$req->email. ' & Password - '.$req->password,
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Chúc mừng ! Bạn đã được chọn làm Nhân Viên Giao Hàng ( Lương - '.number_format($req->salary * 1000, 0, ',', '.').' VNĐ ) của S-Cuốn bởi Bảng Điều Khiển Admin. Email của bạn - '.$req->email. ' & Mật khẩu - '.$req->password,
         ];
 
 
@@ -1232,8 +1232,8 @@ class AdminController extends Controller
     
 
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Sorry ! You have been fired from your job by RMS Admin Panel.So, your account is deleted by RMS Admin Panel.',
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Xin lỗi ! Bạn đã bị sa thải khỏi công việc bởi Bảng Điều Khiển Admin S-Cuốn. Vì vậy, tài khoản của bạn đã bị xóa bởi Bảng Điều Khiển Admin S-Cuốn.',
         ];
 
 
@@ -1316,8 +1316,8 @@ class AdminController extends Controller
         if($update)
         {
             $details = [
-                'title' => 'Mail from RMS Admin',
-                'body' => 'Congrats ! Your information is updated by RMS Admin Panel.',
+                'title' => 'Thông Báo Từ S-Cuốn',
+                'body' => 'Chúc mừng ! Thông tin của bạn đã được cập nhật bởi Bảng Điều Khiển Admin S-Cuốn.',
             ];
     
     
@@ -1326,8 +1326,8 @@ class AdminController extends Controller
     
                 
                 $details = [
-                    'title' => 'Mail from RMS Admin',
-                    'body' => 'Congrats ! You are promoted for a  Delivery Boy position. ( Now, Your salary - '.$req->salary.'Tk ) of RMS by RMS Admin Panel.',
+                    'title' => 'Thông Báo Từ S-Cuốn',
+                    'body' => 'Chúc mừng ! Bạn đã được thăng chức lên vị trí Nhân Viên Giao Hàng. ( Hiện tại, Lương của bạn - '.number_format($req->salary * 1000, 0, ',', '.').' VNĐ ) của S-Cuốn bởi Bảng Điều Khiển Admin.',
                 ];
     
     
@@ -1337,8 +1337,8 @@ class AdminController extends Controller
     
     
                 $details = [
-                    'title' => 'Mail from RMS Admin',
-                    'body' => 'Sorry ! You are depromoted for a  Delivery Boy position. ( Now, Your salary - '.$req->salary.'Tk ) of RMS by RMS Admin Panel.',
+                    'title' => 'Thông Báo Từ S-Cuốn',
+                    'body' => 'Xin lỗi ! Bạn đã bị giáng chức xuống vị trí Nhân Viên Giao Hàng. ( Hiện tại, Lương của bạn - '.number_format($req->salary * 1000, 0, ',', '.').' VNĐ ) của S-Cuốn bởi Bảng Điều Khiển Admin.',
                 ];
     
     
@@ -1846,6 +1846,289 @@ class AdminController extends Controller
 
 
 
+    }
+
+    // ============================================
+    // POST MANAGEMENT METHODS
+    // ============================================
+
+    /**
+     * Danh sách bài viết (admin)
+     */
+    public function posts()
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        $posts = DB::table('posts')
+            ->join('users', 'posts.author_id', '=', 'users.id')
+            ->select('posts.*', 'users.name as author_name')
+            ->orderBy('posts.created_at', 'desc')
+            ->get();
+
+        return view('admin.posts', compact('posts'));
+    }
+
+    /**
+     * Form thêm bài viết
+     */
+    public function add_post()
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        return view('admin.add_post');
+    }
+
+    /**
+     * Xử lý thêm bài viết
+     */
+    public function post_add_process(Request $req)
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        try {
+            $validated = $req->validate([
+                'title' => 'required|string|min:5|max:255',
+                'content' => 'required|string|min:50',
+                'excerpt' => 'nullable|string|max:500',
+                'category' => 'required|in:general,news,promotion,recipe',
+                'status' => 'required|in:draft,published,archived',
+                'featured_image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+                'meta_title' => 'nullable|string|max:255',
+                'meta_description' => 'nullable|string|max:500',
+            ], [
+                'title.required' => 'Vui lòng nhập tiêu đề bài viết.',
+                'title.min' => 'Tiêu đề phải có ít nhất 5 ký tự.',
+                'content.required' => 'Vui lòng nhập nội dung bài viết.',
+                'content.min' => 'Nội dung phải có ít nhất 50 ký tự.',
+                'category.required' => 'Vui lòng chọn danh mục.',
+                'status.required' => 'Vui lòng chọn trạng thái.',
+                'featured_image.image' => 'File phải là hình ảnh.',
+                'featured_image.max' => 'Kích thước ảnh không được vượt quá 5MB.',
+            ]);
+
+            $data = [
+                'title' => $req->title,
+                'slug' => \Illuminate\Support\Str::slug($req->title),
+                'content' => $req->content,
+                'excerpt' => $req->excerpt ?? null,
+                'category' => $req->category,
+                'status' => $req->status,
+                'author_id' => Auth::user()->id,
+                'is_featured' => $req->has('is_featured') ? 1 : 0,
+                'meta_title' => $req->meta_title ?? null,
+                'meta_description' => $req->meta_description ?? null,
+                'published_at' => $req->status == 'published' ? now() : null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+
+            // Upload ảnh
+            if($req->hasFile('featured_image')) {
+                $uploadedfile = $req->file('featured_image');
+                $new_image = rand().'.'.$uploadedfile->getClientOriginalExtension();
+                $uploadedfile->move(public_path('/assets/images/'), $new_image);
+                $data['featured_image'] = $new_image;
+            }
+
+            // Kiểm tra slug trùng lặp
+            $slug_count = DB::table('posts')->where('slug', $data['slug'])->count();
+            if($slug_count > 0) {
+                $data['slug'] = $data['slug'] . '-' . time();
+            }
+
+            DB::table('posts')->insert($data);
+
+            session()->flash('success', 'Bài viết đã được thêm thành công!');
+            return redirect()->route('admin.posts');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return redirect()->route('admin.posts.add')->withErrors($e->validator)->withInput();
+        } catch (\Exception $e) {
+            session()->flash('wrong', 'Có lỗi xảy ra: ' . $e->getMessage());
+            return redirect()->route('admin.posts.add')->withInput();
+        }
+    }
+
+    /**
+     * Form sửa bài viết
+     */
+    public function post_edit($id)
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        $post = DB::table('posts')->where('id', $id)->first();
+        
+        if(!$post) {
+            session()->flash('wrong', 'Bài viết không tồn tại!');
+            return redirect()->route('admin.posts');
+        }
+
+        return view('admin.edit_post', compact('post'));
+    }
+
+    /**
+     * Xử lý sửa bài viết
+     */
+    public function post_edit_process(Request $req, $id)
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        $validated = $req->validate([
+            'title' => 'required|string|min:5|max:255',
+            'content' => 'required|string|min:50',
+            'excerpt' => 'nullable|string|max:500',
+            'category' => 'required|in:general,news,promotion,recipe',
+            'status' => 'required|in:draft,published,archived',
+            'featured_image' => 'nullable|image|mimes:jpeg,jpg,png|max:5120',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string|max:500',
+        ], [
+            'title.required' => 'Vui lòng nhập tiêu đề bài viết.',
+            'title.min' => 'Tiêu đề phải có ít nhất 5 ký tự.',
+            'content.required' => 'Vui lòng nhập nội dung bài viết.',
+            'content.min' => 'Nội dung phải có ít nhất 50 ký tự.',
+            'category.required' => 'Vui lòng chọn danh mục.',
+            'status.required' => 'Vui lòng chọn trạng thái.',
+            'featured_image.image' => 'File phải là hình ảnh.',
+            'featured_image.max' => 'Kích thước ảnh không được vượt quá 5MB.',
+        ]);
+
+        $post = DB::table('posts')->where('id', $id)->first();
+        
+        if(!$post) {
+            session()->flash('wrong', 'Bài viết không tồn tại!');
+            return redirect()->route('admin.posts');
+        }
+
+        $data = [
+            'title' => $req->title,
+            'slug' => \Illuminate\Support\Str::slug($req->title),
+            'content' => $req->content,
+            'excerpt' => $req->excerpt ?? null,
+            'category' => $req->category,
+            'status' => $req->status,
+            'is_featured' => $req->has('is_featured') ? 1 : 0,
+            'meta_title' => $req->meta_title ?? null,
+            'meta_description' => $req->meta_description ?? null,
+            'updated_at' => now(),
+        ];
+
+        // Cập nhật published_at nếu chuyển sang published
+        if($req->status == 'published' && $post->status != 'published') {
+            $data['published_at'] = now();
+        }
+
+        // Kiểm tra slug trùng lặp (trừ chính nó)
+        $slug_count = DB::table('posts')
+            ->where('slug', $data['slug'])
+            ->where('id', '!=', $id)
+            ->count();
+        if($slug_count > 0) {
+            $data['slug'] = $data['slug'] . '-' . time();
+        }
+
+        // Upload ảnh mới nếu có
+        if($req->hasFile('featured_image')) {
+            // Xóa ảnh cũ nếu có
+            if($post->featured_image && file_exists(public_path('/assets/images/'.$post->featured_image))) {
+                unlink(public_path('/assets/images/'.$post->featured_image));
+            }
+
+            $uploadedfile = $req->file('featured_image');
+            $new_image = rand().'.'.$uploadedfile->getClientOriginalExtension();
+            $uploadedfile->move(public_path('/assets/images/'), $new_image);
+            $data['featured_image'] = $new_image;
+        }
+
+        DB::table('posts')->where('id', $id)->update($data);
+
+        session()->flash('success', 'Bài viết đã được cập nhật thành công!');
+        return redirect()->route('admin.posts');
+    }
+
+    /**
+     * Xóa bài viết
+     */
+    public function post_delete($id)
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        $post = DB::table('posts')->where('id', $id)->first();
+        
+        if(!$post) {
+            session()->flash('wrong', 'Bài viết không tồn tại!');
+            return back();
+        }
+
+        // Xóa ảnh nếu có
+        if($post->featured_image && file_exists(public_path('/assets/images/'.$post->featured_image))) {
+            unlink(public_path('/assets/images/'.$post->featured_image));
+        }
+
+        DB::table('posts')->where('id', $id)->delete();
+
+        session()->flash('success', 'Bài viết đã được xóa thành công!');
+        return back();
+    }
+
+    /**
+     * Đổi trạng thái bài viết
+     */
+    public function post_change_status(Request $req, $id)
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        $post = DB::table('posts')->where('id', $id)->first();
+        
+        if(!$post) {
+            return response()->json(['success' => false, 'message' => 'Bài viết không tồn tại!']);
+        }
+
+        $status = $req->status;
+        $data = ['status' => $status];
+
+        if($status == 'published' && $post->status != 'published') {
+            $data['published_at'] = now();
+        }
+
+        DB::table('posts')->where('id', $id)->update($data);
+
+        return response()->json(['success' => true, 'message' => 'Trạng thái đã được cập nhật!']);
+    }
+
+    /**
+     * Đánh dấu nổi bật/không nổi bật
+     */
+    public function post_toggle_featured($id)
+    {
+        if(!Auth::user() || Auth::user()->usertype != '1') {
+            return redirect('/');
+        }
+
+        $post = DB::table('posts')->where('id', $id)->first();
+        
+        if(!$post) {
+            return response()->json(['success' => false, 'message' => 'Bài viết không tồn tại!']);
+        }
+
+        $new_featured = $post->is_featured == 1 ? 0 : 1;
+        DB::table('posts')->where('id', $id)->update(['is_featured' => $new_featured]);
+
+        $message = $new_featured == 1 ? 'Đã đánh dấu nổi bật!' : 'Đã bỏ đánh dấu nổi bật!';
+        return response()->json(['success' => true, 'message' => $message, 'is_featured' => $new_featured]);
     }
 
 

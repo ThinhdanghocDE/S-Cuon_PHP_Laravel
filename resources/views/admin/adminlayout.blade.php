@@ -144,6 +144,15 @@
               <span class="menu-title">Đầu Bếp</span>
             </a>
           </li>
+
+          <li class="nav-item menu-items">
+            <a class="nav-link" href="{{ route('admin.posts') }}">
+              <span class="menu-icon">
+                <i class="mdi mdi-file-document"></i>
+              </span>
+              <span class="menu-title">Bài Viết</span>
+            </a>
+          </li>
           @endif
 
           <li class="nav-item menu-items">

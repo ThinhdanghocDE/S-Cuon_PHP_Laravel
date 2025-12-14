@@ -234,3 +234,25 @@ Route::get('/recruitment', function () {
 Route::get('/invoice-lookup', function () {
     return view('footer.invoice-lookup');
 })->name('invoice-lookup');
+
+// ============================================
+// POST ROUTES - CLIENT SIDE
+// ============================================
+use App\Http\Controllers\PostController;
+
+Route::get('/bai-viet', [PostController::class, 'index'])->name('posts.index');
+Route::get('/bai-viet/{slug}', [PostController::class, 'show'])->name('posts.show');
+Route::get('/bai-viet/danh-muc/{category}', [PostController::class, 'category'])->name('posts.category');
+
+// ============================================
+// POST ROUTES - ADMIN SIDE
+// ============================================
+
+Route::get('/admin/posts', [AdminController::class, 'posts'])->name('admin.posts');
+Route::get('/admin/posts/add', [AdminController::class, 'add_post'])->name('admin.posts.add');
+Route::post('/admin/posts/add/process', [AdminController::class, 'post_add_process'])->name('admin.posts.add.process');
+Route::get('/admin/posts/edit/{id}', [AdminController::class, 'post_edit'])->name('admin.posts.edit');
+Route::post('/admin/posts/edit/process/{id}', [AdminController::class, 'post_edit_process'])->name('admin.posts.edit.process');
+Route::get('/admin/posts/delete/{id}', [AdminController::class, 'post_delete'])->name('admin.posts.delete');
+Route::post('/admin/posts/status/{id}', [AdminController::class, 'post_change_status'])->name('admin.posts.status');
+Route::post('/admin/posts/featured/{id}', [AdminController::class, 'post_toggle_featured'])->name('admin.posts.featured');
