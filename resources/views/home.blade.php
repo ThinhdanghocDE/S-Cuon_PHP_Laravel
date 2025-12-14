@@ -169,7 +169,8 @@
                                         ?>
 
                                         <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                                            <div class="tab-item" style="height: 100%;">
+                                            <a href="{{ route('product.show', $item->id) }}" style="text-decoration: none; display: block; color: inherit;">
+                                            <div class="tab-item" style="height: 100%; cursor: pointer; transition: transform 0.3s ease;">
                                                 <img src="{{ asset('assets/images/'.$item->image)}}" alt="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                                                 <h4>{{ $item->name }}</h4>
                                                 <p>{{  $item->description }}</p>
@@ -230,7 +231,8 @@
                                         ?>
 
                                         <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                                            <div class="tab-item" style="height: 100%;">
+                                            <a href="{{ route('product.show', $item->id) }}" style="text-decoration: none; display: block; color: inherit;">
+                                            <div class="tab-item" style="height: 100%; cursor: pointer; transition: transform 0.3s ease;">
                                                 <img src="{{ asset('assets/images/'.$item->image)}}" alt="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                                                 <h4>{{ $item->name }}</h4>
                                                 <p>{{  $item->description }}</p>
@@ -247,6 +249,7 @@
                                                     <span class="rating_avg">({{  $per_rate}})</span>
                                                 </span>
                                             </div>
+                                            </a>
                                         </div>
 
                                     @endforeach
@@ -290,7 +293,8 @@
                                         ?>
 
                                         <div class="col-lg-6 col-md-6 col-sm-12 mb-4">
-                                            <div class="tab-item" style="height: 100%;">
+                                            <a href="{{ route('product.show', $item->id) }}" style="text-decoration: none; display: block; color: inherit;">
+                                            <div class="tab-item" style="height: 100%; cursor: pointer; transition: transform 0.3s ease;">
                                                 <img src="{{ asset('assets/images/'.$item->image)}}" alt="" style="width: 100%; height: 200px; object-fit: cover; border-radius: 10px;">
                                                 <h4>{{ $item->name }}</h4>
                                                 <p>{{  $item->description }}</p>
@@ -307,6 +311,7 @@
                                                     <span class="rating_avg">({{  $per_rate}})</span>
                                                 </span>
                                             </div>
+                                            </a>
                                         </div>
 
                                     @endforeach
@@ -348,6 +353,7 @@
                         $img=$product->image;
                         $imgUrl = asset('assets/images/'.$img);
                     ?>
+                        <a href="{{ route('product.show', $product->id) }}" style="text-decoration: none; display: block; cursor: pointer;">
                         <div class="card" data-bg-image="{{ $imgUrl }}">
                             <div class="price"><h6>{{ number_format((float)$product->price * 1000, 0, ',', '.') }} VNĐ</h6>
                             @if($product->available!="Stock")
@@ -411,6 +417,7 @@
                               
                             </div>
                         </div>
+                        </a>
                     </div>
                    
                     @endforeach
@@ -419,6 +426,85 @@
         </div>
     </section>
     <!-- ***** Menu Area Ends ***** -->
+
+    <!-- ***** Featured Posts Area Starts ***** -->
+    @if(isset($featured_posts) && $featured_posts->count() > 0)
+    <section class="section" id="featured-posts" style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 80px 0;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 offset-lg-4 text-center">
+                    <div class="section-heading">
+                        <h6 style="font-size: 18px; color: #fb5849; font-weight: 600; letter-spacing: 2px; margin-bottom: 15px;">BÀI VIẾT NỔI BẬT</h6>
+                        <h2 style="font-family: 'Dancing Script', cursive; font-size: 48px; color: #333; font-weight: 700; margin-bottom: 50px;">Tin Tức & Sự Kiện</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                @foreach($featured_posts as $post)
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <a href="{{ route('posts.show', $post->slug) }}" style="text-decoration: none; display: block; color: inherit;">
+                        <div class="post-card" style="background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1); transition: all 0.3s ease; height: 100%;">
+                            <div class="post-image" style="width: 100%; height: 250px; overflow: hidden; position: relative;">
+                                @if($post->featured_image)
+                                    <img src="{{ asset('assets/images/'.$post->featured_image) }}" alt="{{ $post->title }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s ease;">
+                                @else
+                                    <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #fb5849 0%, #d15400 100%); display: flex; align-items: center; justify-content: center;">
+                                        <i class="fa fa-file-text-o" style="font-size: 60px; color: #fff; opacity: 0.5;"></i>
+                                    </div>
+                                @endif
+                                <div class="post-category" style="position: absolute; top: 15px; right: 15px; background: rgba(251, 88, 73, 0.9); color: #fff; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; text-transform: uppercase;">
+                                    @if($post->category == 'general') Tổng hợp
+                                    @elseif($post->category == 'news') Tin tức
+                                    @elseif($post->category == 'promotion') Khuyến mãi
+                                    @elseif($post->category == 'recipe') Công thức
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="post-content" style="padding: 25px;">
+                                <h4 style="font-size: 22px; font-weight: 700; color: #333; margin-bottom: 15px; line-height: 1.4; min-height: 60px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ $post->title }}
+                                </h4>
+                                @if($post->excerpt)
+                                <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ $post->excerpt }}
+                                </p>
+                                @else
+                                <p style="color: #666; font-size: 14px; line-height: 1.6; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">
+                                    {{ Str::limit(strip_tags($post->content), 120) }}
+                                </p>
+                                @endif
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
+                                    <span style="color: #999; font-size: 13px;">
+                                        <i class="fa fa-calendar"></i> 
+                                        @if($post->published_at)
+                                            {{ \Carbon\Carbon::parse($post->published_at)->format('d/m/Y') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($post->created_at)->format('d/m/Y') }}
+                                        @endif
+                                    </span>
+                                    <span style="color: #fb5849; font-weight: 600; font-size: 14px;">
+                                        Đọc thêm <i class="fa fa-arrow-right" style="margin-left: 5px;"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                @endforeach
+            </div>
+            @if($featured_posts->count() >= 3)
+            <div class="row mt-4">
+                <div class="col-lg-12 text-center">
+                    <a href="{{ route('posts.index') }}" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #fb5849 0%, #d15400 100%); color: #fff; border-radius: 30px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(251, 88, 73, 0.3);">
+                        Xem Tất Cả Bài Viết <i class="fa fa-arrow-right" style="margin-left: 8px;"></i>
+                    </a>
+                </div>
+            </div>
+            @endif
+        </div>
+    </section>
+    @endif
+    <!-- ***** Featured Posts Area Ends ***** -->
 
     <!-- ***** Chefs Area Starts ***** -->
     <section class="section" id="chefs">
@@ -571,6 +657,42 @@
    
     
    @endsection
+
+@push('styles')
+<style>
+    /* Featured Posts Hover Effects */
+    .post-card {
+        transition: all 0.3s ease;
+    }
+    
+    .post-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15) !important;
+    }
+    
+    .post-card:hover .post-image img {
+        transform: scale(1.1);
+    }
+    
+    .post-card:hover .post-content h4 {
+        color: #fb5849;
+    }
+    
+    .post-card:hover .post-content span:last-child {
+        transform: translateX(5px);
+    }
+    
+    @media (max-width: 768px) {
+        #featured-posts {
+            padding: 60px 0 !important;
+        }
+        
+        .post-card {
+            margin-bottom: 30px;
+        }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>

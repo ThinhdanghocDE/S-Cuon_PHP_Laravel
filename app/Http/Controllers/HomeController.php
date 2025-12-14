@@ -84,6 +84,13 @@ class HomeController extends Controller
 
         $chefs=DB::table('chefs')->get();
 
+        // Lấy bài viết nổi bật (is_featured = 1, status = published)
+        $featured_posts = DB::table('posts')
+            ->where('is_featured', 1)
+            ->where('status', 'published')
+            ->orderBy('published_at', 'desc')
+            ->limit(3) // Hiển thị tối đa 3 bài viết
+            ->get();
 
         if(Auth::user())
         {
@@ -104,7 +111,7 @@ class HomeController extends Controller
 
 
 
-        return view("home",compact('menu','breakfast','lunch','dinner','chefs','cart_amount','about_us','banners'));
+        return view("home",compact('menu','breakfast','lunch','dinner','chefs','cart_amount','about_us','banners','featured_posts'));
     }
 
     public function redirects(){
@@ -344,14 +351,14 @@ class HomeController extends Controller
 
         
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Your reservation have been Placed Successfully'
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Đặt bàn của bạn đã được đặt thành công'
         ];
        
        // \Mail::to(Auth::user()->email)->send(new \App\Mail\ReserveMail($details));
      
-       $data["title"] = "From RMS admin";
-       $data["body"] = "Your reservation have been Placed Successfully";
+       $data["title"] = "Thông Báo Từ S-Cuốn";
+       $data["body"] = "Đặt bàn của bạn đã được đặt thành công";
 
 
         /*
@@ -362,7 +369,7 @@ class HomeController extends Controller
         
         \Mail::send('mails.ReserveMail', $data, function($message)use($data, $files) {
             $message->to(Auth::user()->email)
-                    ->subject('Mail from RMS Admin');
+                    ->subject('Thông Báo Từ S-Cuốn');
  
             foreach ($files as $file){
                 $message->attach($file);
