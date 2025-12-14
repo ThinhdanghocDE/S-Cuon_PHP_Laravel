@@ -303,8 +303,8 @@ class SslCommerzPaymentController extends Controller
    
        
        $details = [
-           'title' => 'Mail from RMS Admin',
-           'body' => 'Your order have been Placed Successfully.Your order Invoice no - '.$invoice. 'ok',
+           'title' => 'Thông Báo Từ S-Cuốn',
+           'body' => 'Đơn hàng của bạn đã được đặt thành công. Mã hóa đơn - '.$invoice,
        ];
       
        // \Mail::to(Auth::user()->email)->send(new \App\Mail\PaymentMail($details));
@@ -338,7 +338,7 @@ class SslCommerzPaymentController extends Controller
 
        Session::put('qrcode',$qrcode);
 
-       $data['title']='Mail from RMS Admin';
+       $data['title']='Thông Báo Từ S-Cuốn';
 
       
       //return view('mails.PaymentMail');

@@ -182,16 +182,16 @@ class ShipmentController extends Controller
         $carts = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->update($data);
         /*
         $details = [
-            'title' => 'Mail from RMS Admin',
-            'body' => 'Your order have been Placed Successfully.Your order Invoice no - '.$invoice. 'ok',
+            'title' => 'Thông Báo Từ S-Cuốn',
+            'body' => 'Đơn hàng của bạn đã được đặt thành công. Mã hóa đơn - '.$invoice,
         ];
        
         \Mail::to(Auth::user()->email)->send(new \App\Mail\PaymentMail($details));
 
         */
 
-        $data["title"] = "From RMS admin";
-        $data["body"] = "Your reservation have been Placed Successfully";
+        $data["title"] = "Thông Báo Từ S-Cuốn";
+        $data["body"] = "Đặt bàn của bạn đã được đặt thành công";
  
  
          /*
@@ -202,7 +202,7 @@ class ShipmentController extends Controller
          
          \Mail::send('mails.ReserveMail', $data, function($message)use($data, $files) {
              $message->to(Auth::user()->email)
-                     ->subject('Mail from RMS Admin');
+                     ->subject('Thông Báo Từ S-Cuốn');
   
              foreach ($files as $file){
                  $message->attach($file);
