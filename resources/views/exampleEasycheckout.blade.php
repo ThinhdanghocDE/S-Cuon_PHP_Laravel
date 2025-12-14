@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="SSLCommerz">
-    <title>MidwayCafe</title>
+    <title>S-Cuốn</title>
 
 
 
@@ -33,7 +33,7 @@
 <body class="bg-light">
 <div class="container">
     <div class="py-5 text-center">
-        <h2>MidwayCafe</h2>
+        <h2>S-Cuốn</h2>
 
       
     </div>
