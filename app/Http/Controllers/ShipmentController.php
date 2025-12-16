@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Mail\OrderShipped;
 use App\Models\Order;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Auth;
 use PDF;
 use QrCode;
@@ -58,9 +60,56 @@ class ShipmentController extends Controller
     }
     public function place_order($total)
     {
+        // Guest vẫn được đặt hàng (COD). Giỏ guest lấy từ session.
         if(!Auth::user())
         {
-            return redirect()->route('login');
+            // Nếu vừa đặt hàng xong (order_success) thì load lại từ DB theo invoice
+            if (Session::has('order_success') && Session::has('invoice') && !Session::has('vnpay_payment_success')) {
+                $invoice = Session::get('invoice');
+                $cart_items = DB::table('carts')
+                    ->leftJoin('products', 'carts.product_id', '=', 'products.id')
+                    ->where('carts.product_order', 'yes')
+                    ->where('carts.invoice_no', $invoice)
+                    ->select(
+                        'carts.*',
+                        DB::raw('COALESCE(products.name, carts.name) as product_name'),
+                        'products.image as product_image',
+                        'products.price as product_price'
+                    )
+                    ->get();
+
+                // Nếu không join được image thì fallback (tránh lỗi view)
+                $cart_items = $cart_items->map(function ($item) {
+                    if (empty($item->product_image)) {
+                        $item->product_image = 'default-food.jpg';
+                    }
+                    return $item;
+                });
+
+                // Tổng lấy từ session (đã cộng extra_charge ở bước send)
+                $total = Session::get('total', $total);
+                return view('place_order', compact('total', 'cart_items'));
+            }
+
+            $guestCart = Session::get('guest_cart', []);
+            // Enrich dữ liệu để view `place_order` dùng được product_name/product_image/product_price
+            $cart_items = collect($guestCart)->map(function ($item) {
+                $product = DB::table('products')->where('id', $item['product_id'])->first();
+
+                return (object) array_merge($item, [
+                    'product_name' => $product->name ?? $item['name'] ?? 'Sản phẩm',
+                    'product_image' => $product->image ?? 'default-food.jpg',
+                    'product_price' => $product->price ?? $item['price'] ?? 0,
+                ]);
+            });
+
+            // Nếu guest cart rỗng thì quay lại giỏ
+            if ($cart_items->count() === 0) {
+                session()->flash('wrong', 'Giỏ hàng của bạn đang trống!');
+                return redirect()->route('cart');
+            }
+
+            return view('place_order', compact('total', 'cart_items'));
         }
 
         // Nếu có thông báo thành công VÀ KHÔNG phải VNPay đang chờ điền địa chỉ
@@ -95,6 +144,105 @@ class ShipmentController extends Controller
     {    
 
         $data=array();
+        $allowedHanoiDistricts = [
+            'Ba Dinh','Hoan Kiem','Hai Ba Trung','Dong Da','Tay Ho','Cau Giay','Thanh Xuan',
+            'Hoang Mai','Long Bien','Ha Dong','Bac Tu Liem','Nam Tu Liem',
+        ];
+
+        // Guest checkout (COD): tạo / lấy user theo phone/email rồi lưu carts vào DB
+        if(!Auth::user())
+        {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'phone' => 'required|string|max:20',
+                'address' => 'required|string|max:255',
+                'district' => 'required|string|in:'.implode(',', $allowedHanoiDistricts),
+            ], [
+                'name.required' => 'Vui lòng nhập họ tên',
+                'email.required' => 'Vui lòng nhập email',
+                'phone.required' => 'Vui lòng nhập số điện thoại',
+                'address.required' => 'Vui lòng nhập địa chỉ',
+                'district.required' => 'Vui lòng chọn quận nội thành Hà Nội',
+                'district.in' => 'Hiện tại chỉ hỗ trợ giao hàng nội thành Hà Nội',
+            ]);
+
+            $phone = $validated['phone'];
+            $email = $validated['email'];
+
+            $user = User::where('phone', $phone)->orWhere('email', $email)->first();
+            if (!$user) {
+                $user = User::create([
+                    'name' => $validated['name'],
+                    'email' => $email,
+                    'phone' => $phone,
+                    'password' => Hash::make(Str::random(24)),
+                    'usertype' => '0',
+                ]);
+            }
+
+            // Tạo invoice cho guest
+            $invoice = substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 8);
+            $data['pay_method'] = "Cash On Delivery";
+            $data['shipping_address'] = $validated['address'] . ', ' . $validated['district'] . ', Hà Nội, Việt Nam';
+            $data['product_order'] = "yes";
+            $data['invoice_no'] = $invoice;
+            $data['delivery_time'] = "3 hours";
+            $data['purchase_date'] = date("Y-m-d");
+
+            $guestCart = Session::get('guest_cart', []);
+            if (empty($guestCart)) {
+                session()->flash('wrong', 'Giỏ hàng của bạn đang trống!');
+                return redirect()->route('cart');
+            }
+
+            foreach ($guestCart as $item) {
+                DB::table('carts')->insert([
+                    'product_id' => $item['product_id'],
+                    'user_id' => $user->id,
+                    'product_order' => $data['product_order'],
+                    'shipping_address' => $data['shipping_address'],
+                    'invoice_no' => $data['invoice_no'],
+                    'pay_method' => $data['pay_method'],
+                    'delivery_time' => $data['delivery_time'],
+                    'purchase_date' => $data['purchase_date'],
+                    'name' => $item['name'],
+                    'price' => $item['price'],
+                    'quantity' => $item['quantity'],
+                    'subtotal' => $item['subtotal'],
+                ]);
+            }
+
+            // Clear guest cart + guest coupon
+            Session::forget('guest_cart');
+            Session::forget('guest_coupon_id');
+
+            // Tính tổng đơn
+            $total = DB::table('carts')->where('invoice_no', $invoice)->sum('subtotal');
+            $extra_charge=DB::table('charges')->get();
+            $total_extra_charge=DB::table('charges')->sum('price');
+            $total = $total + $total_extra_charge;
+
+            Session::put('invoice',$invoice);
+            Session::put('total',$total);
+            Session::put('extra_charge',$extra_charge);
+            Session::put('discount_price',0);
+            Session::put('without_discount_price',$total);
+            Session::put('date',date("Y-m-d"));
+            Session::put('order_success', true);
+
+            return redirect()->route('mails.shipped', ['total' => $total])->with('success', 'Đặt hàng thành công!');
+        }
+
+        // Logged-in (COD/VNPay): validate quận nội thành Hà Nội
+        $request->validate([
+            'address' => 'required|string|max:255',
+            'district' => 'required|string|in:'.implode(',', $allowedHanoiDistricts),
+        ], [
+            'address.required' => 'Vui lòng nhập địa chỉ',
+            'district.required' => 'Vui lòng chọn quận nội thành Hà Nội',
+            'district.in' => 'Hiện tại chỉ hỗ trợ giao hàng nội thành Hà Nội',
+        ]);
 
         // Nếu đã thanh toán VNPay, dùng invoice từ session
         if(Session::has('vnpay_payment_success') && Session::has('invoice'))
@@ -128,7 +276,7 @@ class ShipmentController extends Controller
         //return $invoice;
         
         
-        $data['shipping_address']=$request->address;
+        $data['shipping_address']=$request->address . ', ' . $request->district . ', Hà Nội, Việt Nam';
         $data['product_order']="yes";
         $data['invoice_no']=$invoice;
         // $data['pay_method'] đã được set ở trên (VNPay hoặc COD)
@@ -153,11 +301,11 @@ class ShipmentController extends Controller
         {
             foreach($products as $cart)
             {
-
-                $coupon_code=$cart->coupon_id;
-
-
-
+                if($cart->coupon_id) {
+                    // Lấy code từ coupon_id (id)
+                    $coupon_code = DB::table('coupons')->where('id', $cart->coupon_id)->value('code');
+                    break;
+                }
             }
 
          }
@@ -370,33 +518,33 @@ class ShipmentController extends Controller
     }
     public function trace()
     {
-
-        if(!Auth::user())
-        {
-
-            return redirect()->route('login');
-
-        }
-
-        
-        $carts = Cart::all()->where('user_id',Auth::user()->id)->where('product_order','yes');
-        $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
+        // Cho phép KHÔNG đăng nhập vẫn vào trang tra cứu (chỉ hiển thị form)
+        $carts = collect(); // giữ biến để không phá view cũ
+        $total_price = 0;
         return view("trace", compact('carts','total_price'));
-
-        
-
     }
 
     public function trace_confirm(Request $req)
     {
+        // Cho phép KHÔNG đăng nhập vẫn tra cứu nếu có SĐT + mã hóa đơn
+        $invoice = trim((string) $req->invoice);
+        $phone = trim((string) $req->phone);
+        $isAdminOrStaff = Auth::user() ? ((string) Auth::user()->usertype !== '0') : true;
 
-        if(!Auth::user())
-        {
-
-            return redirect()->route('login');
-
+        if ($invoice === '' || $phone === '') {
+            session()->flash('wrong','Vui lòng nhập mã hóa đơn và số điện thoại!');
+            return back();
         }
-        $carts = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','!=','no')->where('invoice_no',$req->invoice)->count();
+
+        $baseQuery = DB::table('carts')
+            ->where('product_order','!=','no')
+            ->whereRaw('LOWER(invoice_no) = LOWER(?)', [$invoice]);
+
+        if(Auth::user() && !$isAdminOrStaff) {
+            $baseQuery->where('user_id', Auth::user()->id);
+        }
+
+        $carts = (clone $baseQuery)->count();
 
         if($carts==0)
         {
@@ -406,18 +554,30 @@ class ShipmentController extends Controller
 
         }
 
-        if($req->phone!=Auth::user()->phone)
-        {
+        // Đối chiếu SĐT theo chủ đơn (theo user_id trong carts của invoice đó)
+        $orderUserId = (clone $baseQuery)->value('user_id');
+        $orderUserPhone = $orderUserId ? DB::table('users')->where('id', $orderUserId)->value('phone') : null;
 
-            session()->flash('wrong','Wrong phone no !');
+        if(!$orderUserId || !$orderUserPhone || $phone !== (string) $orderUserPhone) {
+            session()->flash('wrong','Sai số điện thoại hoặc mã hóa đơn!');
             return back();
-
         }
 
         
-        $carts = Cart::all()->where('user_id',Auth::user()->id)->where('product_order','!=','no')->where('invoice_no',$req->invoice);
-        $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','!=','no')->where('invoice_no',$req->invoice)->sum('subtotal');
-        $carts_amount = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','!=','no')->where('invoice_no',$req->invoice)->count();
+        // Load carts theo invoice + user_id (tránh lộ dữ liệu nếu invoice trùng hiếm gặp)
+        $carts = Cart::query()
+            ->where('user_id', $orderUserId)
+            ->where('product_order','!=','no')
+            ->whereRaw('LOWER(invoice_no) = LOWER(?)', [$invoice])
+            ->get();
+
+        $total_price = DB::table('carts')
+            ->where('user_id', $orderUserId)
+            ->where('product_order','!=','no')
+            ->whereRaw('LOWER(invoice_no) = LOWER(?)', [$invoice])
+            ->sum('subtotal');
+
+        $carts_amount = $carts->count();
         $without_discount_price=$total_price;
         $discount_price=0;
         $coupon_code=NULL;
@@ -426,11 +586,11 @@ class ShipmentController extends Controller
         {
             foreach($carts as $cart)
             {
-
-                $coupon_code=$cart->coupon_id;
-
-
-
+                if($cart->coupon_id) {
+                    // Lấy code từ coupon_id (id)
+                    $coupon_code = DB::table('coupons')->where('id', $cart->coupon_id)->value('code');
+                    break;
+                }
             }
 
          }
@@ -439,7 +599,7 @@ class ShipmentController extends Controller
          {
 
 
-            $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','!=','no')->where('invoice_no',$req->invoice)->sum('subtotal');
+            $total_price = (clone $baseQuery)->sum('subtotal');
 
             
             $coupon_code_price=DB::table('coupons')->where('code',$coupon_code)->value('percentage');
@@ -458,7 +618,7 @@ class ShipmentController extends Controller
          else
          {
 
-            $total_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','!=','no')->where('invoice_no',$req->invoice)->sum('subtotal');
+            $total_price = (clone $baseQuery)->sum('subtotal');
 
 
          }
@@ -494,17 +654,35 @@ class ShipmentController extends Controller
 
         if($validate < $today)
         {
-
-            session()->flash('wrong','Expire Validation Date !');
+            session()->flash('wrong','Mã khuyến mãi đã hết hạn!');
+            session()->flash('coupon_expired', true);
             return back();
+        }
 
+        // Guest: lưu coupon vào session (không cần đăng nhập)
+        if(!Auth::user())
+        {
+            $coupon_id = DB::table('coupons')->where('code', $req->code)->value('id');
+            if (!$coupon_id) {
+                session()->flash('wrong','Coupon không tồn tại!');
+                return back();
+            }
 
+            Session::put('guest_coupon_id', $coupon_id);
+            return redirect('/cart');
+        }
 
+        // Lấy ID của coupon từ code
+        $coupon_id = DB::table('coupons')->where('code', $req->code)->value('id');
+        
+        if (!$coupon_id) {
+            session()->flash('wrong','Coupon không tồn tại!');
+            return back();
         }
 
         $data=array();
 
-        $data['coupon_id']=$req->code;
+        $data['coupon_id']=$coupon_id;
 
         $update_coupon=DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->update($data);
 
@@ -519,7 +697,8 @@ class ShipmentController extends Controller
         else
         {
 
-            session()->flash('wrong','Already applied this code !');
+            session()->flash('wrong','Mã khuyến mãi này đã được áp dụng rồi!');
+            session()->flash('coupon_already_applied', true);
             return back();
 
 

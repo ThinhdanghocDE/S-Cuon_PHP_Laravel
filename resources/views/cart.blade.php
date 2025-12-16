@@ -15,6 +15,24 @@
         </div>
         @endif
 
+        <?php if (Session::has('coupon_expired') || Session::has('coupon_already_applied')): ?>
+            <!-- Popup (không dùng JS) -->
+            <div class="coupon-popup-overlay">
+                <div class="coupon-popup">
+                    <div class="coupon-popup-header">
+                        <strong>Thông báo</strong>
+                        <a href="{{ url('/cart') }}" class="coupon-popup-close" aria-label="Đóng">×</a>
+                    </div>
+                    <div class="coupon-popup-body">
+                        {{ Session::get('wrong', 'Có lỗi khi áp dụng mã khuyến mãi!') }}
+                    </div>
+                    <div class="coupon-popup-footer">
+                        <a href="{{ url('/cart') }}" class="btn btn-primary">OK</a>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+
         @if(Session::has('success'))
         <div class="alert alert-success">
             <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span> 
@@ -46,7 +64,7 @@
                             <span class="subtotal-value">{{ number_format((float)$product->subtotal * 1000, 0, ',', '.') }} VNĐ</span>
                         </div>
                         <div class="cart-item-actions">
-                            <form method="post" action="{{route('cart.destroy', $product)}}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')">
+                            <form method="post" action="{{ route('cart.destroy', Auth::check() ? $product : $product->product_id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')">
                                 @csrf
                                 <button type="submit" class="btn-remove-item" title="Xóa khỏi giỏ hàng">
                                     <i class="fa fa-trash"></i>
@@ -67,6 +85,55 @@
                         @endforeach
                     </div>
                 @endif
+
+<style>
+  .coupon-popup-overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.55);
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .coupon-popup{
+    width: 100%;
+    max-width: 520px;
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    overflow: hidden;
+  }
+  .coupon-popup-header{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #fb5849 0%, #d15400 100%);
+    color: #fff;
+  }
+  .coupon-popup-close{
+    color:#fff;
+    font-size: 22px;
+    line-height: 1;
+    text-decoration: none;
+    opacity: .9;
+  }
+  .coupon-popup-close:hover{ opacity: 1; }
+  .coupon-popup-body{
+    padding: 18px 16px;
+    color: #333;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .coupon-popup-footer{
+    padding: 0 16px 16px 16px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+</style>
 
                 <div class="cart-summary">
                     <div class="coupon-section">
@@ -145,7 +212,7 @@
                                 <label for="online" class="payment-label">
                                     <div class="payment-option-content">
                                         <div class="payment-icon">
-                                            <img src="{{ asset('assets/images/bkash.png')}}" alt="Online Payment">
+                                            <i class="fa fa-credit-card" style="font-size: 24px;"></i>
                                         </div>
                                         <div class="payment-info">
                                             <h4 class="payment-name">Thanh toán trực tuyến</h4>
@@ -161,65 +228,45 @@
 
                         <!-- Payment Action Buttons -->
                         <div ng-switch="paymentMethod" class="payment-actions">
-                            @if (Auth::check())
-                                <!-- COD Payment Form -->
-                                <div ng-switch-when="cod" class="payment-action-content">
-                                    <form method="get" action="{{route('mails.shipped', $total)}}" class="payment-form">
-                                        <div class="cart-actions">
-                                            <a href="{{ url('/menu') }}" class="btn-continue-shopping">
-                                                <i class="fa fa-angle-left"></i> Tiếp tục mua sắm
-                                            </a>
-                                            <button type="submit" class="btn-checkout">
-                                                <i class="fa fa-check"></i> Đặt hàng ngay
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-
-                                <!-- Online Payment Form -->
-                                <div ng-switch-when="online" class="payment-action-content">
-                                    @php
-                                        session(['total' => $total]);
-                                    @endphp
+                            <!-- COD: cho phép guest đặt hàng -->
+                            <div ng-switch-when="cod" class="payment-action-content">
+                                <form method="get" action="{{route('mails.shipped', $total)}}" class="payment-form">
                                     <div class="cart-actions">
                                         <a href="{{ url('/menu') }}" class="btn-continue-shopping">
                                             <i class="fa fa-angle-left"></i> Tiếp tục mua sắm
                                         </a>
+                                        <button type="submit" class="btn-checkout">
+                                            <i class="fa fa-check"></i> Đặt hàng ngay
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <!-- Online (VNPay): hiện tại vẫn yêu cầu đăng nhập -->
+                            <div ng-switch-when="online" class="payment-action-content">
+                                <div class="cart-actions">
+                                    <a href="{{ url('/menu') }}" class="btn-continue-shopping">
+                                        <i class="fa fa-angle-left"></i> Tiếp tục mua sắm
+                                    </a>
+                                    @if (Auth::check())
+                                        @php
+                                            session(['total' => $total]);
+                                        @endphp
                                         <form method="POST" action="{{ route('vnpay.create') }}" style="display: inline-block;">
                                             @csrf
                                             <button type="submit" class="btn-checkout">
                                                 <i class="fa fa-credit-card"></i> Thanh toán qua VNPay
                                             </button>
                                         </form>
-                                    </div>
-                                </div>
-                            @else
-                                <!-- Not Logged In -->
-                                <div ng-switch-when="cod" class="payment-action-content">
-                                    <div class="cart-actions">
-                                        <a href="{{ url('/menu') }}" class="btn-continue-shopping">
-                                            <i class="fa fa-angle-left"></i> Tiếp tục mua sắm
-                                        </a>
+                                    @else
                                         <a href="/login" class="btn-checkout-link">
                                             <button type="button" class="btn-checkout">
-                                                <i class="fa fa-sign-in"></i> Đăng nhập để tiếp tục
+                                                <i class="fa fa-sign-in"></i> Đăng nhập để thanh toán VNPay
                                             </button>
                                         </a>
-                                    </div>
+                                    @endif
                                 </div>
-                                <div ng-switch-when="online" class="payment-action-content">
-                                    <div class="cart-actions">
-                                        <a href="{{ url('/menu') }}" class="btn-continue-shopping">
-                                            <i class="fa fa-angle-left"></i> Tiếp tục mua sắm
-                                        </a>
-                                        <a href="/login" class="btn-checkout-link">
-                                            <button type="button" class="btn-checkout">
-                                                <i class="fa fa-sign-in"></i> Đăng nhập để tiếp tục
-                                            </button>
-                                        </a>
-                                    </div>
-                                </div>
-                            @endif
+                            </div>
                         </div>
                     </div>
                     @else
