@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Hash;
+use Illuminate\Support\Facades\Cache;
 
 
 use Session;
@@ -99,12 +100,20 @@ class HomeController extends Controller
 
     public function index(){
 
-        $menu=DB::table('products')->where('catagory','regular')->get();
+        $menu = Cache::remember('home:menu:regular', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','regular')->get();
+        });
 
         // Combo theo số người (session = combo_size)
-        $combo1=DB::table('products')->where('catagory','special')->where('session',0)->get(); // 1 người
-        $combo2=DB::table('products')->where('catagory','special')->where('session',1)->get(); // 2 người
-        $combo3=DB::table('products')->where('catagory','special')->where('session',2)->get(); // 3 người
+        $combo1 = Cache::remember('home:combo:special:0', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','special')->where('session',0)->get();
+        }); // 1 người
+        $combo2 = Cache::remember('home:combo:special:1', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','special')->where('session',1)->get();
+        }); // 2 người
+        $combo3 = Cache::remember('home:combo:special:2', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','special')->where('session',2)->get();
+        }); // 3 người
         // Có thể thêm combo 4, 5, 6 nếu có dữ liệu trong DB
         
         // Giữ tên biến cũ để không phá vỡ view
@@ -118,15 +127,19 @@ class HomeController extends Controller
         $lunch = $this->addRatingToProducts($lunch);
         $dinner = $this->addRatingToProducts($dinner);
 
-        $chefs=DB::table('chefs')->get();
+        $chefs = Cache::remember('home:chefs', now()->addMinutes(30), function () {
+            return DB::table('chefs')->get();
+        });
 
         // Lấy bài viết nổi bật (is_featured = 1, status = published)
-        $featured_posts = DB::table('posts')
-            ->where('is_featured', 1)
-            ->where('status', 'published')
-            ->orderBy('published_at', 'desc')
-            ->limit(3) // Hiển thị tối đa 3 bài viết
-            ->get();
+        $featured_posts = Cache::remember('home:featured_posts', now()->addMinutes(10), function () {
+            return DB::table('posts')
+                ->where('is_featured', 1)
+                ->where('status', 'published')
+                ->orderBy('published_at', 'desc')
+                ->limit(3)
+                ->get();
+        });
 
         if(Auth::user())
         {
@@ -142,8 +155,12 @@ class HomeController extends Controller
 
         }
 
-        $about_us=DB::table('about_us')->get();
-        $banners=DB::table('banners')->get();
+        $about_us = Cache::remember('home:about_us', now()->addMinutes(30), function () {
+            return DB::table('about_us')->get();
+        });
+        $banners = Cache::remember('home:banners', now()->addMinutes(30), function () {
+            return DB::table('banners')->get();
+        });
 
 
 
@@ -162,12 +179,20 @@ class HomeController extends Controller
         }
 
         
-        $menu=DB::table('products')->where('catagory','regular')->get();
+        $menu = Cache::remember('home:menu:regular', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','regular')->get();
+        });
 
         // Combo theo số người
-        $combo1=DB::table('products')->where('catagory','special')->where('session',0)->get();
-        $combo2=DB::table('products')->where('catagory','special')->where('session',1)->get();
-        $combo3=DB::table('products')->where('catagory','special')->where('session',2)->get();
+        $combo1 = Cache::remember('home:combo:special:0', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','special')->where('session',0)->get();
+        });
+        $combo2 = Cache::remember('home:combo:special:1', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','special')->where('session',1)->get();
+        });
+        $combo3 = Cache::remember('home:combo:special:2', now()->addMinutes(10), function () {
+            return DB::table('products')->where('catagory','special')->where('session',2)->get();
+        });
         
         $breakfast = $combo1;
         $lunch = $combo2;
@@ -179,7 +204,9 @@ class HomeController extends Controller
         $lunch = $this->addRatingToProducts($lunch);
         $dinner = $this->addRatingToProducts($dinner);
 
-        $chefs=DB::table('chefs')->get();
+        $chefs = Cache::remember('home:chefs', now()->addMinutes(30), function () {
+            return DB::table('chefs')->get();
+        });
 
 
         if(Auth::user())
@@ -198,8 +225,12 @@ class HomeController extends Controller
 
       
 
-        $about_us=DB::table('about_us')->get();
-        $banners=DB::table('banners')->get();
+        $about_us = Cache::remember('home:about_us', now()->addMinutes(30), function () {
+            return DB::table('about_us')->get();
+        });
+        $banners = Cache::remember('home:banners', now()->addMinutes(30), function () {
+            return DB::table('banners')->get();
+        });
 
 
         $usertype= Auth::user()->usertype;

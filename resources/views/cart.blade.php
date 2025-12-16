@@ -15,7 +15,7 @@
         </div>
         @endif
 
-        <?php if (Session::has('coupon_expired') || Session::has('coupon_already_applied')): ?>
+        @if(Session::has('coupon_expired') || Session::has('coupon_already_applied'))
             <!-- Popup (không dùng JS) -->
             <div class="coupon-popup-overlay">
                 <div class="coupon-popup">
@@ -31,7 +31,7 @@
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
+        @endif
 
         @if(Session::has('success'))
         <div class="alert alert-success">
@@ -44,8 +44,9 @@
             <div class="cart-items">
                 @foreach($carts as $product)
                     @php
-                        $productImage = DB::table('products')->where('id', $product->product_id)->value('image');
-                        $imageUrl = $productImage ? asset('assets/images/'.$productImage) : asset('assets/images/default-food.jpg');
+                        $imageUrl = !empty($product->product_image)
+                            ? asset('assets/images/'.$product->product_image)
+                            : asset('assets/images/default-food.jpg');
                     @endphp
                     <div class="cart-item-card">
                         <div class="cart-item-image">

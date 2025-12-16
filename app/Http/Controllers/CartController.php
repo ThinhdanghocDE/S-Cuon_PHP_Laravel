@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class CartController extends Controller
 {
@@ -24,7 +25,18 @@ class CartController extends Controller
         if(!Auth::user())
         {
             $guestCart = Session::get('guest_cart', []);
-            $carts = collect($guestCart)->map(function ($item) {
+            // Enrich ảnh sản phẩm 1 lần (tránh N+1 trong Blade)
+            $productIds = collect($guestCart)->pluck('product_id')->unique()->filter()->values()->all();
+            $imagesById = [];
+            if (!empty($productIds)) {
+                $imagesById = DB::table('products')
+                    ->whereIn('id', $productIds)
+                    ->pluck('image', 'id')
+                    ->toArray();
+            }
+
+            $carts = collect($guestCart)->map(function ($item) use ($imagesById) {
+                $item['product_image'] = $imagesById[$item['product_id']] ?? null;
                 return (object) $item;
             });
             $carts_amount = $carts->count();
@@ -50,14 +62,24 @@ class CartController extends Controller
 
             $total_price = $subtotalSum - $discount_price;
 
-            $extra_charge=DB::table('charges')->get();
-            $total_extra_charge=DB::table('charges')->sum('price');
+            $extra_charge = Cache::remember('charges:all', now()->addMinutes(30), function () {
+                return DB::table('charges')->get();
+            });
+            $total_extra_charge = Cache::remember('charges:sum', now()->addMinutes(30), function () {
+                return (float) DB::table('charges')->sum('price');
+            });
 
             return view("cart", compact('carts','total_price','discount_price','without_discount_price','extra_charge','total_extra_charge'));
         }
 
         // Logged-in: dùng DB carts như cũ
-        $carts = Cart::all()->where('user_id',Auth::user()->id)->where('product_order','no');
+        // Join products để lấy ảnh 1 lần (tránh N+1 trong Blade)
+        $carts = DB::table('carts')
+            ->leftJoin('products', 'carts.product_id', '=', 'products.id')
+            ->where('carts.user_id', Auth::user()->id)
+            ->where('carts.product_order', 'no')
+            ->select('carts.*', 'products.image as product_image')
+            ->get();
         $carts_amount = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->count();
         $discount_price=0;
         $without_discount_price = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->sum('subtotal');
@@ -126,8 +148,12 @@ class CartController extends Controller
 
 
          }
-         $extra_charge=DB::table('charges')->get();
-         $total_extra_charge=DB::table('charges')->sum('price');
+         $extra_charge = Cache::remember('charges:all', now()->addMinutes(30), function () {
+             return DB::table('charges')->get();
+         });
+         $total_extra_charge = Cache::remember('charges:sum', now()->addMinutes(30), function () {
+             return (float) DB::table('charges')->sum('price');
+         });
 
 
        
