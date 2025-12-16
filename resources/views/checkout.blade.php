@@ -54,17 +54,17 @@
                                 </label>
                             </div>
 
-                            <!-- Bkash Payment Option -->
+                            <!-- Online Payment Option (VNPay) -->
                             <div class="payment-option">
-                                <input ng-model="myVar" type="radio" id="bkash" name="payment_method" value="bkash" class="payment-radio">
-                                <label for="bkash" class="payment-label">
+                                <input ng-model="myVar" type="radio" id="online" name="payment_method" value="online" class="payment-radio">
+                                <label for="online" class="payment-label">
                                     <div class="payment-option-content">
                                         <div class="payment-icon">
-                                            <img src="{{ asset('assets/images/bkash.png')}}" alt="Bkash">
+                                            <i class="fa fa-credit-card" style="font-size: 32px; color: #fb5849;"></i>
                                         </div>
                                         <div class="payment-info">
-                                            <h4 class="payment-name">Thanh toán trực tuyến</h4>
-                                            <p class="payment-description">Thanh toán qua cổng thanh toán trực tuyến</p>
+                                            <h4 class="payment-name">Thanh toán trực tuyến (VNPay)</h4>
+                                            <p class="payment-description">Thanh toán qua cổng thanh toán VNPay</p>
                                         </div>
                                         <div class="payment-check">
                                             <i class="fa fa-check-circle"></i>
@@ -76,45 +76,35 @@
 
                         <!-- Payment Action Buttons -->
                         <div ng-switch="myVar" class="payment-actions mt-4">
-                            @if (Auth::check())
-                                <!-- COD Payment Form -->
-                                <div ng-switch-when="cod" class="payment-action-content">
-                                    <form method="get" action="{{route('mails.shipped', $total)}}" class="payment-form">
-                                        <button type="submit" class="btn-place-order">
-                                            <i class="fa fa-check"></i> Đặt hàng ngay
-                                        </button>
-                                    </form>
-                                </div>
+                            <!-- COD: cho phép guest đặt hàng -->
+                            <div ng-switch-when="cod" class="payment-action-content">
+                                <form method="get" action="{{route('mails.shipped', $total)}}" class="payment-form">
+                                    <button type="submit" class="btn-place-order">
+                                        <i class="fa fa-check"></i> Đặt hàng ngay
+                                    </button>
+                                </form>
+                            </div>
 
-                                <!-- Bkash Payment Form -->
-                                <div ng-switch-when="bkash" class="payment-action-content">
+                            <!-- Online Payment (VNPay): hiện tại vẫn yêu cầu đăng nhập -->
+                            <div ng-switch-when="online" class="payment-action-content">
+                                @if (Auth::check())
                                     @php
                                         session(['total' => $total]);
                                     @endphp
-                                    <a href="/ssl/pay" class="btn-place-order-link">
-                                        <button type="button" class="btn-place-order">
-                                            <i class="fa fa-credit-card"></i> Thanh toán trực tuyến
+                                    <form method="POST" action="{{ route('vnpay.create') }}">
+                                        @csrf
+                                        <button type="submit" class="btn-place-order">
+                                            <i class="fa fa-credit-card"></i> Thanh toán trực tuyến (VNPay)
                                         </button>
-                                    </a>
-                                    @include('bkash-script')
-                                </div>
-                            @else
-                                <!-- Not Logged In -->
-                                <div ng-switch-when="cod" class="payment-action-content">
+                                    </form>
+                                @else
                                     <a href="/login" class="btn-place-order-link">
                                         <button type="button" class="btn-place-order">
-                                            <i class="fa fa-sign-in"></i> Đăng nhập để tiếp tục
+                                            <i class="fa fa-sign-in"></i> Đăng nhập để thanh toán VNPay
                                         </button>
                                     </a>
-                                </div>
-                                <div ng-switch-when="bkash" class="payment-action-content">
-                                    <a href="/login" class="btn-place-order-link">
-                                        <button type="button" class="btn-place-order">
-                                            <i class="fa fa-sign-in"></i> Đăng nhập để tiếp tục
-                                        </button>
-                                    </a>
-                                </div>
-                            @endif
+                                @endif
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -28,8 +28,6 @@
     @stack('styles')
 
     <script src="{{ asset('assets/js/angular.min.js')}}"></script>
-    <script src="{{ asset('assets/js/bKash-checkout.js')}}"></script>
-    <script src="{{ asset('assets/js/bKash-checkout-sandbox.js')}}"></script>
 
     </head>
     
@@ -75,22 +73,19 @@
 
 
                             <?php
-                                
+                                // Badge số lượng giỏ hàng: hỗ trợ cả guest (lưu session) và user (lưu DB)
                                 if(Auth::user())
                                 {
-                        
-                                    $cart_amount=DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->count();
-                        
-                        
+                                    $cart_amount = DB::table('carts')
+                                        ->where('user_id', Auth::user()->id)
+                                        ->where('product_order', 'no')
+                                        ->count();
                                 }
                                 else
                                 {
-                        
-                                    $cart_amount=0;
-                        
+                                    $guestCart = Session::get('guest_cart', []);
+                                    $cart_amount = is_array($guestCart) ? count($guestCart) : 0;
                                 }
-
-
                             ?>
 
 

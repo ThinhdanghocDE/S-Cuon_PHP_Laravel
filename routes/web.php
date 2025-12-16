@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\BkashController;
 use App\Http\Controllers\ShipmentController;
-use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 
@@ -124,39 +122,6 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
 
-Route::get('ssl/pay', [BkashController::class, 'ssl']);
-Route::get('ssl/pay2', [BkashController::class, 'ssl2']);
-
-Route::group(['middleware' => ['customAuth']], function () {
-
-    // Payment Routes for bKash
-    Route::post('bkash/get-token', 'BkashController@getToken')->name('bkash-get-token');
-    Route::post('bkash/create-payment', 'BkashController@createPayment')->name('bkash-create-payment');
-    Route::post('bkash/execute-payment', 'BkashController@executePayment')->name('bkash-execute-payment');
-    Route::get('bkash/query-payment', 'BkashController@queryPayment')->name('bkash-query-payment');
-    Route::post('bkash/success', 'BkashController@bkashSuccess')->name('bkash-success');
-
-    // Refund Routes for bKash
-    Route::get('bkash/refund', 'BkashRefundController@index')->name('bkash-refund.index');
-    
-    Route::post('bkash/refund', 'BkashRefundController@refund')->name('bkash-refund.process');
-
-});
-
-
-// SSLCOMMERZ Start
-Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
-Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
-
-Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
-Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);
-
-Route::post('/success', [SslCommerzPaymentController::class, 'success']);
-Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
-Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
-
-Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
-//SSLCOMMERZ END
 
 // VNPAY Start
 use App\Http\Controllers\VnpayController;
