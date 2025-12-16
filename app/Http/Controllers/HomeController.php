@@ -718,59 +718,33 @@ class HomeController extends Controller
     public function register(Request $req)
     {
 
-        $data=array();
-        $data['name']=$req->name;
-        $data['phone']=$req->phone;
-        $data['email']=$req->email;
-        $data['password']=Hash::make($req->password);
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:255',
+            'phone' => 'required|string|regex:/^[0-9]{10,11}$/|unique:users,phone',
+            'email' => 'required|email|max:255|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'name.required' => 'Vui lòng nhập họ và tên.',
+            'name.min' => 'Họ và tên phải có ít nhất 2 ký tự.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'phone.regex' => 'Số điện thoại không hợp lệ (chỉ gồm 10-11 chữ số).',
+            'phone.unique' => 'Số điện thoại đã được đăng ký.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'email.unique' => 'Email đã được đăng ký.',
+            'password.required' => 'Vui lòng nhập mật khẩu.',
+            'password.min' => 'Mật khẩu phải có ít nhất 8 ký tự.',
+            'password.confirmed' => 'Mật khẩu xác nhận không khớp.',
+        ]);
 
-        $email=DB::table('users')->where('email',$req->email)->count();
+        DB::table('users')->insert([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+        ]);
 
-
-        if($email > 0)
-        {
-
-            session()->flash('wrong','Email already registered !');
-            return back();
-
-
-        }
-
-        $phone=DB::table('users')->where('phone',$req->phone)->count();
-
-
-        if($phone > 0)
-        {
-
-            session()->flash('wrong','Phone already registered !');
-            return back();
-
-
-        }
-        if(strlen($req->password)<8)
-        {
-
-            session()->flash('wrong','Password lenght at least 8 words!');
-            return back();
-
-
-
-        }
-
-        if($req->password!=$req->password_confirmation)
-        {
-
-            
-            session()->flash('wrong','Password do not match !');
-            return back();
-
-
-        }
-
-        $insert=DB::table('users')->Insert($data);
-
-
-        return redirect('/redirects');
+        return redirect('/redirects')->with('success', 'Đăng ký thành công!');
 
 
 

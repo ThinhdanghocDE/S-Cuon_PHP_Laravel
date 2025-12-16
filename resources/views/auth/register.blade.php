@@ -274,7 +274,7 @@
 
             <x-jet-validation-errors class="validation-errors" />
 
-            <form method="POST" action="{{ route('register/confirm') }}">
+            <form method="POST" action="{{ route('register/confirm') }}" id="registerForm" novalidate>
                 @csrf
 
                 <div class="form-group">
@@ -288,6 +288,7 @@
                            autofocus 
                            autocomplete="name"
                            placeholder="Nhập họ và tên của bạn">
+                    <div class="field-error" id="err-name" style="display:none;"></div>
                 </div>
 
                 <div class="form-group">
@@ -299,17 +300,21 @@
                            value="{{ old('email') }}" 
                            required
                            placeholder="Nhập email của bạn">
+                    <div class="field-error" id="err-email" style="display:none;"></div>
                 </div>
 
                 <div class="form-group">
                     <label for="phone" class="form-label">Số Điện Thoại</label>
                     <input id="phone" 
                            class="form-input" 
-                           type="number" 
+                           type="tel" 
                            name="phone" 
                            value="{{ old('phone') }}" 
                            required
+                           inputmode="numeric"
+                           pattern="[0-9]*"
                            placeholder="Nhập số điện thoại của bạn">
+                    <div class="field-error" id="err-phone" style="display:none;"></div>
                 </div>
 
                 <div class="form-group">
@@ -321,6 +326,7 @@
                            required 
                            autocomplete="new-password"
                            placeholder="Nhập mật khẩu">
+                    <div class="field-error" id="err-password" style="display:none;"></div>
                 </div>
 
                 <div class="form-group">
@@ -332,6 +338,7 @@
                            required 
                            autocomplete="new-password"
                            placeholder="Nhập lại mật khẩu">
+                    <div class="field-error" id="err-password_confirmation" style="display:none;"></div>
                 </div>
 
                 @if (Laravel\Jetstream\Jetstream::hasTermsAndPrivacyPolicyFeature())
@@ -344,6 +351,7 @@
                         <a target="_blank" href="{{ route('policy.show') }}">Chính sách bảo mật</a>
                     </label>
                 </div>
+                <div class="field-error" id="err-terms" style="display:none;"></div>
                 @endif
 
                 <button type="submit" class="btn-primary">
@@ -358,5 +366,96 @@
         </div>
     </div>
 </div>
+
+<style>
+  .field-error{
+    margin-top: 8px;
+    color: #b02a37;
+    font-size: 0.9rem;
+    line-height: 1.35;
+  }
+  .input-invalid{
+    border-color: #dc3545 !important;
+    background: #fff5f5 !important;
+  }
+</style>
+
+<script>
+  (function () {
+    var form = document.getElementById('registerForm');
+    if (!form) return;
+
+    var elName = document.getElementById('name');
+    var elEmail = document.getElementById('email');
+    var elPhone = document.getElementById('phone');
+    var elPass = document.getElementById('password');
+    var elPass2 = document.getElementById('password_confirmation');
+    var elTerms = document.getElementById('terms');
+
+    function setError(inputEl, errId, message) {
+      var errEl = document.getElementById(errId);
+      if (errEl) {
+        errEl.textContent = message || '';
+        errEl.style.display = message ? 'block' : 'none';
+      }
+      if (inputEl) {
+        inputEl.classList.toggle('input-invalid', !!message);
+      }
+    }
+
+    function normalizePhone(v) {
+      return (v || '').toString().replace(/\D/g, '');
+    }
+
+    function validateAll() {
+      var ok = true;
+
+      var name = (elName.value || '').trim();
+      if (name.length < 2) { setError(elName, 'err-name', 'Họ và tên phải có ít nhất 2 ký tự.'); ok = false; }
+      else setError(elName, 'err-name', '');
+
+      var email = (elEmail.value || '').trim();
+      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+      if (!emailOk) { setError(elEmail, 'err-email', 'Email không hợp lệ.'); ok = false; }
+      else setError(elEmail, 'err-email', '');
+
+      var phone = normalizePhone(elPhone.value);
+      if (!(phone.length === 10 || phone.length === 11)) { setError(elPhone, 'err-phone', 'Số điện thoại phải gồm 10–11 chữ số.'); ok = false; }
+      else setError(elPhone, 'err-phone', '');
+
+      var pw = elPass.value || '';
+      if (pw.length < 8) { setError(elPass, 'err-password', 'Mật khẩu phải có ít nhất 8 ký tự.'); ok = false; }
+      else setError(elPass, 'err-password', '');
+
+      var pw2 = elPass2.value || '';
+      if (pw2 !== pw) { setError(elPass2, 'err-password_confirmation', 'Mật khẩu xác nhận không khớp.'); ok = false; }
+      else setError(elPass2, 'err-password_confirmation', '');
+
+      if (elTerms) {
+        if (!elTerms.checked) { setError(elTerms, 'err-terms', 'Vui lòng đồng ý Điều khoản & Chính sách.'); ok = false; }
+        else setError(elTerms, 'err-terms', '');
+      }
+
+      // chuẩn hóa phone trước khi submit
+      elPhone.value = phone;
+      return ok;
+    }
+
+    ['input','blur'].forEach(function (evt) {
+      [elName, elEmail, elPhone, elPass, elPass2].forEach(function (el) {
+        if (!el) return;
+        el.addEventListener(evt, function () { validateAll(); });
+      });
+      if (elTerms) elTerms.addEventListener(evt, function () { validateAll(); });
+    });
+
+    form.addEventListener('submit', function (e) {
+      if (!validateAll()) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+    });
+  })();
+</script>
 
 @endsection
