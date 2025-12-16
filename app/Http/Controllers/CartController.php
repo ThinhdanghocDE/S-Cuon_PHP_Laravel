@@ -5,7 +5,8 @@ use App\Models\Product;
 use App\Models\Cart;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Auth;
+use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
@@ -19,12 +20,43 @@ class CartController extends Controller
      */
     public function index()
     {
+        // Guest: dùng session cart (không cần đăng nhập)
         if(!Auth::user())
         {
+            $guestCart = Session::get('guest_cart', []);
+            $carts = collect($guestCart)->map(function ($item) {
+                return (object) $item;
+            });
+            $carts_amount = $carts->count();
 
-            return redirect()->route('login');
+            $subtotalSum = $carts->sum('subtotal');
+            $without_discount_price = $subtotalSum;
+            $discount_price = 0;
 
+            // Coupon cho guest (lưu trong session)
+            $coupon_id = Session::get('guest_coupon_id');
+            if ($coupon_id) {
+                $coupon_code = DB::table('coupons')->where('id', $coupon_id)->value('code');
+                $validate = DB::table('coupons')->where('id', $coupon_id)->value('validate');
+                $today = date("Y-m-d");
+                if ($validate && $validate >= $today) {
+                    $percentage = (int) floor(DB::table('coupons')->where('id', $coupon_id)->value('percentage'));
+                    $discount_price = floor(($subtotalSum * $percentage) / 100);
+                } else {
+                    // coupon hết hạn thì bỏ
+                    Session::forget('guest_coupon_id');
+                }
+            }
+
+            $total_price = $subtotalSum - $discount_price;
+
+            $extra_charge=DB::table('charges')->get();
+            $total_extra_charge=DB::table('charges')->sum('price');
+
+            return view("cart", compact('carts','total_price','discount_price','without_discount_price','extra_charge','total_extra_charge'));
         }
+
+        // Logged-in: dùng DB carts như cũ
         $carts = Cart::all()->where('user_id',Auth::user()->id)->where('product_order','no');
         $carts_amount = DB::table('carts')->where('user_id',Auth::user()->id)->where('product_order','no')->count();
         $discount_price=0;
@@ -36,11 +68,11 @@ class CartController extends Controller
         {
             foreach($carts as $cart)
             {
-
-                $coupon_code=$cart->coupon_id;
-
-
-
+                if($cart->coupon_id) {
+                    // Lấy code từ coupon_id (id)
+                    $coupon_code = DB::table('coupons')->where('id', $cart->coupon_id)->value('code');
+                    break;
+                }
             }
 
          }
@@ -121,11 +153,46 @@ class CartController extends Controller
     public function store(Request $request, $id)
     {
 
+        // Guest: lưu giỏ vào session
         if(!Auth::user())
         {
+            // Nếu trước đó vừa đặt hàng xong, bắt đầu đơn mới thì clear trạng thái cũ
+            if (Session::has('order_success') || Session::has('invoice')) {
+                Session::forget('order_success');
+                Session::forget('invoice');
+                Session::forget('total');
+                Session::forget('extra_charge');
+                Session::forget('discount_price');
+                Session::forget('without_discount_price');
+                Session::forget('date');
+            }
 
-            return redirect()->route('login');
+            $product = Product::find($id);
+            if(!$product) {
+                return back()->with('wrong', 'Sản phẩm không tồn tại!');
+            }
 
+            $quantity = (int) ($request->number ?? 1);
+            if ($quantity < 1) $quantity = 1;
+
+            $guestCart = Session::get('guest_cart', []);
+            $key = (string) $product->id;
+
+            if (isset($guestCart[$key])) {
+                $guestCart[$key]['quantity'] = (int) $guestCart[$key]['quantity'] + $quantity;
+                $guestCart[$key]['subtotal'] = $guestCart[$key]['quantity'] * $guestCart[$key]['price'];
+            } else {
+                $guestCart[$key] = [
+                    'product_id' => $product->id,
+                    'name' => $product->name,
+                    'price' => $product->price,
+                    'quantity' => $quantity,
+                    'subtotal' => $quantity * $product->price,
+                ];
+            }
+
+            Session::put('guest_cart', $guestCart);
+            return back()->with('cart_success', 'Đã thêm sản phẩm vào giỏ hàng thành công!');
         }
         
         $product = Product::find($id);
@@ -200,8 +267,20 @@ class CartController extends Controller
      */
     public function destroy($id)
     {
+        // Guest: xóa theo product_id trong session cart
+        if(!Auth::user())
+        {
+            $guestCart = Session::get('guest_cart', []);
+            $key = (string) $id;
+            unset($guestCart[$key]);
+            Session::put('guest_cart', $guestCart);
+            return redirect()->route('cart');
+        }
+
         $product = Cart::find($id);
-        $product->delete();
+        if ($product) {
+            $product->delete();
+        }
 
         return redirect()->route('cart');
     }

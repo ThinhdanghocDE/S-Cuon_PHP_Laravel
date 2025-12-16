@@ -18,7 +18,9 @@ return [
     |
     */
 
-    'driver' => env('SESSION_DRIVER', 'database'),
+    // Mặc định dùng "file" để chạy local nhanh và không phụ thuộc DB.
+    // Có thể override bằng SESSION_DRIVER trong .env (vd: database/redis) khi deploy.
+    'driver' => env('SESSION_DRIVER', 'file'),
 
     /*
     |--------------------------------------------------------------------------

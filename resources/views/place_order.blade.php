@@ -2,6 +2,11 @@
 
 @section('page-content')
 
+@php
+    // Chỉ hiển thị trạng thái "đặt hàng thành công" 1 lần rồi tự xóa khỏi session
+    $orderSuccessOnce = Session::pull('order_success', false);
+@endphp
+
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
     
@@ -337,6 +342,7 @@
     </style>
 
 <div class="checkout-page">
+    <span id="orderSuccessFlag" data-order-success="{{ Session::has('order_success') ? 1 : 0 }}" style="display:none;"></span>
     <div class="checkout-container">
         <div class="checkout-header">
             <h1>Đặt Hàng</h1>
@@ -421,7 +427,7 @@
 
             <!-- Shipping Form or Success Message -->
             <div class="col-lg-8 order-lg-1">
-                @if(Session::has('order_success') && !Session::has('vnpay_payment_success'))
+                @if($orderSuccessOnce && !Session::has('vnpay_payment_success'))
                     <!-- Chỉ hiển thị thông báo thành công -->
                     <div class="checkout-card" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white;">
                         <div style="text-align: center; padding: 20px;">
@@ -452,6 +458,54 @@
                         <form method="POST" action="{{url('confirm_place_order/'.$total)}}" class="needs-validation" id="orderForm" novalidate>
                         @csrf
 
+                        @if(!Auth::check())
+                        <div class="info-box">
+                            <i class="fas fa-info-circle"></i>
+                            Vui lòng nhập thông tin liên hệ để chúng tôi xác nhận đơn hàng.
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="name">
+                                        <i class="fas fa-user"></i>
+                                        Họ và tên
+                                    </label>
+                                    <input type="text" class="form-control" name="name" id="name"
+                                           placeholder="Nhập họ và tên" value="{{ old('name') }}" required>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập họ và tên.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-group">
+                                    <label for="phone">
+                                        <i class="fas fa-phone"></i>
+                                        Số điện thoại
+                                    </label>
+                                    <input type="text" class="form-control" name="phone" id="phone"
+                                           placeholder="Nhập số điện thoại" value="{{ old('phone') }}" required>
+                                    <div class="invalid-feedback">
+                                        Vui lòng nhập số điện thoại.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">
+                                <i class="fas fa-envelope"></i>
+                                Email
+                            </label>
+                            <input type="email" class="form-control" name="email" id="email"
+                                   placeholder="Nhập email" value="{{ old('email') }}" required>
+                            <div class="invalid-feedback">
+                                Vui lòng nhập email hợp lệ.
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="form-group">
                             <label for="address">
                                 <i class="fas fa-home"></i>
@@ -473,96 +527,34 @@
                                    placeholder="Số phòng, tầng, tòa nhà">
                         </div>
 
+                        <!-- Chỉ nhận địa chỉ nội thành Hà Nội -->
+                        <input type="hidden" name="country" value="Vietnam">
+                        <input type="hidden" name="state" value="Ha Noi">
+
                         <div class="row">
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-12 mb-3">
                                 <div class="form-group">
-                                    <label for="country">
-                                        <i class="fas fa-globe"></i>
-                                        Quốc gia
+                                    <label for="district">
+                                        <i class="fas fa-map"></i>
+                                        Quận nội thành (Hà Nội)
                                     </label>
-                                    <select class="custom-select" id="country" name="country" required>
-                                        <option value="">Chọn quốc gia...</option>
-                                        <option value="Vietnam" selected>Việt Nam</option>
+                                    <select class="custom-select" id="district" name="district" required>
+                                        <option value="">Chọn quận...</option>
+                                        <option value="Ba Dinh">Ba Đình</option>
+                                        <option value="Hoan Kiem">Hoàn Kiếm</option>
+                                        <option value="Hai Ba Trung">Hai Bà Trưng</option>
+                                        <option value="Dong Da">Đống Đa</option>
+                                        <option value="Tay Ho">Tây Hồ</option>
+                                        <option value="Cau Giay">Cầu Giấy</option>
+                                        <option value="Thanh Xuan">Thanh Xuân</option>
+                                        <option value="Hoang Mai">Hoàng Mai</option>
+                                        <option value="Long Bien">Long Biên</option>
+                                        <option value="Ha Dong">Hà Đông</option>
+                                        <option value="Bac Tu Liem">Bắc Từ Liêm</option>
+                                        <option value="Nam Tu Liem">Nam Từ Liêm</option>
                                     </select>
                                     <div class="invalid-feedback">
-                                        Vui lòng chọn quốc gia.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="state">
-                                        <i class="fas fa-city"></i>
-                                        Tỉnh/Thành phố
-                                    </label>
-                                    <select class="custom-select" id="state" name="state" required>
-                                        <option value="">Chọn tỉnh/thành phố...</option>
-                                        <option value="Ha Noi">Hà Nội</option>
-                                        <option value="Ho Chi Minh">Hồ Chí Minh</option>
-                                        <option value="Da Nang">Đà Nẵng</option>
-                                        <option value="Hai Phong">Hải Phòng</option>
-                                        <option value="Can Tho">Cần Thơ</option>
-                                        <option value="An Giang">An Giang</option>
-                                        <option value="Ba Ria - Vung Tau">Bà Rịa - Vũng Tàu</option>
-                                        <option value="Bac Lieu">Bạc Liêu</option>
-                                        <option value="Bac Kan">Bắc Kạn</option>
-                                        <option value="Bac Giang">Bắc Giang</option>
-                                        <option value="Bac Ninh">Bắc Ninh</option>
-                                        <option value="Ben Tre">Bến Tre</option>
-                                        <option value="Binh Dinh">Bình Định</option>
-                                        <option value="Binh Duong">Bình Dương</option>
-                                        <option value="Binh Phuoc">Bình Phước</option>
-                                        <option value="Binh Thuan">Bình Thuận</option>
-                                        <option value="Ca Mau">Cà Mau</option>
-                                        <option value="Cao Bang">Cao Bằng</option>
-                                        <option value="Dak Lak">Đắk Lắk</option>
-                                        <option value="Dak Nong">Đắk Nông</option>
-                                        <option value="Dien Bien">Điện Biên</option>
-                                        <option value="Dong Nai">Đồng Nai</option>
-                                        <option value="Dong Thap">Đồng Tháp</option>
-                                        <option value="Gia Lai">Gia Lai</option>
-                                        <option value="Ha Giang">Hà Giang</option>
-                                        <option value="Ha Nam">Hà Nam</option>
-                                        <option value="Ha Tinh">Hà Tĩnh</option>
-                                        <option value="Hai Duong">Hải Dương</option>
-                                        <option value="Hau Giang">Hậu Giang</option>
-                                        <option value="Hoa Binh">Hòa Bình</option>
-                                        <option value="Hung Yen">Hưng Yên</option>
-                                        <option value="Khanh Hoa">Khánh Hòa</option>
-                                        <option value="Kien Giang">Kiên Giang</option>
-                                        <option value="Kon Tum">Kon Tum</option>
-                                        <option value="Lai Chau">Lai Châu</option>
-                                        <option value="Lam Dong">Lâm Đồng</option>
-                                        <option value="Lang Son">Lạng Sơn</option>
-                                        <option value="Lao Cai">Lào Cai</option>
-                                        <option value="Long An">Long An</option>
-                                        <option value="Nam Dinh">Nam Định</option>
-                                        <option value="Nghe An">Nghệ An</option>
-                                        <option value="Ninh Binh">Ninh Bình</option>
-                                        <option value="Ninh Thuan">Ninh Thuận</option>
-                                        <option value="Phu Tho">Phú Thọ</option>
-                                        <option value="Phu Yen">Phú Yên</option>
-                                        <option value="Quang Binh">Quảng Bình</option>
-                                        <option value="Quang Nam">Quảng Nam</option>
-                                        <option value="Quang Ngai">Quảng Ngãi</option>
-                                        <option value="Quang Ninh">Quảng Ninh</option>
-                                        <option value="Quang Tri">Quảng Trị</option>
-                                        <option value="Soc Trang">Sóc Trăng</option>
-                                        <option value="Son La">Sơn La</option>
-                                        <option value="Tay Ninh">Tây Ninh</option>
-                                        <option value="Thai Binh">Thái Bình</option>
-                                        <option value="Thai Nguyen">Thái Nguyên</option>
-                                        <option value="Thanh Hoa">Thanh Hóa</option>
-                                        <option value="Thua Thien Hue">Thừa Thiên Huế</option>
-                                        <option value="Tien Giang">Tiền Giang</option>
-                                        <option value="Tra Vinh">Trà Vinh</option>
-                                        <option value="Tuyen Quang">Tuyên Quang</option>
-                                        <option value="Vinh Long">Vĩnh Long</option>
-                                        <option value="Vinh Phuc">Vĩnh Phúc</option>
-                                        <option value="Yen Bai">Yên Bái</option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Vui lòng chọn tỉnh/thành phố.
+                                        Vui lòng chọn quận nội thành Hà Nội.
                                     </div>
                                 </div>
                             </div>
@@ -616,11 +608,7 @@
         }, false);
     })();
 
-    // Hiển thị thông báo thành công nếu có
-    @if(Session::has('order_success'))
-        // Scroll to top để hiển thị thông báo
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    @endif
+    // (Optional) Scroll-to-top đã bỏ để tránh cảnh báo linter trong Blade.
 </script>
 
 @endsection
