@@ -598,16 +598,21 @@ class AdminController extends Controller
 
         $total_price=DB::table('carts')->where('invoice_no',$id)->sum('subtotal');
         $wihout_discount_price=$total_price;
+        $coupon_code = NULL;
         foreach($products as $product)
         {
-
-            $coupon_code=$product->coupon_id;
-          
-
-
-
+            if($product->coupon_id) {
+                // Lấy code từ coupon_id (id)
+                $coupon_code = DB::table('coupons')->where('id', $product->coupon_id)->value('code');
+                break;
+            }
         }
-        $coupon_code_price=DB::table('coupons')->where('code',$coupon_code)->value('percentage');
+        
+        if($coupon_code) {
+            $coupon_code_price=DB::table('coupons')->where('code',$coupon_code)->value('percentage');
+        } else {
+            $coupon_code_price = 0;
+        }
 
         $coupon_code_price=floor($coupon_code_price);
 
@@ -757,15 +762,21 @@ class AdminController extends Controller
 
         $total_price=DB::table('carts')->where('invoice_no',$id)->sum('subtotal');
         $wihout_discount_price=$total_price;
+        $coupon_code = NULL;
         foreach($products as $product)
         {
-
-            $coupon_code=$product->coupon_id;
-
-
-
+            if($product->coupon_id) {
+                // Lấy code từ coupon_id (id)
+                $coupon_code = DB::table('coupons')->where('id', $product->coupon_id)->value('code');
+                break;
+            }
         }
-        $coupon_code_price=DB::table('coupons')->where('code',$coupon_code)->value('percentage');
+        
+        if($coupon_code) {
+            $coupon_code_price=DB::table('coupons')->where('code',$coupon_code)->value('percentage');
+        } else {
+            $coupon_code_price = 0;
+        }
 
         $coupon_code_price=floor($coupon_code_price);
 
@@ -997,7 +1008,7 @@ class AdminController extends Controller
         if($my_id=="yes")
         {
 
-            return redirect::to('/login');
+            return redirect('/login');
 
         }
 
@@ -1915,8 +1926,8 @@ class AdminController extends Controller
             $data = [
                 'title' => $req->title,
                 'slug' => \Illuminate\Support\Str::slug($req->title),
-                'content' => $req->content,
-                'excerpt' => $req->excerpt ?? null,
+                'content' => $req->input('content'),
+                'excerpt' => $req->input('excerpt') ?? null,
                 'category' => $req->category,
                 'status' => $req->status,
                 'author_id' => Auth::user()->id,
@@ -2012,8 +2023,8 @@ class AdminController extends Controller
         $data = [
             'title' => $req->title,
             'slug' => \Illuminate\Support\Str::slug($req->title),
-            'content' => $req->content,
-            'excerpt' => $req->excerpt ?? null,
+            'content' => $req->input('content'),
+            'excerpt' => $req->input('excerpt') ?? null,
             'category' => $req->category,
             'status' => $req->status,
             'is_featured' => $req->has('is_featured') ? 1 : 0,

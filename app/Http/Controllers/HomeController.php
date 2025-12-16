@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 use DB;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Hash;
 
 
@@ -206,22 +206,38 @@ class HomeController extends Controller
         if($usertype!='0')
     	{
 
-            $pending_order=DB::table('carts')->where('product_order','yes')->groupBy('invoice_no')->count();
+            // Đếm số đơn theo invoice_no (đúng hơn groupBy()->count() và nhanh hơn)
+            $pending_order = DB::table('carts')
+                ->where('product_order', 'yes')
+                ->distinct('invoice_no')
+                ->count('invoice_no');
 
-            $processing_order=DB::table('carts')->where('product_order','approve')->groupBy('invoice_no')->count();
+            $processing_order = DB::table('carts')
+                ->where('product_order', 'approve')
+                ->distinct('invoice_no')
+                ->count('invoice_no');
 
-            $cancel_order=DB::table('carts')->where('product_order','cancel')->groupBy('invoice_no')->count();
+            $cancel_order = DB::table('carts')
+                ->where('product_order', 'cancel')
+                ->distinct('invoice_no')
+                ->count('invoice_no');
 
-            $complete_order=DB::table('carts')->where('product_order','delivery')->groupBy('invoice_no')->count();
+            $complete_order = DB::table('carts')
+                ->where('product_order', 'delivery')
+                ->distinct('invoice_no')
+                ->count('invoice_no');
 
+            // Tổng doanh thu/giá trị giao dịch: chỉ tính đơn đã đặt/đang xử lý/đã giao (không tính giỏ "no" và không tính hủy)
+            $total = DB::table('carts')
+                ->whereIn('product_order', ['yes', 'approve', 'delivery'])
+                ->sum('subtotal');
 
-            $total=DB::table('carts')->sum('subtotal');
+            $cash_on_payment = DB::table('carts')
+                ->whereIn('product_order', ['yes', 'approve', 'delivery'])
+                ->where('pay_method', 'Cash On Delivery')
+                ->sum('subtotal');
 
-
-            $cash_on_payment=DB::table('carts')->where('pay_method','Cash On Delivery')->sum('subtotal');
-
-
-            $online_payment=$total-$cash_on_payment;
+            $online_payment = max(0, $total - $cash_on_payment);
 
 
             $customer=DB::table('users')->where('usertype','0')->count();
@@ -236,9 +252,12 @@ class HomeController extends Controller
             $admin=$user-($customer + $delivery_boy);
 
 
-            $rates=DB::table('rates')->get();
+            $rates = DB::table('rates')->get();
 
-            $product=array();
+            // Default an toàn khi chưa có rating
+            $product = [];
+            $voter = [];
+            $per_rate = [];
 
 
             foreach($rates as $rate)
@@ -297,26 +316,16 @@ class HomeController extends Controller
             $product_get=array();
 
 
-            foreach($per_rate as $prod)
-            {
-
-                $index_search = array_search($prod, $copy_product);
-                
-                $product_get=DB::table('products')->where('id',$index_search)->get();
+            // Không cần truy vấn $product_get tại đây (view đang tự truy vấn lại)
 
 
-                // return $product_get;
+            $carts = DB::table('carts')
+                ->where('product_order', '!=', 'no')
+                ->where('product_order', '!=', 'cancel')
+                ->get();
 
-                
-
-
-
-            }
-
-
-            $carts=DB::table('carts')->where('product_order','!=','no')->where('product_order','!=','cancel')->get();
-
-            $cart=array();
+            $cart = [];
+            $product_cart = [];
 
 
             foreach($carts as $cart)
@@ -438,7 +447,7 @@ class HomeController extends Controller
                     'mailer' => config('mail.default')
                 ]);
                 
-                $pdf = PDF::loadView('mails.Reserve', $emailData);
+                $pdf = Pdf::loadView('mails.Reserve', $emailData);
         
                 \Mail::send('mails.Reserve', $emailData, function($mailMessage)use($emailData, $pdf, $email, $name) {
                     $mailMessage->to($email, $name ?? 'Khách hàng')

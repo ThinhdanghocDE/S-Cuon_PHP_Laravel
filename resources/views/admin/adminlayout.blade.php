@@ -122,7 +122,7 @@
               <span class="menu-icon">
                 <i class="mdi mdi-speedometer"></i>
               </span>
-              <span class="menu-title">Dashboard</span>
+              <span class="menu-title">Bảng điều khiển</span>
             </a>
           </li>
           @if(Auth::user()->usertype != 2)
