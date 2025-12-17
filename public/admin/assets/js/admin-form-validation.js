@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const typeSelect = adminForm.querySelector('select[name="type"]');
     const salaryInput = adminForm.querySelector('input[name="salary"]');
     const passwordInput = adminForm.querySelector('input[name="password"]');
-    const confirmPasswordInput = adminForm.querySelector('input[name="confirm_password"]');
+    // Laravel confirmed rule expects: password_confirmation
+    const confirmPasswordInput = adminForm.querySelector('input[name="password_confirmation"]');
     const imageInput = adminForm.querySelector('input[name="image"]');
     
     if (!nameInput || !emailInput || !phoneInput || !typeSelect || !salaryInput) {

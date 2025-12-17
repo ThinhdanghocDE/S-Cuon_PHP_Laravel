@@ -26,6 +26,19 @@
                         <br>
                         @endif
 
+                    @if ($errors->any())
+                        <div class="alert" style="background-color:#f8d7da;color:#721c24;">
+                            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                            <strong>Lỗi!</strong>
+                            <ul style="margin:10px 0 0 18px;">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        <br>
+                    @endif
+
                     <form class="forms-sample" action="/add-delivery-boy-process" method="post" enctype="multipart/form-data" id="deliveryBoyForm">
 
                        @csrf
@@ -60,7 +73,7 @@
 
                       <div class="form-group">
                         <label for="deliveryBoyConfirmPassword">Xác nhận mật khẩu <span class="text-danger">*</span></label>
-                        <input type="password" name="confirm_password" class="form-control" id="deliveryBoyConfirmPassword" placeholder="Nhập lại mật khẩu">
+                        <input type="password" name="password_confirmation" class="form-control" id="deliveryBoyConfirmPassword" placeholder="Nhập lại mật khẩu">
                       </div>
 
                   

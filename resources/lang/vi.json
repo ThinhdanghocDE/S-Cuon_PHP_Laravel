@@ -1,0 +1,60 @@
+{
+  "Profile": "Hồ sơ",
+
+  "Two Factor Authentication": "Xác thực 2 lớp",
+  "Add additional security to your account using two factor authentication.": "Tăng cường bảo mật cho tài khoản bằng xác thực 2 lớp.",
+  "You have enabled two factor authentication.": "Bạn đã bật xác thực 2 lớp.",
+  "You have not enabled two factor authentication.": "Bạn chưa bật xác thực 2 lớp.",
+  "When two factor authentication is enabled, you will be prompted for a secure, random token during authentication. You may retrieve this token from your phone's Google Authenticator application.": "Khi bật xác thực 2 lớp, bạn sẽ được yêu cầu nhập mã bảo mật khi đăng nhập. Bạn có thể lấy mã này từ ứng dụng Google Authenticator trên điện thoại.",
+  "Two factor authentication is now enabled. Scan the following QR code using your phone's authenticator application.": "Xác thực 2 lớp đã được bật. Hãy quét mã QR sau bằng ứng dụng xác thực trên điện thoại.",
+  "Store these recovery codes in a secure password manager. They can be used to recover access to your account if your two factor authentication device is lost.": "Hãy lưu các mã khôi phục này ở nơi an toàn. Bạn có thể dùng chúng để khôi phục quyền truy cập nếu mất thiết bị xác thực 2 lớp.",
+  "Enable": "Bật",
+  "Disable": "Tắt",
+  "Show Recovery Codes": "Hiển thị mã khôi phục",
+  "Regenerate Recovery Codes": "Tạo lại mã khôi phục",
+
+  "Confirm Password": "Xác nhận mật khẩu",
+  "For your security, please confirm your password to continue.": "Vì lý do bảo mật, vui lòng xác nhận mật khẩu để tiếp tục.",
+  "Password": "Mật khẩu",
+  "Cancel": "Hủy",
+  "Confirm": "Xác nhận",
+
+  "Please confirm access to your account by entering the authentication code provided by your authenticator application.": "Vui lòng xác nhận quyền truy cập bằng cách nhập mã từ ứng dụng xác thực của bạn.",
+  "Please confirm access to your account by entering one of your emergency recovery codes.": "Vui lòng xác nhận quyền truy cập bằng cách nhập một trong các mã khôi phục khẩn cấp.",
+  "Code": "Mã xác thực",
+  "Recovery Code": "Mã khôi phục",
+  "Use a recovery code": "Dùng mã khôi phục",
+  "Use an authentication code": "Dùng mã xác thực",
+  "Log in": "Đăng nhập",
+
+  "Browser Sessions": "Phiên đăng nhập",
+  "Manage and log out your active sessions on other browsers and devices.": "Quản lý và đăng xuất các phiên đang hoạt động trên trình duyệt/thiết bị khác.",
+  "If necessary, you may log out of all of your other browser sessions across all of your devices. Some of your recent sessions are listed below; however, this list may not be exhaustive. If you feel your account has been compromised, you should also update your password.": "Nếu cần, bạn có thể đăng xuất khỏi tất cả phiên trên các thiết bị khác. Một số phiên gần đây được liệt kê bên dưới (có thể không đầy đủ). Nếu bạn nghi ngờ tài khoản bị xâm phạm, hãy đổi mật khẩu.",
+  "This device": "Thiết bị này",
+  "Last active": "Hoạt động gần nhất",
+  "Log Out Other Browser Sessions": "Đăng xuất các phiên khác",
+  "Please enter your password to confirm you would like to log out of your other browser sessions across all of your devices.": "Vui lòng nhập mật khẩu để xác nhận đăng xuất khỏi các phiên khác trên mọi thiết bị.",
+  "Done.": "Xong.",
+
+  "Delete Account": "Xóa tài khoản",
+  "Permanently delete your account.": "Xóa vĩnh viễn tài khoản của bạn.",
+  "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Khi tài khoản bị xóa, toàn bộ dữ liệu và tài nguyên sẽ bị xóa vĩnh viễn. Trước khi xóa, hãy tải về mọi dữ liệu bạn muốn giữ lại.",
+  "Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Bạn có chắc chắn muốn xóa tài khoản? Khi xóa, toàn bộ dữ liệu sẽ bị xóa vĩnh viễn. Vui lòng nhập mật khẩu để xác nhận.",
+
+  "Update Password": "Đổi mật khẩu",
+  "Ensure your account is using a long, random password to stay secure.": "Hãy dùng mật khẩu dài và khó đoán để tăng bảo mật.",
+  "Current Password": "Mật khẩu hiện tại",
+  "New Password": "Mật khẩu mới",
+  "Saved.": "Đã lưu.",
+  "Save": "Lưu",
+
+  "Profile Information": "Thông tin hồ sơ",
+  "Update your account's profile information and email address.": "Cập nhật thông tin hồ sơ và địa chỉ email.",
+  "Photo": "Ảnh",
+  "Select A New Photo": "Chọn ảnh mới",
+  "Remove Photo": "Xóa ảnh",
+  "Name": "Họ tên",
+  "Email": "Email"
+}
+
+

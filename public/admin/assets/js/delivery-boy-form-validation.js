@@ -13,7 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const phoneInput = form.querySelector('input[name="phone"]');
     const salaryInput = form.querySelector('input[name="salary"]');
     const passwordInput = form.querySelector('input[name="password"]');
-    const confirmPasswordInput = form.querySelector('input[name="confirm_password"]');
+    // Laravel confirmed rule expects: password_confirmation
+    const confirmPasswordInput = form.querySelector('input[name="password_confirmation"]');
     const imageInput = form.querySelector('input[name="image"]');
     
     if (!nameInput || !emailInput || !phoneInput || !salaryInput) return;
