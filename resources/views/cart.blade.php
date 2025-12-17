@@ -65,7 +65,7 @@
                             <span class="subtotal-value">{{ number_format((float)$product->subtotal * 1000, 0, ',', '.') }} VNĐ</span>
                         </div>
                         <div class="cart-item-actions">
-                            <form method="post" action="{{ route('cart.destroy', Auth::check() ? $product : $product->product_id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')">
+                            <form method="post" action="{{ route('cart.destroy', Auth::check() ? $product->id : $product->product_id) }}" onsubmit="return confirm('Bạn có chắc chắn muốn xóa món này khỏi giỏ hàng?')">
                                 @csrf
                                 <button type="submit" class="btn-remove-item" title="Xóa khỏi giỏ hàng">
                                     <i class="fa fa-trash"></i>
