@@ -41,6 +41,17 @@
       body {
         font-family: 'Inter', sans-serif !important;
       }
+      /* Pagination (Bootstrap) - fix hiển thị trong theme admin */
+      .pagination {
+        margin-bottom: 0;
+      }
+      .pagination .page-link {
+        border-radius: 6px;
+      }
+      .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+      }
     </style>
   </head>
   <body>

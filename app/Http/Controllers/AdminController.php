@@ -134,16 +134,187 @@ class AdminController extends Controller
     }
     public function reservation()
     {
+        if(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+        $usertype= Auth::user()->usertype;
+        if($usertype!='1')
+    	{
+    		return redirect('/');
+    	}
 
-        
-        $reservations=DB::table('reservations')->get();
- 
- 
-         return view('admin.reservations',compact('reservations'));
+        // Search/filter
+        $q = request()->query('q');
+        $dateFrom = request()->query('from');
+        $dateTo = request()->query('to');
 
+        $query = DB::table('reservations');
 
+        if (!empty($q)) {
+            $query->where(function ($sub) use ($q) {
+                $sub->where('name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%")
+                    ->orWhere('phone', 'like', "%{$q}%")
+                    ->orWhere('message', 'like', "%{$q}%")
+                    ->orWhere('no_guest', 'like', "%{$q}%")
+                    ->orWhere('date', 'like', "%{$q}%")
+                    ->orWhere('time', 'like', "%{$q}%");
+            });
+        }
 
+        if (!empty($dateFrom)) {
+            $query->where('date', '>=', $dateFrom);
+        }
+        if (!empty($dateTo)) {
+            $query->where('date', '<=', $dateTo);
+        }
 
+        $reservations = $query->orderByDesc('id')->paginate(20)->appends(request()->query());
+
+        return view('admin.reservations', compact('reservations', 'q', 'dateFrom', 'dateTo'));
+    }
+
+    public function reservation_add()
+    {
+        if(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+        $usertype= Auth::user()->usertype;
+        if($usertype!='1')
+    	{
+    		return redirect('/');
+    	}
+
+        return view('admin.reservation_add');
+    }
+
+    public function reservation_add_process(Request $req)
+    {
+        if(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+        $usertype= Auth::user()->usertype;
+        if($usertype!='1')
+    	{
+    		return redirect('/');
+    	}
+
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'no_guest' => 'required|string|max:10',
+            'date' => 'required|string|max:50',
+            'time' => 'required|string|max:50',
+            'message' => 'nullable|string|max:1000',
+        ], [
+            'name.required' => 'Vui lòng nhập họ và tên.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'no_guest.required' => 'Vui lòng nhập số lượng khách.',
+            'date.required' => 'Vui lòng chọn ngày.',
+            'time.required' => 'Vui lòng chọn giờ.',
+        ]);
+
+        DB::table('reservations')->insert([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'no_guest' => $validated['no_guest'],
+            'date' => $validated['date'],
+            'time' => $validated['time'],
+            'message' => $validated['message'] ?? '',
+        ]);
+
+        return redirect()->route('admin.reservations')->with('success', 'Đã thêm đặt bàn thành công!');
+    }
+
+    public function reservation_edit($id)
+    {
+        if(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+        $usertype= Auth::user()->usertype;
+        if($usertype!='1')
+    	{
+    		return redirect('/');
+    	}
+
+        $reservation = DB::table('reservations')->where('id', $id)->first();
+        if (!$reservation) {
+            return redirect()->route('admin.reservations')->with('error', 'Không tìm thấy đặt bàn!');
+        }
+
+        return view('admin.reservation_edit', compact('reservation'));
+    }
+
+    public function reservation_edit_process(Request $req, $id)
+    {
+        if(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+        $usertype= Auth::user()->usertype;
+        if($usertype!='1')
+    	{
+    		return redirect('/');
+    	}
+
+        $validated = $req->validate([
+            'name' => 'required|string|min:2|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'no_guest' => 'required|string|max:10',
+            'date' => 'required|string|max:50',
+            'time' => 'required|string|max:50',
+            'message' => 'nullable|string|max:1000',
+        ], [
+            'name.required' => 'Vui lòng nhập họ và tên.',
+            'email.required' => 'Vui lòng nhập email.',
+            'email.email' => 'Email không hợp lệ.',
+            'phone.required' => 'Vui lòng nhập số điện thoại.',
+            'no_guest.required' => 'Vui lòng nhập số lượng khách.',
+            'date.required' => 'Vui lòng chọn ngày.',
+            'time.required' => 'Vui lòng chọn giờ.',
+        ]);
+
+        $exists = DB::table('reservations')->where('id', $id)->exists();
+        if (!$exists) {
+            return redirect()->route('admin.reservations')->with('error', 'Không tìm thấy đặt bàn!');
+        }
+
+        DB::table('reservations')->where('id', $id)->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'],
+            'no_guest' => $validated['no_guest'],
+            'date' => $validated['date'],
+            'time' => $validated['time'],
+            'message' => $validated['message'] ?? '',
+        ]);
+
+        return redirect()->route('admin.reservations')->with('success', 'Đã cập nhật đặt bàn thành công!');
+    }
+
+    public function reservation_delete($id)
+    {
+        if(!Auth::user())
+        {
+            return redirect()->route('login');
+        }
+        $usertype= Auth::user()->usertype;
+        if($usertype!='1')
+    	{
+    		return redirect('/');
+    	}
+
+        DB::table('reservations')->where('id', $id)->delete();
+        return redirect()->route('admin.reservations')->with('success', 'Đã xóa đặt bàn thành công!');
     }
     
     public function add_menu()

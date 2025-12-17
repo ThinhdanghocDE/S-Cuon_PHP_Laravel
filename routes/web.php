@@ -152,7 +152,16 @@ Route::get('/admin/chefs', [AdminController::class, 'chefs'])->name('/admin/chef
 
 Route::get('/admin/orders-incomplete', [AdminController::class, 'order_incomplete'])->name('/admin/orders-incomplete');
 Route::get('/orders-complete', [AdminController::class, 'order_complete'])->name('/orders-complete');
+// Reservations (Đặt bàn)
+// Backward compatible route (cũ)
 Route::get('/admin/reservation', [AdminController::class, 'reservation'])->name('/admin/reservation');
+// Route mới (khuyến nghị)
+Route::get('/admin/reservations', [AdminController::class, 'reservation'])->name('admin.reservations');
+Route::get('/admin/reservations/add', [AdminController::class, 'reservation_add'])->name('admin.reservations.add');
+Route::post('/admin/reservations/add', [AdminController::class, 'reservation_add_process'])->name('admin.reservations.add.process');
+Route::get('/admin/reservations/edit/{id}', [AdminController::class, 'reservation_edit'])->name('admin.reservations.edit');
+Route::post('/admin/reservations/edit/{id}', [AdminController::class, 'reservation_edit_process'])->name('admin.reservations.edit.process');
+Route::get('/admin/reservations/delete/{id}', [AdminController::class, 'reservation_delete'])->name('admin.reservations.delete');
 Route::get('/admin/coupon', [AdminController::class, 'coupon_show'])->name('/admin/coupon');
 Route::get('/admin/show', [AdminController::class, 'admin_show'])->name('/admin/show');
 Route::get('/customer', [AdminController::class, 'user_show'])->name('/customer');
