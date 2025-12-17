@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Cache;
 
 
 class AdminController extends Controller
@@ -325,6 +326,9 @@ class AdminController extends Controller
 
         $insert=DB::table('chefs')->Insert($data);
 
+        // Clear cache để client load danh sách đầu bếp mới ngay
+        Cache::forget('home:chefs');
+
 
         session()->flash('success','Chef added successfully !');
         return back();
@@ -352,6 +356,9 @@ class AdminController extends Controller
 
 
         $delete=DB::table('chefs')->where('id',$id)->delete();
+
+        // Clear cache để client cập nhật ngay
+        Cache::forget('home:chefs');
 
         session()->flash('success','Chef  deleted successfully !');
         return back();
@@ -501,6 +508,9 @@ class AdminController extends Controller
 
 
         $update=DB::table('chefs')->where('id',$id)->Update($data);
+
+        // Clear cache để client cập nhật ngay
+        Cache::forget('home:chefs');
 
 
         session()->flash('success','Chef upadetd successfully !');
